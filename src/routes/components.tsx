@@ -297,6 +297,13 @@ function ComponentsPage() {
 									You can add components to your app using the CLI.
 								</AlertDescription>
 							</Alert>
+							<Alert variant="warning">
+								<AlertCircle className="size-4" />
+								<AlertTitle>Warning</AlertTitle>
+								<AlertDescription>
+									This action may have unintended consequences.
+								</AlertDescription>
+							</Alert>
 							<Alert variant="destructive">
 								<AlertCircle className="size-4" />
 								<AlertTitle>Error</AlertTitle>
@@ -515,7 +522,7 @@ function ComponentsPage() {
 								<TableRow>
 									<TableCell className="font-medium">Alice</TableCell>
 									<TableCell>
-										<Badge variant="secondary">Active</Badge>
+										<Badge>Active</Badge>
 									</TableCell>
 									<TableCell>Admin</TableCell>
 									<TableCell className="text-right">$2,500.00</TableCell>
@@ -531,7 +538,7 @@ function ComponentsPage() {
 								<TableRow>
 									<TableCell className="font-medium">Charlie</TableCell>
 									<TableCell>
-										<Badge variant="secondary">Active</Badge>
+										<Badge>Active</Badge>
 									</TableCell>
 									<TableCell>Viewer</TableCell>
 									<TableCell className="text-right">$800.00</TableCell>
