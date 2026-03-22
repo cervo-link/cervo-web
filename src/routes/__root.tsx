@@ -73,7 +73,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
 				<HeadContent />
 			</head>
-			<body className="antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+			<body className="antialiased [overflow-wrap:anywhere] selection:bg-primary/20">
 				<TanStackQueryProvider>
 					{children}
 					<TanStackDevtools

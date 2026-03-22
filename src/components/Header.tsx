@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Button } from "#/components/ui/button";
 
 export default function Header() {
 	return (
@@ -29,12 +30,14 @@ export default function Header() {
 				</div>
 
 				<div className="ml-auto">
-					<Link
-						to="/sign-in"
-						className="inline-flex h-8 items-center border border-primary px-4 text-xs font-bold tracking-[0.5px] text-primary no-underline transition-colors hover:bg-primary/10"
+					<Button
+						variant="outline"
+						size="sm"
+						asChild
+						className="border-primary text-xs font-bold tracking-wide text-primary hover:bg-primary/10 hover:text-primary"
 					>
-						SIGN IN
-					</Link>
+						<Link to="/sign-in">SIGN IN</Link>
+					</Button>
 				</div>
 			</nav>
 		</header>

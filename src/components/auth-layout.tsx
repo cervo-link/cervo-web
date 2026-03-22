@@ -1,5 +1,3 @@
-const HEADING_FONT = "'Space Grotesk Variable', sans-serif";
-
 export default function AuthLayout({
 	children,
 }: {
@@ -7,20 +5,14 @@ export default function AuthLayout({
 }) {
 	return (
 		<div className="flex min-h-screen">
-			<div className="flex w-1/2 flex-col items-center justify-center bg-[#141414] px-[60px]">
-				<img src="/cervo.png" alt="Cervo" className="size-[72px]" />
-				<h1
-					className="mt-6 text-[42px] font-bold tracking-[4px] text-white"
-					style={{ fontFamily: HEADING_FONT }}
-				>
-					CERVO
-				</h1>
-				<p className="mt-6 text-[11px] font-medium uppercase tracking-[2px] text-[#8a8a8a]">
+			<div className="flex w-1/2 flex-col items-center justify-center bg-card px-16">
+				<img src="/cervo.png" alt="Cervo" className="size-72" />
+				<p className="text-lg font-medium uppercase tracking-widest text-muted-foreground">
 					Save by URL. Find by meaning.
 				</p>
 			</div>
-			<div className="flex w-1/2 flex-col items-center justify-center bg-[#0C0C0C] px-[80px]">
-				<div className="w-full max-w-[380px]">{children}</div>
+			<div className="flex w-1/2 flex-col items-center justify-center bg-background px-20">
+				<div className="w-full max-w-sm">{children}</div>
 			</div>
 		</div>
 	);

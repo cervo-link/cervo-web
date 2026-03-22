@@ -9,8 +9,6 @@ export const Route = createFileRoute("/_auth/workspace")({
 	component: WorkspacePage,
 });
 
-const HEADING_FONT = "'Space Grotesk Variable', sans-serif";
-
 const workspaceSchema = z.object({
 	name: z.string().min(2, "Workspace name must be at least 2 characters"),
 });
@@ -38,13 +36,10 @@ function WorkspacePage() {
 	return (
 		<div className="space-y-8">
 			<div className="space-y-2">
-				<h2
-					className="text-[32px] font-bold tracking-[-1px] text-white"
-					style={{ fontFamily: HEADING_FONT }}
-				>
+				<h2 className="font-heading text-5xl font-bold tracking-tight text-foreground">
 					DEFINE YOUR WORKSPACE
 				</h2>
-				<p className="text-[11px] font-medium tracking-[0.5px] text-[#8a8a8a]">
+				<p className="text-base font-medium tracking-wide text-muted-foreground">
 					How should we call this group?
 				</p>
 			</div>
@@ -53,7 +48,7 @@ function WorkspacePage() {
 				<div className="space-y-2">
 					<Label
 						htmlFor="workspace-name"
-						className="text-[11px] font-bold tracking-[0.5px] text-[#8a8a8a]"
+						className="text-sm font-bold tracking-wide text-muted-foreground"
 					>
 						WORKSPACE NAME
 					</Label>
@@ -62,14 +57,14 @@ function WorkspacePage() {
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						placeholder='"My Saved Links"'
-						className="h-[44px] border-[#2f2f2f] bg-[#141414] text-[13px] placeholder:text-[#6a6a6a]"
+						className="h-12 border-border bg-card text-base placeholder:text-muted-foreground"
 					/>
-					{error && <p className="text-[11px] text-destructive">{error}</p>}
+					{error && <p className="text-sm text-destructive">{error}</p>}
 				</div>
 
 				<Button
 					type="submit"
-					className="h-[44px] w-full text-[13px] font-bold tracking-[0.5px]"
+					className="h-12 w-full text-base font-bold tracking-wide"
 				>
 					CREATE WORKSPACE
 				</Button>

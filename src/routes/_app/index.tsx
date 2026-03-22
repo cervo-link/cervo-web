@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "#/components/ui/button";
 
 export const Route = createFileRoute("/_app/")({
 	component: Home,
@@ -12,12 +13,9 @@ function Home() {
 				Design system foundation built with shadcn, Tailwind CSS, and JetBrains
 				Mono.
 			</p>
-			<Link
-				to="/components"
-				className="inline-flex h-10 items-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-			>
-				View Components
-			</Link>
+			<Button size="lg" asChild>
+				<Link to="/components">View Components</Link>
+			</Button>
 		</main>
-	)
+	);
 }

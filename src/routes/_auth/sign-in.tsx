@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Github } from "lucide-react";
 import { GoogleIcon } from "#/components/icons/google";
+import { Button } from "#/components/ui/button";
 import { authClient } from "#/lib/auth-client";
 
 export const Route = createFileRoute("/_auth/sign-in")({
 	component: SignInPage,
 });
-
-const HEADING_FONT = "'Space Grotesk Variable', sans-serif";
 
 function SignInPage() {
 	function handleGoogle() {
@@ -27,35 +26,34 @@ function SignInPage() {
 	return (
 		<div className="space-y-8">
 			<div className="space-y-2">
-				<h2
-					className="text-[32px] font-bold tracking-[-1px] text-white"
-					style={{ fontFamily: HEADING_FONT }}
-				>
+				<h2 className="font-heading text-5xl font-bold tracking-tight text-foreground">
 					WELCOME
 				</h2>
-				<p className="text-[11px] font-medium tracking-[0.5px] text-[#8a8a8a]">
+				<p className="text-base font-medium tracking-wide text-muted-foreground">
 					Select your provider and sign in
 				</p>
 			</div>
 
 			<div className="space-y-3">
-				<button
-					type="button"
+				<Button
+					variant="outline"
+					size="lg"
 					onClick={handleGoogle}
-					className="flex h-[44px] w-full items-center justify-center gap-2.5 border border-primary bg-transparent text-primary transition-colors hover:bg-primary/10"
+					className="h-12 w-full border-primary text-primary hover:bg-primary/10 hover:text-primary"
 				>
-					<GoogleIcon className="size-3.5" />
-					<span className="text-[11px] font-bold tracking-[0.5px]">GOOGLE</span>
-				</button>
+					<GoogleIcon className="size-4" />
+					<span className="text-sm font-bold tracking-wide">GOOGLE</span>
+				</Button>
 
-				<button
-					type="button"
+				<Button
+					variant="outline"
+					size="lg"
 					onClick={handleGithub}
-					className="flex h-[44px] w-full items-center justify-center gap-2.5 border border-primary bg-transparent text-primary transition-colors hover:bg-primary/10"
+					className="h-12 w-full border-primary text-primary hover:bg-primary/10 hover:text-primary"
 				>
-					<Github className="size-3.5" />
-					<span className="text-[11px] font-bold tracking-[0.5px]">GITHUB</span>
-				</button>
+					<Github className="size-4" />
+					<span className="text-sm font-bold tracking-wide">GITHUB</span>
+				</Button>
 			</div>
 		</div>
 	);

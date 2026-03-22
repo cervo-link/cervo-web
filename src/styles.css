@@ -51,6 +51,7 @@ code {
 }
 
 @theme inline {
+  --font-heading: 'Space Grotesk Variable', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
