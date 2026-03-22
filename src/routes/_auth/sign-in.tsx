@@ -12,14 +12,14 @@ function SignInPage() {
 	function handleGoogle() {
 		void authClient.signIn.social({
 			provider: "google",
-			callbackURL: "/workspace",
+			callbackURL: `${window.location.origin}/workspace`,
 		});
 	}
 
 	function handleGithub() {
 		void authClient.signIn.social({
 			provider: "github",
-			callbackURL: "/workspace",
+			callbackURL: `${window.location.origin}/workspace`,
 		});
 	}
 

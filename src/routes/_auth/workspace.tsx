@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
+import { useGetMembersMe } from "#/api/members/members";
+import { usePostWorkspacesCreate } from "#/api/workspaces/workspaces";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Label } from "#/components/ui/label";
@@ -18,19 +20,33 @@ function WorkspacePage() {
 	const [error, setError] = useState<string | null>(null);
 	const navigate = useNavigate();
 
-	function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+	const { data: meData } = useGetMembersMe();
+	const { mutateAsync: createWorkspace, isPending } = usePostWorkspacesCreate();
+
+	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
 		const result = workspaceSchema.safeParse({ name });
-
 		if (!result.success) {
 			setError(result.error.issues[0].message);
 			return;
 		}
 
+		if (!meData?.member?.id) {
+			setError("Could not identify your account. Please sign in again.");
+			return;
+		}
+
 		setError(null);
-		console.log("Workspace created:", result.data);
-		void navigate({ to: "/links" });
+
+		try {
+			await createWorkspace({
+				data: { name: result.data.name, ownerId: meData.member.id },
+			});
+			void navigate({ to: "/links" });
+		} catch {
+			setError("Failed to create workspace. Please try again.");
+		}
 	}
 
 	return (
@@ -64,9 +80,10 @@ function WorkspacePage() {
 
 				<Button
 					type="submit"
+					disabled={isPending || !meData}
 					className="h-12 w-full text-base font-bold tracking-wide"
 				>
-					CREATE WORKSPACE
+					{isPending ? "CREATING..." : "CREATE WORKSPACE"}
 				</Button>
 			</form>
 		</div>

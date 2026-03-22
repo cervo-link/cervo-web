@@ -18,7 +18,6 @@ import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AppMcpRouteImport } from './routes/_app/mcp'
 import { Route as AppLinksRouteImport } from './routes/_app/links'
 import { Route as AppComponentsRouteImport } from './routes/_app/components'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppDemoTanstackQueryRouteImport } from './routes/_app/demo/tanstack-query'
 import { Route as AppDemoMcpTodosRouteImport } from './routes/_app/demo/mcp-todos'
 import { Route as AppDemoBetterAuthRouteImport } from './routes/_app/demo/better-auth'
@@ -67,11 +66,6 @@ const AppComponentsRoute = AppComponentsRouteImport.update({
   path: '/components',
   getParentRoute: () => AppRoute,
 } as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppDemoTanstackQueryRoute = AppDemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
   path: '/demo/tanstack-query',
@@ -104,7 +98,6 @@ export interface FileRoutesByFullPath {
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
   '/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRoutesByTo {
@@ -118,7 +111,6 @@ export interface FileRoutesByTo {
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
   '/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRoutesById {
@@ -135,7 +127,6 @@ export interface FileRoutesById {
   '/_app/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/_app/demo/mcp-todos': typeof AppDemoMcpTodosRoute
   '/_app/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRouteTypes {
@@ -151,7 +142,6 @@ export interface FileRouteTypes {
     | '/demo/better-auth'
     | '/demo/mcp-todos'
     | '/demo/tanstack-query'
-    | '/api/auth/$'
     | '/demo/api/mcp-todos'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,7 +155,6 @@ export interface FileRouteTypes {
     | '/demo/better-auth'
     | '/demo/mcp-todos'
     | '/demo/tanstack-query'
-    | '/api/auth/$'
     | '/demo/api/mcp-todos'
   id:
     | '__root__'
@@ -181,7 +170,6 @@ export interface FileRouteTypes {
     | '/_app/demo/better-auth'
     | '/_app/demo/mcp-todos'
     | '/_app/demo/tanstack-query'
-    | '/api/auth/$'
     | '/_app/demo/api/mcp-todos'
   fileRoutesById: FileRoutesById
 }
@@ -189,7 +177,6 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   ApiResumeChatRoute: typeof ApiResumeChatRoute
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -256,13 +243,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/components'
       preLoaderRoute: typeof AppComponentsRouteImport
       parentRoute: typeof AppRoute
-    }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_app/demo/tanstack-query': {
       id: '/_app/demo/tanstack-query'
@@ -335,7 +315,6 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   ApiResumeChatRoute: ApiResumeChatRoute,
-  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
