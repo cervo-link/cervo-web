@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useGetMembersMe } from "#/api/members/members";
 import { usePostWorkspacesCreate } from "#/api/workspaces/workspaces";
@@ -22,6 +22,12 @@ function WorkspacePage() {
 
 	const { data: meData } = useGetMembersMe();
 	const { mutateAsync: createWorkspace, isPending } = usePostWorkspacesCreate();
+
+	useEffect(() => {
+		if (meData?.member.workspace) {
+			void navigate({ to: "/links" });
+		}
+	}, [meData, navigate]);
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();

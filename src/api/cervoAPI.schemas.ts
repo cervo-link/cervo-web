@@ -313,10 +313,26 @@ export type GetMembersMe200Member = {
 };
 
 /**
+ * @nullable
+ */
+export type GetMembersMe200Workspace = {
+	id: string;
+	name: string;
+	/** @nullable */
+	description: string | null;
+	isPublic: boolean;
+	createdAt: string;
+	updatedAt: string;
+	active: boolean;
+} | null;
+
+/**
  * Current member
  */
 export type GetMembersMe200 = {
 	member: GetMembersMe200Member;
+	/** @nullable */
+	workspace: GetMembersMe200Workspace;
 };
 
 /**
