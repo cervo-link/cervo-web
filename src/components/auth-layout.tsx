@@ -8,7 +8,7 @@ export default function AuthLayout({
 	return (
 		<div className="flex min-h-screen">
 			<div className="flex w-1/2 flex-col items-center justify-center bg-[#141414] px-[60px]">
-				<span className="text-[72px] leading-none">🫎</span>
+				<img src="/cervo.png" alt="Cervo" className="size-[72px]" />
 				<h1
 					className="mt-6 text-[42px] font-bold tracking-[4px] text-white"
 					style={{ fontFamily: HEADING_FONT }}
