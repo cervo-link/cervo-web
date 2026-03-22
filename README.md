@@ -50,38 +50,24 @@ bun --bun run check
 ```
 
 
-## Setting up Better Auth
+## Environment Variables
 
-1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
-
-   ```bash
-   bunx --bun @better-auth/cli secret
-   ```
-
-2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
-
-### Adding a Database (Optional)
-
-Better Auth can work in stateless mode, but to persist user data, add a database:
-
-```typescript
-// src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
-
-export const auth = betterAuth({
-  database: new Pool({
-    connectionString: process.env.DATABASE_URL,
-  }),
-  // ... rest of config
-});
-```
-
-Then run migrations:
+Copy `.env.example` to `.env.local` and fill in the values:
 
 ```bash
-bunx --bun @better-auth/cli migrate
+cp .env.example .env.local
 ```
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_API_URL` | No | Backend API URL (defaults to `http://localhost:8080`) |
+| `ANTHROPIC_API_KEY` | No | Anthropic API key for resume chat |
+| `OPENAI_API_KEY` | No | OpenAI API key for resume chat |
+| `GEMINI_API_KEY` | No | Gemini API key for resume chat |
+
+At least one AI provider key is needed for the resume chat feature. If none are set, it falls back to a local Ollama instance.
+
+Environment variables are validated at runtime via Zod schemas in `src/lib/env.ts` (client) and `src/lib/env.server.ts` (server). Always import from these modules instead of accessing `import.meta.env` or `process.env` directly.
 
 
 ## Shadcn
