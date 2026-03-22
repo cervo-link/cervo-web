@@ -100,6 +100,37 @@ Tailwind CSS v4 with Shadcn UI components. The app is **dark mode only** — a s
 
 Biome enforces: double quotes, tab indentation. `routeTree.gen.ts` and `styles.css` are excluded from Biome.
 
+### Design System Conventions
+
+**No border radius.** All `--radius-*` CSS variables are set to `0px` in `styles.css`. Never add `rounded-*` classes to new components.
+
+**Consistent interactive element height.** All interactive elements (inputs, buttons, dropdowns, sidebar tabs) use `h-11` (44px).
+
+**Focus/hover border style.** All interactive elements use the same pattern:
+- Default: `border-sidebar-border`
+- Hover: `hover:border-primary` (solid green)
+- Focus: `focus-visible:border-primary focus-visible:ring-0 outline-none` (same solid green, no ring)
+- Never use `focus-visible:ring-2` or thick ring styles — always a 1px border.
+
+**Sidebar menu buttons** override the default shadcn `SidebarMenuButton` styles:
+- `rounded-none` (no radius)
+- `focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border focus-visible:border-primary`
+
+**Color palette for custom elements:**
+- Backgrounds: `bg-[#0A0A0A]` (inputs), `bg-[#141414]` (dropdowns/elevated)
+- Borders: `border-sidebar-border` (default), `border-[#2f2f2f]` (separators/subtle)
+- Text: `text-foreground` (primary), `text-[#8a8a8a]` (secondary), `text-[#6a6a6a]` (tertiary)
+- Active/selected: `text-primary`, `bg-primary/[0.06]`
+- Font: `font-mono` for UI elements, `font-heading` for titles
+
+### URL State Management
+
+Search/filter state is synced to the URL via `nuqs` (`useQueryState`). The `NuqsAdapter` wraps `<Outlet />` in `__root.tsx`. Setting state to `null` clears the param from the URL.
+
+### Sidebar-Content Alignment
+
+The sidebar logo bottom aligns with the page `h1` bottom. The workspace dropdown aligns horizontally with the content's search input. Spacing is controlled via `pt-10` and `gap: 36px` on `SidebarHeader`.
+
 ## Deployment
 
 Targets **Vercel** — configured via `nitro({ preset: 'vercel' })` in `vite.config.ts`.

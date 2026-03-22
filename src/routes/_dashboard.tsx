@@ -5,6 +5,7 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "#/components/ui/sidebar";
+// Toaster moved to LinkDetailView for SSR module singleton compatibility
 import { authClient } from "#/lib/auth-client";
 
 export const Route = createFileRoute("/_dashboard")({
@@ -31,7 +32,7 @@ function DashboardLayout() {
 	// 	return null;
 	// }
 
-return (
+	return (
 		<SidebarProvider>
 			<AppSidebar />
 			<SidebarInset>

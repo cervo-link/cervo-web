@@ -24,12 +24,12 @@ export function LinkListItem({
 	return (
 		<button
 			type="button"
-			tabIndex={-1}
+			data-link-list-item
 			onMouseEnter={onMouseEnter}
 			onClick={onClick}
 			className={cn(
-				"flex w-full cursor-pointer items-center gap-4 border-l-[3px] py-4 pl-4 text-left transition-colors",
-				isSelected ? "border-l-primary" : "border-l-transparent",
+				"flex w-full cursor-pointer items-center gap-4 border border-transparent py-4 pl-4 text-left outline-none transition-colors focus-visible:border-primary",
+				isSelected && "shadow-[inset_3px_0_0_0_var(--color-primary)]",
 			)}
 		>
 			<div className="flex min-w-0 flex-1 flex-col gap-1.5">

@@ -8,7 +8,8 @@ import {
 	Settings,
 	User,
 } from "lucide-react";
-import { useState } from "react";
+import { useQueryState, parseAsString } from "nuqs";
+import { useCallback, useRef } from "react";
 import { Avatar, AvatarFallback } from "#/components/ui/avatar";
 import {
 	DropdownMenu,
@@ -33,9 +34,9 @@ interface Workspace {
 }
 
 const MOCK_WORKSPACES: Workspace[] = [
-	{ id: "1", name: "Personal" },
-	{ id: "2", name: "Work" },
-	{ id: "3", name: "Side Projects" },
+	{ id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890", name: "Personal" },
+	{ id: "b2c3d4e5-f6a7-8901-bcde-f12345678901", name: "Work" },
+	{ id: "c3d4e5f6-a7b8-9012-cdef-123456789012", name: "Side Projects" },
 ];
 
 const NAV_ITEMS = [
@@ -56,28 +57,48 @@ function getInitials(name: string): string {
 
 export function AppSidebar() {
 	const { data: session } = authClient.useSession();
-	const [activeWorkspace, setActiveWorkspace] = useState<Workspace>(
-		MOCK_WORKSPACES[0],
+	const [workspaceId, setWorkspaceId] = useQueryState(
+		"workspace",
+		parseAsString.withDefault(MOCK_WORKSPACES[0].id),
 	);
+	const activeWorkspace =
+		MOCK_WORKSPACES.find((w) => w.id === workspaceId) ?? MOCK_WORKSPACES[0];
 
 	const userName = session?.user?.name ?? "User";
 	const initials = getInitials(userName);
+	const dropdownRef = useRef<HTMLButtonElement>(null);
+
+	const handleSidebarKeyDown = useCallback((e: React.KeyboardEvent) => {
+		if (e.key !== "Tab" || e.shiftKey) {
+			return;
+		}
+		const sidebar = e.currentTarget;
+		const focusableElements = sidebar.querySelectorAll<HTMLElement>(
+			'button, a, input, [tabindex]:not([tabindex="-1"])',
+		);
+		const isAnyFocused = Array.from(focusableElements).some(
+			(el) => el === document.activeElement,
+		);
+		if (isAnyFocused) {
+			return;
+		}
+		e.preventDefault();
+		dropdownRef.current?.focus();
+	}, []);
 
 	return (
-		<Sidebar side="left" variant="sidebar">
-			<SidebarHeader className="gap-4 px-5 pt-8">
-				<div className="flex items-center gap-3 pb-6">
-					<span className="text-lg text-primary">🫎</span>
-					<span className="font-mono text-base font-semibold tracking-wider text-foreground">
-						CERVO
-					</span>
+		<Sidebar side="left" variant="sidebar" onKeyDown={handleSidebarKeyDown}>
+			<SidebarHeader className="gap-8 px-5 pt-10 pb-0">
+				<div>
+					<img src="/cervo-horizontal.png" alt="Cervo" className="h-8" />
 				</div>
 
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<button
+							ref={dropdownRef}
 							type="button"
-							className="flex h-11 w-full items-center gap-2.5 border border-sidebar-border bg-[#141414] px-4 font-mono text-[13px] transition-colors hover:border-primary data-[state=open]:border-primary"
+							className="flex h-11 w-full items-center gap-2.5 border border-sidebar-border bg-[#141414] px-4 font-mono text-[13px] outline-none transition-colors hover:border-primary focus-visible:border-primary data-[state=open]:border-primary"
 						>
 							<Layers className="size-4 text-muted-foreground transition-colors group-data-[state=open]:text-primary" />
 							<span className="font-medium tracking-wide text-foreground">
@@ -98,14 +119,16 @@ export function AppSidebar() {
 							return (
 								<DropdownMenuItem
 									key={workspace.id}
-									onSelect={() => setActiveWorkspace(workspace)}
+									onSelect={() => void setWorkspaceId(workspace.id)}
 									className={`h-10 cursor-pointer rounded-none px-4 font-mono text-xs tracking-[0.5px] focus:bg-[#ffffff08] ${
 										isActive
 											? "bg-primary/[0.06] font-semibold text-primary focus:bg-primary/[0.06] focus:text-primary"
 											: "font-medium text-[#8a8a8a]"
 									}`}
 								>
-									{isActive && <Check className="mr-2 size-3 text-primary" />}
+									<Check
+										className={`mr-2 size-3 ${isActive ? "text-primary" : "text-transparent"}`}
+									/>
 									{workspace.name}
 								</DropdownMenuItem>
 							);
@@ -114,17 +137,27 @@ export function AppSidebar() {
 				</DropdownMenu>
 			</SidebarHeader>
 
-			<SidebarContent className="px-5 pt-2">
-				<SidebarMenu className="gap-0.5">
+			<SidebarContent className="px-5 pt-0">
+				<SidebarMenu className="gap-0">
 					{NAV_ITEMS.map((item) => (
 						<SidebarMenuItem key={item.label}>
-							<SidebarMenuButton asChild className="h-10 px-5">
+							<SidebarMenuButton
+								asChild
+								className="h-11 rounded-none border border-transparent px-5 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+							>
 								<Link
 									to={item.to}
 									className="font-mono text-xs tracking-wide text-muted-foreground no-underline"
 									activeProps={{
 										className:
 											"bg-primary/[0.06] font-bold text-primary no-underline",
+									}}
+									onKeyDown={(e) => {
+										if (e.key !== " ") {
+											return;
+										}
+										e.preventDefault();
+										e.currentTarget.click();
 									}}
 								>
 									<item.icon className="size-4" />
@@ -137,7 +170,10 @@ export function AppSidebar() {
 			</SidebarContent>
 
 			<SidebarFooter className="px-5 pb-8">
-				<div className="flex items-center gap-3">
+				<button
+					type="button"
+					className="flex items-center gap-3 border border-transparent px-2 py-2.5 outline-none transition-colors focus-visible:border-primary"
+				>
 					<Avatar className="size-8">
 						<AvatarFallback className="bg-sidebar-accent font-mono text-xs font-bold text-foreground">
 							{initials}
@@ -146,7 +182,7 @@ export function AppSidebar() {
 					<span className="font-mono text-[11px] tracking-wide text-muted-foreground">
 						{userName}
 					</span>
-				</div>
+				</button>
 			</SidebarFooter>
 		</Sidebar>
 	);

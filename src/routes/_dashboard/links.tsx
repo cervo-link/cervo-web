@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Search, SearchX, X } from "lucide-react";
 import { useQueryState, parseAsString } from "nuqs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { LinkDetailView } from "#/components/LinkDetailView";
 import { LinkListItem } from "#/components/LinkListItem";
 import { Badge } from "#/components/ui/badge";
 import { Input } from "#/components/ui/input";
@@ -22,7 +23,7 @@ interface MockLink {
 
 const MOCK_LINKS: MockLink[] = [
 	{
-		id: "1",
+		id: "d4e5f6a7-b8c9-0123-def0-456789abcdef",
 		title: "Understanding Vector Embeddings for Search",
 		description:
 			"A deep dive into how vector embeddings power modern semantic search systems and why they matter for information retrieval.",
@@ -31,7 +32,7 @@ const MOCK_LINKS: MockLink[] = [
 		timeAgo: "3min ago",
 	},
 	{
-		id: "2",
+		id: "e5f6a7b8-c9d0-1234-ef01-56789abcdef0",
 		title: "Building a Personal Knowledge Base with Bookmarks",
 		description:
 			"How to organize and retrieve saved links effectively using semantic tagging and intelligent clustering approaches.",
@@ -40,7 +41,7 @@ const MOCK_LINKS: MockLink[] = [
 		timeAgo: "yesterday",
 	},
 	{
-		id: "3",
+		id: "f6a7b8c9-d0e1-2345-f012-6789abcdef01",
 		title: "RAG Patterns in Production Applications",
 		description:
 			"Practical patterns for implementing retrieval-augmented generation in real-world applications with bookmark-based context.",
@@ -49,7 +50,7 @@ const MOCK_LINKS: MockLink[] = [
 		timeAgo: "3 days ago",
 	},
 	{
-		id: "4",
+		id: "a7b8c9d0-e1f2-3456-0123-789abcdef012",
 		title: "Cosine Similarity vs Dot Product for Nearest Neighbor",
 		description:
 			"Comparing distance metrics for semantic similarity in bookmark search and when to use each approach effectively.",
@@ -83,10 +84,10 @@ function LinksPage() {
 		"q",
 		parseAsString.withDefault(""),
 	);
+	const [linkId, setLinkId] = useQueryState("id", parseAsString);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const listRef = useRef<HTMLDivElement>(null);
-	const navigate = useNavigate();
 
 	const isSearching = searchValue.trim().length > 0;
 
@@ -113,15 +114,22 @@ function LinksPage() {
 	}
 
 	const handleItemClick = useCallback(
-		(linkId: string) => {
-			void navigate({ to: "/links", search: { id: linkId } });
+		(id: string) => {
+			void setLinkId(id);
 		},
-		[navigate],
+		[setLinkId],
 	);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			if (filteredLinks.length === 0) {
+				return;
+			}
+
+			const hasOpenPopover = document.querySelector(
+				"[data-state='open'][data-radix-popper-content-wrapper], [data-state='open'][role='menu']",
+			);
+			if (hasOpenPopover) {
 				return;
 			}
 
@@ -141,7 +149,22 @@ function LinksPage() {
 				return;
 			}
 
-			if (e.key === "Enter" && document.activeElement !== inputRef.current) {
+			if (e.key === "Enter") {
+				const active = document.activeElement;
+				const isOnInput = active === inputRef.current;
+				const isOnInteractive =
+					active instanceof HTMLButtonElement ||
+					active instanceof HTMLAnchorElement;
+				const isOnListItem = active?.closest("[data-link-list-item]");
+
+				if (isOnInput) {
+					return;
+				}
+
+				if (isOnInteractive && !isOnListItem) {
+					return;
+				}
+
 				e.preventDefault();
 				const link = filteredLinks[selectedIndex];
 				if (link) {
@@ -161,6 +184,16 @@ function LinksPage() {
 		? `${filteredLinks.length} results found`
 		: "Recently added";
 
+	const selectedLink = linkId
+		? MOCK_LINKS.find((l) => l.id === linkId)
+		: undefined;
+
+	if (selectedLink) {
+		return (
+			<LinkDetailView link={selectedLink} onBack={() => void setLinkId(null)} />
+		);
+	}
+
 	return (
 		<div className="flex h-full flex-col gap-8 p-8 md:px-10">
 			<div className="flex max-w-7xl flex-col gap-8">
@@ -175,8 +208,17 @@ function LinksPage() {
 							ref={inputRef}
 							value={searchValue}
 							onChange={(e) => setSearchValue(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key !== "Escape") {
+									return;
+								}
+								if (!searchValue) {
+									return;
+								}
+								void setSearchValue(null);
+							}}
 							placeholder="Paste URL or Search..."
-							className="h-12 border-sidebar-border bg-[#0A0A0A] pl-10 pr-12 font-mono text-[13px] font-medium text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary focus-visible:border-primary focus-visible:ring-0"
+							className="h-11 border-sidebar-border bg-[#0A0A0A] pl-10 pr-12 font-mono text-[13px] font-medium text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary focus-visible:border-primary focus-visible:ring-0"
 						/>
 						{searchValue.length > 0 && (
 							<button
@@ -191,21 +233,18 @@ function LinksPage() {
 					{!isSearching && (
 						<div className="flex gap-2">
 							{RECENT_SEARCHES.map((search) => (
-								<button
-									key={search}
-									type="button"
-									onClick={() => {
-										void setSearchValue(search);
-										inputRef.current?.focus();
-									}}
-								>
-									<Badge
-										variant="outline"
-										className="cursor-pointer border-sidebar-border font-mono text-[11px] font-medium text-muted-foreground hover:text-foreground"
+								<Badge key={search} variant="outline" asChild>
+									<button
+										type="button"
+										onClick={() => {
+											void setSearchValue(search);
+											inputRef.current?.focus();
+										}}
+										className="cursor-pointer border-sidebar-border font-mono text-[11px] font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:border-primary focus-visible:ring-0!"
 									>
 										{search}
-									</Badge>
-								</button>
+									</button>
+								</Badge>
 							))}
 						</div>
 					)}
