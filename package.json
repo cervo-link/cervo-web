@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/space-grotesk": "^5.2.10",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@radix-ui/react-checkbox": "^1.2.2",
     "@radix-ui/react-hover-card": "^1.1.10",
@@ -39,6 +40,7 @@
     "@tanstack/router-plugin": "^1.132.0",
     "@tanstack/store": "latest",
     "better-auth": "^1.5.3",
+    "better-sqlite3": "^12.8.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -66,6 +68,7 @@
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

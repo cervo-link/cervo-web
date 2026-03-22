@@ -95,7 +95,7 @@ import {
 	TooltipTrigger,
 } from "#/components/ui/tooltip";
 
-export const Route = createFileRoute("/components")({
+export const Route = createFileRoute("/_app/components")({
 	component: ComponentsPage,
 });
 
@@ -113,7 +113,7 @@ function Section({
 				{children}
 			</div>
 		</section>
-	);
+	)
 }
 
 function ComponentsPage() {
@@ -574,5 +574,5 @@ function ComponentsPage() {
 				</div>
 			</main>
 		</TooltipProvider>
-	);
+	)
 }

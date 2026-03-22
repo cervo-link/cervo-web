@@ -6,7 +6,7 @@ type Todo = {
   title: string
 }
 
-export const Route = createFileRoute('/demo/mcp-todos')({
+export const Route = createFileRoute('/_app/demo/mcp-todos')({
   component: ORPCTodos,
 })
 

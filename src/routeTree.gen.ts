@@ -9,102 +9,144 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as ComponentsRouteImport } from './routes/components'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoMcpTodosRouteImport } from './routes/demo/mcp-todos'
-import { Route as DemoBetterAuthRouteImport } from './routes/demo/better-auth'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiResumeChatRouteImport } from './routes/api.resume-chat'
-import { Route as DemoApiMcpTodosRouteImport } from './routes/demo/api.mcp-todos'
+import { Route as AuthWorkspaceRouteImport } from './routes/_auth/workspace'
+import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
+import { Route as AppMcpRouteImport } from './routes/_app/mcp'
+import { Route as AppLinksRouteImport } from './routes/_app/links'
+import { Route as AppComponentsRouteImport } from './routes/_app/components'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AppDemoTanstackQueryRouteImport } from './routes/_app/demo/tanstack-query'
+import { Route as AppDemoMcpTodosRouteImport } from './routes/_app/demo/mcp-todos'
+import { Route as AppDemoBetterAuthRouteImport } from './routes/_app/demo/better-auth'
+import { Route as AppDemoApiMcpTodosRouteImport } from './routes/_app/demo/api.mcp-todos'
 
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ComponentsRoute = ComponentsRouteImport.update({
-  id: '/components',
-  path: '/components',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoMcpTodosRoute = DemoMcpTodosRouteImport.update({
-  id: '/demo/mcp-todos',
-  path: '/demo/mcp-todos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoBetterAuthRoute = DemoBetterAuthRouteImport.update({
-  id: '/demo/better-auth',
-  path: '/demo/better-auth',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
 const ApiResumeChatRoute = ApiResumeChatRouteImport.update({
   id: '/api/resume-chat',
   path: '/api/resume-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoApiMcpTodosRoute = DemoApiMcpTodosRouteImport.update({
-  id: '/demo/api/mcp-todos',
-  path: '/demo/api/mcp-todos',
-  getParentRoute: () => rootRouteImport,
+const AuthWorkspaceRoute = AuthWorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AppMcpRoute = AppMcpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLinksRoute = AppLinksRouteImport.update({
+  id: '/links',
+  path: '/links',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppComponentsRoute = AppComponentsRouteImport.update({
+  id: '/components',
+  path: '/components',
+  getParentRoute: () => AppRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppDemoTanstackQueryRoute = AppDemoTanstackQueryRouteImport.update({
+  id: '/demo/tanstack-query',
+  path: '/demo/tanstack-query',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDemoMcpTodosRoute = AppDemoMcpTodosRouteImport.update({
+  id: '/demo/mcp-todos',
+  path: '/demo/mcp-todos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDemoBetterAuthRoute = AppDemoBetterAuthRouteImport.update({
+  id: '/demo/better-auth',
+  path: '/demo/better-auth',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDemoApiMcpTodosRoute = AppDemoApiMcpTodosRouteImport.update({
+  id: '/demo/api/mcp-todos',
+  path: '/demo/api/mcp-todos',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/components': typeof ComponentsRoute
-  '/mcp': typeof McpRoute
+  '/': typeof AppIndexRoute
+  '/components': typeof AppComponentsRoute
+  '/links': typeof AppLinksRoute
+  '/mcp': typeof AppMcpRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/workspace': typeof AuthWorkspaceRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/mcp-todos': typeof DemoMcpTodosRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/demo/better-auth': typeof AppDemoBetterAuthRoute
+  '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
+  '/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/demo/api/mcp-todos': typeof DemoApiMcpTodosRoute
+  '/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/components': typeof ComponentsRoute
-  '/mcp': typeof McpRoute
+  '/': typeof AppIndexRoute
+  '/components': typeof AppComponentsRoute
+  '/links': typeof AppLinksRoute
+  '/mcp': typeof AppMcpRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/workspace': typeof AuthWorkspaceRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/mcp-todos': typeof DemoMcpTodosRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/demo/better-auth': typeof AppDemoBetterAuthRoute
+  '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
+  '/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/demo/api/mcp-todos': typeof DemoApiMcpTodosRoute
+  '/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/components': typeof ComponentsRoute
-  '/mcp': typeof McpRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_auth': typeof AuthRouteWithChildren
+  '/_app/components': typeof AppComponentsRoute
+  '/_app/links': typeof AppLinksRoute
+  '/_app/mcp': typeof AppMcpRoute
+  '/_auth/sign-in': typeof AuthSignInRoute
+  '/_auth/workspace': typeof AuthWorkspaceRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/mcp-todos': typeof DemoMcpTodosRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/_app/': typeof AppIndexRoute
+  '/_app/demo/better-auth': typeof AppDemoBetterAuthRoute
+  '/_app/demo/mcp-todos': typeof AppDemoMcpTodosRoute
+  '/_app/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/demo/api/mcp-todos': typeof DemoApiMcpTodosRoute
+  '/_app/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/components'
+    | '/links'
     | '/mcp'
+    | '/sign-in'
+    | '/workspace'
     | '/api/resume-chat'
     | '/demo/better-auth'
     | '/demo/mcp-todos'
@@ -115,7 +157,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/components'
+    | '/links'
     | '/mcp'
+    | '/sign-in'
+    | '/workspace'
     | '/api/resume-chat'
     | '/demo/better-auth'
     | '/demo/mcp-todos'
@@ -124,72 +169,51 @@ export interface FileRouteTypes {
     | '/demo/api/mcp-todos'
   id:
     | '__root__'
-    | '/'
-    | '/components'
-    | '/mcp'
+    | '/_app'
+    | '/_auth'
+    | '/_app/components'
+    | '/_app/links'
+    | '/_app/mcp'
+    | '/_auth/sign-in'
+    | '/_auth/workspace'
     | '/api/resume-chat'
-    | '/demo/better-auth'
-    | '/demo/mcp-todos'
-    | '/demo/tanstack-query'
+    | '/_app/'
+    | '/_app/demo/better-auth'
+    | '/_app/demo/mcp-todos'
+    | '/_app/demo/tanstack-query'
     | '/api/auth/$'
-    | '/demo/api/mcp-todos'
+    | '/_app/demo/api/mcp-todos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ComponentsRoute: typeof ComponentsRoute
-  McpRoute: typeof McpRoute
+  AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
   ApiResumeChatRoute: typeof ApiResumeChatRoute
-  DemoBetterAuthRoute: typeof DemoBetterAuthRoute
-  DemoMcpTodosRoute: typeof DemoMcpTodosRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  DemoApiMcpTodosRoute: typeof DemoApiMcpTodosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/components': {
-      id: '/components'
-      path: '/components'
-      fullPath: '/components'
-      preLoaderRoute: typeof ComponentsRouteImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/mcp-todos': {
-      id: '/demo/mcp-todos'
-      path: '/demo/mcp-todos'
-      fullPath: '/demo/mcp-todos'
-      preLoaderRoute: typeof DemoMcpTodosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/better-auth': {
-      id: '/demo/better-auth'
-      path: '/demo/better-auth'
-      fullPath: '/demo/better-auth'
-      preLoaderRoute: typeof DemoBetterAuthRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/api/resume-chat': {
       id: '/api/resume-chat'
@@ -198,12 +222,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiResumeChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/api/mcp-todos': {
-      id: '/demo/api/mcp-todos'
-      path: '/demo/api/mcp-todos'
-      fullPath: '/demo/api/mcp-todos'
-      preLoaderRoute: typeof DemoApiMcpTodosRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_auth/workspace': {
+      id: '/_auth/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof AuthWorkspaceRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/sign-in': {
+      id: '/_auth/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_app/mcp': {
+      id: '/_app/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof AppMcpRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/links': {
+      id: '/_app/links'
+      path: '/links'
+      fullPath: '/links'
+      preLoaderRoute: typeof AppLinksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/components': {
+      id: '/_app/components'
+      path: '/components'
+      fullPath: '/components'
+      preLoaderRoute: typeof AppComponentsRouteImport
+      parentRoute: typeof AppRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -212,19 +264,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/demo/tanstack-query': {
+      id: '/_app/demo/tanstack-query'
+      path: '/demo/tanstack-query'
+      fullPath: '/demo/tanstack-query'
+      preLoaderRoute: typeof AppDemoTanstackQueryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/demo/mcp-todos': {
+      id: '/_app/demo/mcp-todos'
+      path: '/demo/mcp-todos'
+      fullPath: '/demo/mcp-todos'
+      preLoaderRoute: typeof AppDemoMcpTodosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/demo/better-auth': {
+      id: '/_app/demo/better-auth'
+      path: '/demo/better-auth'
+      fullPath: '/demo/better-auth'
+      preLoaderRoute: typeof AppDemoBetterAuthRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/demo/api/mcp-todos': {
+      id: '/_app/demo/api/mcp-todos'
+      path: '/demo/api/mcp-todos'
+      fullPath: '/demo/api/mcp-todos'
+      preLoaderRoute: typeof AppDemoApiMcpTodosRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppComponentsRoute: typeof AppComponentsRoute
+  AppLinksRoute: typeof AppLinksRoute
+  AppMcpRoute: typeof AppMcpRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppDemoBetterAuthRoute: typeof AppDemoBetterAuthRoute
+  AppDemoMcpTodosRoute: typeof AppDemoMcpTodosRoute
+  AppDemoTanstackQueryRoute: typeof AppDemoTanstackQueryRoute
+  AppDemoApiMcpTodosRoute: typeof AppDemoApiMcpTodosRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppComponentsRoute: AppComponentsRoute,
+  AppLinksRoute: AppLinksRoute,
+  AppMcpRoute: AppMcpRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppDemoBetterAuthRoute: AppDemoBetterAuthRoute,
+  AppDemoMcpTodosRoute: AppDemoMcpTodosRoute,
+  AppDemoTanstackQueryRoute: AppDemoTanstackQueryRoute,
+  AppDemoApiMcpTodosRoute: AppDemoApiMcpTodosRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface AuthRouteChildren {
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthWorkspaceRoute: typeof AuthWorkspaceRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthSignInRoute: AuthSignInRoute,
+  AuthWorkspaceRoute: AuthWorkspaceRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ComponentsRoute: ComponentsRoute,
-  McpRoute: McpRoute,
+  AppRoute: AppRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
   ApiResumeChatRoute: ApiResumeChatRoute,
-  DemoBetterAuthRoute: DemoBetterAuthRoute,
-  DemoMcpTodosRoute: DemoMcpTodosRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  DemoApiMcpTodosRoute: DemoApiMcpTodosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

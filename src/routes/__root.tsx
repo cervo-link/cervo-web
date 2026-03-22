@@ -2,17 +2,17 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import {
 	createRootRouteWithContext,
 	HeadContent,
+	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import TanStackQueryProvider from "../integrations/tanstack-query/root-provider";
 
 import appCss from "../styles.css?url";
 
 import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/space-grotesk";
 
 import type { QueryClient } from "@tanstack/react-query";
 
@@ -43,8 +43,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 		],
 	}),
+	component: RootComponent,
 	shellComponent: RootDocument,
 });
+
+function RootComponent() {
+	return <Outlet />;
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
@@ -55,9 +60,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body className="antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
 				<TanStackQueryProvider>
-					<Header />
 					{children}
-					<Footer />
 					<TanStackDevtools
 						config={{
 							position: "bottom-right",

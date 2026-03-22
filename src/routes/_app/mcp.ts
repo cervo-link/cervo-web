@@ -44,7 +44,7 @@ server.registerTool(
 //   }
 // );
 
-export const Route = createFileRoute('/mcp')({
+export const Route = createFileRoute('/_app/mcp')({
   server: {
     handlers: {
       POST: async ({ request }) => handleMcpRequest(request, server),

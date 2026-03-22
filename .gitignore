@@ -17,3 +17,5 @@ mcp-todos.json
 .agents
 .cta.json
 skills-lock.json
+.vercel
+cervo.db

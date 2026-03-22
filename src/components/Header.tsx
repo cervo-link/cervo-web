@@ -27,6 +27,15 @@ export default function Header() {
 						Components
 					</Link>
 				</div>
+
+				<div className="ml-auto">
+					<Link
+						to="/sign-in"
+						className="inline-flex h-8 items-center border border-primary px-4 text-xs font-bold tracking-[0.5px] text-primary no-underline transition-colors hover:bg-primary/10"
+					>
+						SIGN IN
+					</Link>
+				</div>
 			</nav>
 		</header>
 	);

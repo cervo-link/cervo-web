@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_app/")({
 	component: Home,
 });
 
@@ -19,5 +19,5 @@ function Home() {
 				View Components
 			</Link>
 		</main>
-	);
+	)
 }
