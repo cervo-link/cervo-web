@@ -1,7 +1,21 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button";
+import { authClient } from "#/lib/auth-client";
 
 export default function Header() {
+	const { data: session } = authClient.useSession();
+	const navigate = useNavigate();
+
+	function handleSignOut() {
+		void authClient.signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					void navigate({ to: "/sign-in" });
+				},
+			},
+		});
+	}
+
 	return (
 		<header className="sticky top-0 z-50 border-b border-border bg-background/80 px-4 backdrop-blur-lg">
 			<nav className="mx-auto flex max-w-5xl items-center gap-6 py-3">
@@ -30,14 +44,25 @@ export default function Header() {
 				</div>
 
 				<div className="ml-auto">
-					<Button
-						variant="outline"
-						size="sm"
-						asChild
-						className="border-primary text-xs font-bold tracking-wide text-primary hover:bg-primary/10 hover:text-primary"
-					>
-						<Link to="/sign-in">SIGN IN</Link>
-					</Button>
+					{session?.user ? (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={handleSignOut}
+							className="border-primary text-xs font-bold tracking-wide text-primary hover:bg-primary/10 hover:text-primary"
+						>
+							SIGN OUT
+						</Button>
+					) : (
+						<Button
+							variant="outline"
+							size="sm"
+							asChild
+							className="border-primary text-xs font-bold tracking-wide text-primary hover:bg-primary/10 hover:text-primary"
+						>
+							<Link to="/sign-in">SIGN IN</Link>
+						</Button>
+					)}
 				</div>
 			</nav>
 		</header>
