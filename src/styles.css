@@ -40,17 +40,18 @@ code {
   --chart-4: #525252;
   --chart-5: #262626;
   --radius: 0px;
-  --sidebar: #18181b;
+  --sidebar: #080808;
   --sidebar-foreground: #fafafa;
-  --sidebar-primary: #1447e6;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #2a2a30;
+  --sidebar-primary: #00FF88;
+  --sidebar-primary-foreground: #0C0C0C;
+  --sidebar-accent: #141414;
   --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #ffffff1a;
-  --sidebar-ring: #71717a;
+  --sidebar-border: #2f2f2f;
+  --sidebar-ring: #00FF88;
 }
 
 @theme inline {
+  --font-sans: 'Inter Variable', sans-serif;
   --font-heading: 'Space Grotesk Variable', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
