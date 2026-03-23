@@ -5,12 +5,14 @@ import {
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
+import { NuqsAdapter } from "nuqs/adapters/react";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import TanStackQueryProvider from "../integrations/tanstack-query/root-provider";
 
 import appCss from "../styles.css?url";
 
+import "@fontsource-variable/inter";
 import "@fontsource-variable/jetbrains-mono";
 import "@fontsource-variable/space-grotesk";
 
@@ -63,7 +65,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootComponent() {
-	return <Outlet />;
+	return (
+		<NuqsAdapter>
+			<Outlet />
+		</NuqsAdapter>
+	);
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {

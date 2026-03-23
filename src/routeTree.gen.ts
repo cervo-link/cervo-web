@@ -9,20 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiResumeChatRouteImport } from './routes/api.resume-chat'
+import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings'
+import { Route as DashboardLinksRouteImport } from './routes/_dashboard/links'
+import { Route as DashboardHelpRouteImport } from './routes/_dashboard/help'
+import { Route as DashboardAccountRouteImport } from './routes/_dashboard/account'
 import { Route as AuthWorkspaceRouteImport } from './routes/_auth/workspace'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AppMcpRouteImport } from './routes/_app/mcp'
-import { Route as AppLinksRouteImport } from './routes/_app/links'
 import { Route as AppComponentsRouteImport } from './routes/_app/components'
 import { Route as AppDemoTanstackQueryRouteImport } from './routes/_app/demo/tanstack-query'
 import { Route as AppDemoMcpTodosRouteImport } from './routes/_app/demo/mcp-todos'
 import { Route as AppDemoBetterAuthRouteImport } from './routes/_app/demo/better-auth'
 import { Route as AppDemoApiMcpTodosRouteImport } from './routes/_app/demo/api.mcp-todos'
 
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
@@ -41,6 +49,26 @@ const ApiResumeChatRoute = ApiResumeChatRouteImport.update({
   path: '/api/resume-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLinksRoute = DashboardLinksRouteImport.update({
+  id: '/links',
+  path: '/links',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardHelpRoute = DashboardHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAccountRoute = DashboardAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const AuthWorkspaceRoute = AuthWorkspaceRouteImport.update({
   id: '/workspace',
   path: '/workspace',
@@ -54,11 +82,6 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
 const AppMcpRoute = AppMcpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLinksRoute = AppLinksRouteImport.update({
-  id: '/links',
-  path: '/links',
   getParentRoute: () => AppRoute,
 } as any)
 const AppComponentsRoute = AppComponentsRouteImport.update({
@@ -90,10 +113,13 @@ const AppDemoApiMcpTodosRoute = AppDemoApiMcpTodosRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/components': typeof AppComponentsRoute
-  '/links': typeof AppLinksRoute
   '/mcp': typeof AppMcpRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
+  '/account': typeof DashboardAccountRoute
+  '/help': typeof DashboardHelpRoute
+  '/links': typeof DashboardLinksRoute
+  '/settings': typeof DashboardSettingsRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
@@ -103,10 +129,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/components': typeof AppComponentsRoute
-  '/links': typeof AppLinksRoute
   '/mcp': typeof AppMcpRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
+  '/account': typeof DashboardAccountRoute
+  '/help': typeof DashboardHelpRoute
+  '/links': typeof DashboardLinksRoute
+  '/settings': typeof DashboardSettingsRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
@@ -117,11 +146,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
+  '/_dashboard': typeof DashboardRouteWithChildren
   '/_app/components': typeof AppComponentsRoute
-  '/_app/links': typeof AppLinksRoute
   '/_app/mcp': typeof AppMcpRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/workspace': typeof AuthWorkspaceRoute
+  '/_dashboard/account': typeof DashboardAccountRoute
+  '/_dashboard/help': typeof DashboardHelpRoute
+  '/_dashboard/links': typeof DashboardLinksRoute
+  '/_dashboard/settings': typeof DashboardSettingsRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/_app/': typeof AppIndexRoute
   '/_app/demo/better-auth': typeof AppDemoBetterAuthRoute
@@ -134,10 +167,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/components'
-    | '/links'
     | '/mcp'
     | '/sign-in'
     | '/workspace'
+    | '/account'
+    | '/help'
+    | '/links'
+    | '/settings'
     | '/api/resume-chat'
     | '/demo/better-auth'
     | '/demo/mcp-todos'
@@ -147,10 +183,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/components'
-    | '/links'
     | '/mcp'
     | '/sign-in'
     | '/workspace'
+    | '/account'
+    | '/help'
+    | '/links'
+    | '/settings'
     | '/api/resume-chat'
     | '/demo/better-auth'
     | '/demo/mcp-todos'
@@ -160,11 +199,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_auth'
+    | '/_dashboard'
     | '/_app/components'
-    | '/_app/links'
     | '/_app/mcp'
     | '/_auth/sign-in'
     | '/_auth/workspace'
+    | '/_dashboard/account'
+    | '/_dashboard/help'
+    | '/_dashboard/links'
+    | '/_dashboard/settings'
     | '/api/resume-chat'
     | '/_app/'
     | '/_app/demo/better-auth'
@@ -176,11 +219,19 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
   ApiResumeChatRoute: typeof ApiResumeChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -209,6 +260,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiResumeChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_dashboard/settings': {
+      id: '/_dashboard/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/links': {
+      id: '/_dashboard/links'
+      path: '/links'
+      fullPath: '/links'
+      preLoaderRoute: typeof DashboardLinksRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/help': {
+      id: '/_dashboard/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof DashboardHelpRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/account': {
+      id: '/_dashboard/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof DashboardAccountRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_auth/workspace': {
       id: '/_auth/workspace'
       path: '/workspace'
@@ -228,13 +307,6 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof AppMcpRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/links': {
-      id: '/_app/links'
-      path: '/links'
-      fullPath: '/links'
-      preLoaderRoute: typeof AppLinksRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/components': {
@@ -277,7 +349,6 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppComponentsRoute: typeof AppComponentsRoute
-  AppLinksRoute: typeof AppLinksRoute
   AppMcpRoute: typeof AppMcpRoute
   AppIndexRoute: typeof AppIndexRoute
   AppDemoBetterAuthRoute: typeof AppDemoBetterAuthRoute
@@ -288,7 +359,6 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppComponentsRoute: AppComponentsRoute,
-  AppLinksRoute: AppLinksRoute,
   AppMcpRoute: AppMcpRoute,
   AppIndexRoute: AppIndexRoute,
   AppDemoBetterAuthRoute: AppDemoBetterAuthRoute,
@@ -311,9 +381,28 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface DashboardRouteChildren {
+  DashboardAccountRoute: typeof DashboardAccountRoute
+  DashboardHelpRoute: typeof DashboardHelpRoute
+  DashboardLinksRoute: typeof DashboardLinksRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAccountRoute: DashboardAccountRoute,
+  DashboardHelpRoute: DashboardHelpRoute,
+  DashboardLinksRoute: DashboardLinksRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
   ApiResumeChatRoute: ApiResumeChatRoute,
 }
 export const routeTree = rootRouteImport
