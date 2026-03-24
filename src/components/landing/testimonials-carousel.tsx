@@ -23,27 +23,33 @@ export function TestimonialsCarousel({
 	const { ref, isVisible } = useScrollAnimation();
 	const total = testimonials.length;
 
+	const cloneCount = 2;
+
 	const extended = useMemo(
 		() =>
 			[
-				{ ...testimonials[total - 1], _pos: "clone-last" },
+				...testimonials
+					.slice(-cloneCount)
+					.map((t, idx) => ({ ...t, _pos: `clone-tail-${idx}` })),
 				...testimonials.map((t, idx) => ({ ...t, _pos: `item-${idx}` })),
-				{ ...testimonials[0], _pos: "clone-first" },
+				...testimonials
+					.slice(0, cloneCount)
+					.map((t, idx) => ({ ...t, _pos: `clone-head-${idx}` })),
 			] as Array<Testimonial & { _pos: string }>,
-		[testimonials, total],
+		[testimonials],
 	);
 
-	const [index, setIndex] = useState(1);
+	const [index, setIndex] = useState(cloneCount);
 	const [animate, setAnimate] = useState(true);
 
 	function handleTransitionEnd() {
-		if (index === 0) {
+		if (index <= cloneCount - 1) {
 			setAnimate(false);
-			setIndex(total);
+			setIndex(index + total);
 		}
-		if (index === total + 1) {
+		if (index >= total + cloneCount) {
 			setAnimate(false);
-			setIndex(1);
+			setIndex(index - total);
 		}
 	}
 
@@ -91,7 +97,7 @@ export function TestimonialsCarousel({
 						<NavButtons onNavigate={navigate} />
 					</div>
 				</div>
-				<div className="min-w-0 flex-1 overflow-hidden">
+				<div className="relative min-w-0 flex-1 overflow-hidden">
 					<div
 						onTransitionEnd={handleTransitionEnd}
 						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
@@ -101,6 +107,7 @@ export function TestimonialsCarousel({
 							<Card key={`d-${t._pos}`} testimonial={t} className="w-[420px]" />
 						))}
 					</div>
+					<div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#0C0C0C] to-transparent" />
 				</div>
 			</div>
 		</section>
