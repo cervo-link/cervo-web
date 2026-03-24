@@ -4,6 +4,7 @@ import {
 	Check,
 	Circle,
 	Cloud,
+	Copy,
 	Crop,
 	Ear,
 	Eye,
@@ -35,6 +36,7 @@ import { LandingNavbar } from "#/components/landing/landing-navbar";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
 import { DiscordWireframe } from "#/components/landing/wireframes/discord-wireframe";
 import { DuplicateDetectionWireframe } from "#/components/landing/wireframes/duplicate-detection-wireframe";
+import { PrivacyWireframe } from "#/components/landing/wireframes/privacy-wireframe";
 import { PublicWorkspacesWireframe } from "#/components/landing/wireframes/public-workspaces-wireframe";
 import { RichLinkWireframe } from "#/components/landing/wireframes/rich-link-wireframe";
 import { SemanticSearchWireframe } from "#/components/landing/wireframes/semantic-search-wireframe";
@@ -253,6 +255,22 @@ function LandingPage() {
 						{
 							icon: <Layers className="size-4 text-white" />,
 							text: "Rate-limited public search",
+						},
+					]}
+				/>
+
+				<FeatureSection
+					title="Privacy & Controls"
+					body="You own your data. Workspaces are private by default. Only the owner can manage settings, invite members, and control visibility. Members manage only their own links."
+					wireframe={<PrivacyWireframe />}
+					features={[
+						{
+							icon: <Sparkles className="size-4 text-white" />,
+							text: "Private by default",
+						},
+						{
+							icon: <Copy className="size-4 text-white" />,
+							text: "Owner-controlled invitations",
 						},
 					]}
 				/>
