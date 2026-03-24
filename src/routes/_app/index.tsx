@@ -6,10 +6,12 @@ import {
 	Cloud,
 	Copy,
 	Crop,
+	Crosshair,
 	Ear,
 	Eye,
 	Globe,
 	Heart,
+	ImageIcon,
 	Info,
 	Layers,
 	Link,
@@ -17,20 +19,24 @@ import {
 	PenTool,
 	Play,
 	Save,
+	Scan,
 	Scissors,
 	Search,
 	Shuffle,
 	Smartphone,
 	Sparkles,
 	Square,
+	Timer,
 	TriangleRight,
 	Type,
+	UserRound,
 	Users,
 	Video,
 	Zap,
 } from "lucide-react";
 import { FeatureBanner } from "#/components/landing/feature-banner";
 import { FeatureSection } from "#/components/landing/feature-section";
+import { FeaturesGrid } from "#/components/landing/features-grid";
 import { HeroSection } from "#/components/landing/hero-section";
 import { LandingNavbar } from "#/components/landing/landing-navbar";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
@@ -273,6 +279,48 @@ function LandingPage() {
 							text: "Owner-controlled invitations",
 						},
 					]}
+				/>
+
+				<FeaturesGrid
+					cards={[
+						{
+							icon: <Timer className="size-6 text-white" />,
+							title: "Magic Link Auth",
+							description:
+								"Sign in with a magic link via email, or use Google, GitHub, or Discord OAuth. No passwords to remember.",
+						},
+						{
+							icon: <Scan className="size-6 text-white" />,
+							title: "Match Explanations",
+							description:
+								"Every search result includes a short AI-generated explanation of why Cervo thinks it matches your query.",
+						},
+						{
+							icon: <Crosshair className="size-6 text-white" />,
+							title: "Processing States",
+							description:
+								"See real-time status for every link: submitted, processing, ready, or failed — with retry on failures.",
+						},
+						{
+							icon: <ImageIcon className="size-6 text-white" />,
+							title: "Search History",
+							description:
+								"Your recent searches appear below the input, ready to re-run with a single click.",
+						},
+						{
+							icon: <UserRound className="size-6 text-white" />,
+							title: "Retry Failed Links",
+							description:
+								"If scraping or AI enrichment fails, hit retry from the detail page. Your URL is always saved.",
+						},
+						{
+							icon: <Globe className="size-6 text-white" />,
+							title: "Web-First Design",
+							description:
+								"A clean, focused web app built for speed. One input, instant results, zero clutter.",
+						},
+					]}
+					footerLink={{ text: "See all features", href: "#features" }}
 				/>
 			</div>
 		</div>
