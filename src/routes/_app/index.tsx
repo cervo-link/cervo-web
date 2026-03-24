@@ -39,6 +39,7 @@ import { FeatureSection } from "#/components/landing/feature-section";
 import { FeaturesGrid } from "#/components/landing/features-grid";
 import { HeroSection } from "#/components/landing/hero-section";
 import { LandingNavbar } from "#/components/landing/landing-navbar";
+import { TestimonialsCarousel } from "#/components/landing/testimonials-carousel";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
 import { DiscordWireframe } from "#/components/landing/wireframes/discord-wireframe";
 import { DuplicateDetectionWireframe } from "#/components/landing/wireframes/duplicate-detection-wireframe";
@@ -323,6 +324,40 @@ function LandingPage() {
 					footerLink={{ text: "See all features", href: "#features" }}
 				/>
 			</div>
+
+			<TestimonialsCarousel
+				testimonials={[
+					{
+						avatar:
+							"https://images.unsplash.com/photo-1655494334540-94c6a9cfc4b6?w=120&h=120&fit=crop&crop=face",
+						name: "Daniel Park,",
+						role: "Senior Developer",
+						quote:
+							"Cervo has completely replaced my browser bookmarks. I save everything — articles, repos, docs — and when I need something, I just describe it. The AI search is scarily accurate. It's like having a personal librarian for the internet.",
+					},
+					{
+						avatar:
+							"https://images.unsplash.com/photo-1720575791688-645c1fe5a53e?w=120&h=120&fit=crop&crop=face",
+						name: "Maria Santos,",
+						role: "maria_santos",
+						roleColor: "primary",
+						rolePrefix: "𝕏",
+						quote:
+							"I share links all day in Discord and always lost track of the good ones. Now with Cervo's channel watch, everything gets auto-saved and enriched. The semantic search is a game-changer — I found a tutorial from months ago just by typing 'React state management patterns'.",
+						link: { text: "View on 𝕏", href: "#" },
+					},
+					{
+						avatar:
+							"https://images.unsplash.com/photo-1603110502322-93cd2173d19a?w=120&h=120&fit=crop&crop=face",
+						name: "James Liu,",
+						role: "AI Researcher",
+						roleColor: "primary",
+						quote:
+							"As a researcher, I save dozens of papers and articles weekly. Cervo's AI enrichment means I never have to manually tag or describe anything. And the 'matched because' explanations on search results? Chef's kiss. It tells me exactly why it surfaced a link.",
+						link: { text: "Read more", href: "#" },
+					},
+				]}
+			/>
 		</div>
 	);
 }
