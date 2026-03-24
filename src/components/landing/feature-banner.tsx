@@ -20,9 +20,9 @@ export function FeatureBanner() {
 			ref={ref}
 			className={`transition-all duration-700 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
 		>
-			<div className="relative overflow-hidden rounded-[16px] bg-[#1A1A1A] px-8 py-[60px] lg:h-[375px] lg:px-16 lg:py-12">
-				<div className="relative z-10 flex h-full flex-col items-center justify-center gap-9 lg:items-start">
-					<p className="m-0 font-sans text-2xl text-[#E5E5E5]">
+			<div className="relative overflow-hidden rounded-[16px] border border-[#2f2f2f] bg-[#1A1A1A] px-8 py-[60px] lg:h-[375px] lg:px-16 lg:py-12">
+				<div className="relative z-10 flex h-full flex-col items-center justify-center gap-8 lg:items-start">
+					<p className="m-0 font-sans text-base text-[#E5E5E5] lg:text-2xl">
 						One input to rule them all.
 					</p>
 
@@ -39,7 +39,7 @@ export function FeatureBanner() {
 						</span>
 					</div>
 
-					<div className="flex flex-col items-center gap-5 lg:flex-row lg:gap-6">
+					<div className="flex flex-col items-center gap-[22px] pt-5 lg:flex-row lg:gap-6 lg:pt-0">
 						<LandingLink href="#features" size="lg">
 							Check all features
 						</LandingLink>
@@ -49,7 +49,7 @@ export function FeatureBanner() {
 					</div>
 				</div>
 
-				<div className="pointer-events-none absolute -right-10 top-2 hidden lg:block">
+				<div className="pointer-events-none absolute -right-6 bottom-8 opacity-40 lg:-right-10 lg:bottom-auto lg:top-2 lg:opacity-100">
 					<IconGrid />
 				</div>
 			</div>

@@ -1,9 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Play } from "lucide-react";
+import {
+	ArrowDownLeft,
+	Circle,
+	Cloud,
+	Crop,
+	Info,
+	PenTool,
+	Play,
+	Scissors,
+	Square,
+	TriangleRight,
+	Type,
+	Video,
+} from "lucide-react";
 import { FeatureBanner } from "#/components/landing/feature-banner";
 import { FeatureSection } from "#/components/landing/feature-section";
 import { HeroSection } from "#/components/landing/hero-section";
 import { LandingNavbar } from "#/components/landing/landing-navbar";
+import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
 import { SemanticSearchWireframe } from "#/components/landing/wireframes/semantic-search-wireframe";
 
 export const Route = createFileRoute("/_app/")({
@@ -33,6 +47,63 @@ function LandingPage() {
 						name: "João Pedro",
 						jobTitle: "Backend Staff Engineer",
 					}}
+				/>
+				<FeatureSection
+					title="AI Enrichment"
+					body="Paste a URL and Cervo does the rest. It scrapes the page, generates a readable title, writes a description, and adds smart tags — so you never have to organize anything manually."
+					wireframe={<AIEnrichmentWireframe />}
+					centered
+					toolIcons={[
+						[
+							{
+								id: "square",
+								icon: <Square className="size-4 text-[#E5E5E5]" />,
+							},
+							{
+								id: "square-fill",
+								icon: (
+									<Square className="size-4 fill-[#E5E5E5] text-[#E5E5E5]" />
+								),
+							},
+							{
+								id: "circle",
+								icon: <Circle className="size-4 text-[#E5E5E5]" />,
+							},
+							{
+								id: "triangle",
+								icon: <TriangleRight className="size-4 text-[#E5E5E5]" />,
+							},
+							{
+								id: "arrow",
+								icon: <ArrowDownLeft className="size-4 text-[#E5E5E5]" />,
+							},
+							{
+								id: "type",
+								icon: <Type className="size-4 text-primary" />,
+								highlighted: true,
+							},
+						],
+						[
+							{
+								id: "scissors",
+								icon: <Scissors className="size-4 text-[#E5E5E5]" />,
+							},
+							{
+								id: "video",
+								icon: <Video className="size-4 text-[#E5E5E5]" />,
+							},
+							{ id: "info", icon: <Info className="size-4 text-[#E5E5E5]" /> },
+							{
+								id: "pen",
+								icon: <PenTool className="size-4 text-[#E5E5E5]" />,
+							},
+							{
+								id: "cloud",
+								icon: <Cloud className="size-4 text-[#E5E5E5]" />,
+							},
+							{ id: "crop", icon: <Crop className="size-4 text-[#E5E5E5]" /> },
+						],
+					]}
 				/>
 			</div>
 		</div>

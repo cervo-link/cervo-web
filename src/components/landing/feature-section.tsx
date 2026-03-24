@@ -9,14 +9,22 @@ interface FeatureItem {
 	badge?: string;
 }
 
+interface ToolIcon {
+	id: string;
+	icon: ReactNode;
+	highlighted?: boolean;
+}
+
 interface FeatureSectionProps {
 	title: string;
 	body: string;
 	wireframe: ReactNode;
 	reverse?: boolean;
+	centered?: boolean;
 	link?: { text: string; icon?: ReactNode; href?: string };
 	badge?: { icon: ReactNode; text: string };
 	features?: FeatureItem[];
+	toolIcons?: ToolIcon[][];
 	testimonial?: ComponentProps<typeof TestimonialCard>;
 }
 
@@ -25,12 +33,34 @@ export function FeatureSection({
 	body,
 	wireframe,
 	reverse = false,
+	centered = false,
 	link,
 	badge,
 	features,
+	toolIcons,
 	testimonial,
 }: FeatureSectionProps) {
 	const { ref, isVisible } = useScrollAnimation();
+
+	if (centered) {
+		return (
+			<section
+				ref={ref}
+				className={`flex flex-col items-center gap-8 py-[60px] transition-all duration-700 lg:flex-row lg:items-center lg:gap-[60px] lg:py-[120px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+			>
+				<div className="w-full lg:w-1/2 lg:shrink-0">{wireframe}</div>
+				<div className="flex w-full flex-col items-center gap-4 lg:items-start">
+					<h2 className="m-0 text-center font-sans text-[28px] font-bold text-white lg:text-left lg:text-4xl">
+						{title}
+					</h2>
+					<p className="m-0 text-center font-sans text-base leading-[1.65] text-[#A3A3A3] lg:text-left lg:text-lg">
+						{body}
+					</p>
+					{toolIcons && <ToolIconsGrid rows={toolIcons} />}
+				</div>
+			</section>
+		);
+	}
 
 	return (
 		<section
@@ -94,5 +124,34 @@ export function FeatureSection({
 
 			<div className="w-full lg:w-1/2 lg:shrink-0">{wireframe}</div>
 		</section>
+	);
+}
+
+function ToolIconsGrid({ rows }: { rows: ToolIcon[][] }) {
+	return (
+		<div className="flex w-full flex-col items-center gap-2 lg:items-start">
+			{rows.map((row) => {
+				const rowKey = row.map((i) => i.id).join("-");
+				return (
+					<div
+						key={rowKey}
+						className="flex justify-center gap-2 lg:justify-start"
+					>
+						{row.map((item) => (
+							<div
+								key={item.id}
+								className={`flex size-8 items-center justify-center rounded-[8px] ${
+									item.highlighted
+										? "border-[1.5px] border-primary bg-[#052E1C]"
+										: "bg-[#2A2A2A]"
+								}`}
+							>
+								{item.icon}
+							</div>
+						))}
+					</div>
+				);
+			})}
+		</div>
 	);
 }
