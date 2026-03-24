@@ -21,7 +21,6 @@ import { Route as DashboardAccountRouteImport } from './routes/_dashboard/accoun
 import { Route as AuthWorkspaceRouteImport } from './routes/_auth/workspace'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AppMcpRouteImport } from './routes/_app/mcp'
-import { Route as AppComponentsRouteImport } from './routes/_app/components'
 import { Route as AppDemoTanstackQueryRouteImport } from './routes/_app/demo/tanstack-query'
 import { Route as AppDemoMcpTodosRouteImport } from './routes/_app/demo/mcp-todos'
 import { Route as AppDemoBetterAuthRouteImport } from './routes/_app/demo/better-auth'
@@ -84,11 +83,6 @@ const AppMcpRoute = AppMcpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => AppRoute,
 } as any)
-const AppComponentsRoute = AppComponentsRouteImport.update({
-  id: '/components',
-  path: '/components',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppDemoTanstackQueryRoute = AppDemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
   path: '/demo/tanstack-query',
@@ -112,7 +106,6 @@ const AppDemoApiMcpTodosRoute = AppDemoApiMcpTodosRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/components': typeof AppComponentsRoute
   '/mcp': typeof AppMcpRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
@@ -128,7 +121,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
-  '/components': typeof AppComponentsRoute
   '/mcp': typeof AppMcpRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
@@ -147,7 +139,6 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
-  '/_app/components': typeof AppComponentsRoute
   '/_app/mcp': typeof AppMcpRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/workspace': typeof AuthWorkspaceRoute
@@ -166,7 +157,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/components'
     | '/mcp'
     | '/sign-in'
     | '/workspace'
@@ -182,7 +172,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/components'
     | '/mcp'
     | '/sign-in'
     | '/workspace'
@@ -200,7 +189,6 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_auth'
     | '/_dashboard'
-    | '/_app/components'
     | '/_app/mcp'
     | '/_auth/sign-in'
     | '/_auth/workspace'
@@ -309,13 +297,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMcpRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/components': {
-      id: '/_app/components'
-      path: '/components'
-      fullPath: '/components'
-      preLoaderRoute: typeof AppComponentsRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/demo/tanstack-query': {
       id: '/_app/demo/tanstack-query'
       path: '/demo/tanstack-query'
@@ -348,7 +329,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
-  AppComponentsRoute: typeof AppComponentsRoute
   AppMcpRoute: typeof AppMcpRoute
   AppIndexRoute: typeof AppIndexRoute
   AppDemoBetterAuthRoute: typeof AppDemoBetterAuthRoute
@@ -358,7 +338,6 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppComponentsRoute: AppComponentsRoute,
   AppMcpRoute: AppMcpRoute,
   AppIndexRoute: AppIndexRoute,
   AppDemoBetterAuthRoute: AppDemoBetterAuthRoute,
