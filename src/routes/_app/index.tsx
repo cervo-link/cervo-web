@@ -34,7 +34,10 @@ import {
 	Video,
 	Zap,
 } from "lucide-react";
+import { CtaBanner } from "#/components/landing/cta-banner";
 import { FeatureBanner } from "#/components/landing/feature-banner";
+import { LandingFooter } from "#/components/landing/landing-footer";
+import { NewsletterSection } from "#/components/landing/newsletter-section";
 import { FeatureSection } from "#/components/landing/feature-section";
 import { FeaturesGrid } from "#/components/landing/features-grid";
 import { HeroSection } from "#/components/landing/hero-section";
@@ -358,6 +361,13 @@ function LandingPage() {
 					},
 				]}
 			/>
+
+			<div className="mx-auto max-w-7xl px-6 lg:px-[163px]">
+				<CtaBanner />
+				<NewsletterSection />
+			</div>
+
+			<LandingFooter />
 		</div>
 	);
 }
