@@ -6,6 +6,7 @@ import {
 	Cloud,
 	Crop,
 	Ear,
+	Eye,
 	Globe,
 	Heart,
 	Info,
@@ -24,6 +25,7 @@ import {
 	Type,
 	Users,
 	Video,
+	Zap,
 } from "lucide-react";
 import { FeatureBanner } from "#/components/landing/feature-banner";
 import { FeatureSection } from "#/components/landing/feature-section";
@@ -31,6 +33,7 @@ import { HeroSection } from "#/components/landing/hero-section";
 import { LandingNavbar } from "#/components/landing/landing-navbar";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
 import { DiscordWireframe } from "#/components/landing/wireframes/discord-wireframe";
+import { DuplicateDetectionWireframe } from "#/components/landing/wireframes/duplicate-detection-wireframe";
 import { RichLinkWireframe } from "#/components/landing/wireframes/rich-link-wireframe";
 import { SemanticSearchWireframe } from "#/components/landing/wireframes/semantic-search-wireframe";
 import { SharedWorkspacesWireframe } from "#/components/landing/wireframes/shared-workspaces-wireframe";
@@ -212,6 +215,26 @@ function LandingPage() {
 						{
 							icon: <Layers className="size-4 text-white" />,
 							text: "Copy or open original URL",
+						},
+					]}
+				/>
+
+				<FeatureSection
+					title="Duplicate Detection"
+					body="Cervo checks every URL you save against your workspace. If it already exists, you get a notification with a link to the existing entry — no duplicates, ever."
+					wireframe={<DuplicateDetectionWireframe />}
+					features={[
+						{
+							icon: <Layers className="size-4 text-white" />,
+							text: "Instant duplicate check on save",
+						},
+						{
+							icon: <Eye className="size-4 text-white" />,
+							text: "Works across web and Discord",
+						},
+						{
+							icon: <Zap className="size-4 text-white" />,
+							text: "Link to existing entry on match",
 						},
 					]}
 				/>
