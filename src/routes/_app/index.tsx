@@ -19,6 +19,7 @@ import {
 	Scissors,
 	Search,
 	Shuffle,
+	Smartphone,
 	Sparkles,
 	Square,
 	TriangleRight,
@@ -34,6 +35,7 @@ import { LandingNavbar } from "#/components/landing/landing-navbar";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
 import { DiscordWireframe } from "#/components/landing/wireframes/discord-wireframe";
 import { DuplicateDetectionWireframe } from "#/components/landing/wireframes/duplicate-detection-wireframe";
+import { PublicWorkspacesWireframe } from "#/components/landing/wireframes/public-workspaces-wireframe";
 import { RichLinkWireframe } from "#/components/landing/wireframes/rich-link-wireframe";
 import { SemanticSearchWireframe } from "#/components/landing/wireframes/semantic-search-wireframe";
 import { SharedWorkspacesWireframe } from "#/components/landing/wireframes/shared-workspaces-wireframe";
@@ -235,6 +237,22 @@ function LandingPage() {
 						{
 							icon: <Zap className="size-4 text-white" />,
 							text: "Link to existing entry on match",
+						},
+					]}
+				/>
+
+				<FeatureSection
+					title="Public Workspaces"
+					body="Share your curated collection with the world. Toggle any workspace to public and anyone with the link can browse and search your saved links — read-only."
+					wireframe={<PublicWorkspacesWireframe />}
+					features={[
+						{
+							icon: <Smartphone className="size-4 text-white" />,
+							text: "Shareable URL for each workspace",
+						},
+						{
+							icon: <Layers className="size-4 text-white" />,
+							text: "Rate-limited public search",
 						},
 					]}
 				/>
