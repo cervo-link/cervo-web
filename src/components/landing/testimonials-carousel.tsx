@@ -84,7 +84,7 @@ export function TestimonialsCarousel({
 			</div>
 
 			{/* Desktop layout */}
-			<div className="hidden lg:flex lg:items-start lg:gap-12 lg:pl-[163px]">
+			<div className="hidden lg:mx-auto lg:flex lg:max-w-7xl lg:items-start lg:gap-12 lg:pl-[163px]">
 				<div className="flex w-[380px] shrink-0 flex-col gap-4">
 					<Header />
 					<div className="pt-4">
