@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
+import { LandingButton } from "./landing-button";
 import { LandingLink } from "./landing-link";
 import { TestimonialCard } from "./testimonial-card";
 import { useScrollAnimation } from "./use-scroll-animation";
@@ -25,6 +26,7 @@ interface FeatureSectionProps {
 	badge?: { icon: ReactNode; text: string };
 	features?: FeatureItem[];
 	toolIcons?: ToolIcon[][];
+	cta?: { text: string; href: string };
 	testimonial?: ComponentProps<typeof TestimonialCard>;
 }
 
@@ -38,6 +40,7 @@ export function FeatureSection({
 	badge,
 	features,
 	toolIcons,
+	cta,
 	testimonial,
 }: FeatureSectionProps) {
 	const { ref, isVisible } = useScrollAnimation();
@@ -48,8 +51,7 @@ export function FeatureSection({
 				ref={ref}
 				className={`flex flex-col items-center gap-8 py-[60px] transition-all duration-700 lg:flex-row lg:items-center lg:gap-[60px] lg:py-[120px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
 			>
-				<div className="w-full lg:w-1/2 lg:shrink-0">{wireframe}</div>
-				<div className="flex w-full flex-col items-center gap-4 lg:items-start">
+				<div className="flex w-full flex-col items-center gap-4 lg:order-2 lg:items-start">
 					<h2 className="m-0 text-center font-sans text-[28px] font-bold text-white lg:text-left lg:text-4xl">
 						{title}
 					</h2>
@@ -57,6 +59,9 @@ export function FeatureSection({
 						{body}
 					</p>
 					{toolIcons && <ToolIconsGrid rows={toolIcons} />}
+				</div>
+				<div className="w-full lg:order-1 lg:w-1/2 lg:shrink-0">
+					{wireframe}
 				</div>
 			</section>
 		);
@@ -72,7 +77,7 @@ export function FeatureSection({
 			<div className="flex w-full flex-col items-center gap-4 lg:items-start lg:gap-4">
 				{badge && (
 					<div className="flex items-center gap-2">
-						<div className="flex h-[18px] w-[18px] items-center justify-center bg-[#0A3D23]">
+						<div className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#0A3D23]">
 							{badge.icon}
 						</div>
 						<span className="text-center font-sans text-[13px] font-bold text-primary">
@@ -99,20 +104,26 @@ export function FeatureSection({
 					<div className="flex flex-col gap-3">
 						{features.map((feat) => (
 							<div key={feat.text} className="flex items-center gap-2.5">
-								<div className="flex h-8 w-8 shrink-0 items-center justify-center bg-[#2A2A2A]">
+								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#2A2A2A]">
 									{feat.icon}
 								</div>
 								<span className="font-sans text-[15px] font-bold text-[#E5E5E5]">
 									{feat.text}
 								</span>
 								{feat.badge && (
-									<span className="bg-[#052E1C] px-1.5 py-1 font-sans text-[11px] font-bold text-primary">
+									<span className="rounded-[20px] bg-[#052E1C] px-1.5 py-1 font-sans text-[11px] font-bold text-primary">
 										{feat.badge}
 									</span>
 								)}
 							</div>
 						))}
 					</div>
+				)}
+
+				{cta && (
+					<LandingButton href={cta.href} className="mt-6">
+						{cta.text}
+					</LandingButton>
 				)}
 
 				{testimonial && (

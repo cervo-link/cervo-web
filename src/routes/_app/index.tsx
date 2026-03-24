@@ -1,16 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	ArrowDownLeft,
+	Check,
 	Circle,
 	Cloud,
 	Crop,
+	Globe,
 	Info,
+	Link,
 	PenTool,
 	Play,
 	Scissors,
 	Square,
 	TriangleRight,
 	Type,
+	Users,
 	Video,
 } from "lucide-react";
 import { FeatureBanner } from "#/components/landing/feature-banner";
@@ -19,6 +23,7 @@ import { HeroSection } from "#/components/landing/hero-section";
 import { LandingNavbar } from "#/components/landing/landing-navbar";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
 import { SemanticSearchWireframe } from "#/components/landing/wireframes/semantic-search-wireframe";
+import { SharedWorkspacesWireframe } from "#/components/landing/wireframes/shared-workspaces-wireframe";
 
 export const Route = createFileRoute("/_app/")({
 	component: LandingPage,
@@ -104,6 +109,34 @@ function LandingPage() {
 							{ id: "crop", icon: <Crop className="size-4 text-[#E5E5E5]" /> },
 						],
 					]}
+				/>
+
+				<FeatureSection
+					title="Shared Workspaces"
+					body="Invite your team and build a shared knowledge base. Members can save, search, and browse links together — all in one place."
+					wireframe={<SharedWorkspacesWireframe />}
+					reverse
+					badge={{
+						icon: <Check className="size-3 text-primary" />,
+						text: "Works with your personal workspace out of the box",
+					}}
+					features={[
+						{
+							icon: <Link className="size-4 text-white" />,
+							text: "Invite & and manage members by email",
+						},
+						{
+							icon: <Globe className="size-4 text-white" />,
+							text: "Set workspace public or private",
+							badge: "Pro",
+						},
+						{
+							icon: <Users className="size-4 text-white" />,
+							text: "Team management",
+							badge: "Pro",
+						},
+					]}
+					cta={{ text: "Get Started", href: "/sign-in" }}
 				/>
 			</div>
 		</div>
