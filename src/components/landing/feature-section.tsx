@@ -59,6 +59,21 @@ export function FeatureSection({
 						{body}
 					</p>
 					{toolIcons && <ToolIconsGrid rows={toolIcons} />}
+
+					{features && (
+						<div className="flex flex-col gap-3">
+							{features.map((feat) => (
+								<div key={feat.text} className="flex items-center gap-2.5">
+									<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#2A2A2A]">
+										{feat.icon}
+									</div>
+									<span className="font-sans text-[15px] font-bold text-[#E5E5E5]">
+										{feat.text}
+									</span>
+								</div>
+							))}
+						</div>
+					)}
 				</div>
 				<div className="w-full lg:order-1 lg:w-1/2 lg:shrink-0">
 					{wireframe}

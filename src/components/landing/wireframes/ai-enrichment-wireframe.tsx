@@ -4,7 +4,7 @@ export function AIEnrichmentWireframe() {
 	return (
 		<div className="relative h-[280px] w-full bg-[#0C0C0C] lg:h-[420px]">
 			{/* Plain card - top left */}
-			<div className="absolute left-0 top-0 flex h-[180px] w-[280px] flex-col overflow-hidden rounded-[14px] bg-[#141414] shadow-[0_4px_30px_#00000030] lg:left-5 lg:top-[30px]">
+			<div className="absolute left-0 top-0 flex h-[180px] w-[280px] flex-col overflow-hidden rounded-[14px] bg-[#141414] shadow-[0_4px_30px_#00000030] lg:top-[30px] lg:w-[60%]">
 				<div className="flex h-7 shrink-0 items-center gap-1.5 bg-[#333333] px-2.5">
 					<div className="size-2 rounded-full bg-[#FF5F57]" />
 					<div className="size-2 rounded-full bg-[#FEBC2E]" />
@@ -22,12 +22,12 @@ export function AIEnrichmentWireframe() {
 			</div>
 
 			{/* Sparkles arrow badge */}
-			<div className="absolute left-[266px] top-[76px] flex size-10 items-center justify-center rounded-[20px] bg-[#052E1C] lg:left-[310px] lg:top-[120px]">
+			<div className="absolute left-[266px] top-[76px] flex size-10 items-center justify-center rounded-[20px] bg-[#052E1C] lg:left-[58%] lg:top-[120px]">
 				<Sparkles className="size-[18px] text-primary" />
 			</div>
 
 			{/* Enriched card - bottom right, with green border */}
-			<div className="absolute left-[91px] top-[148px] flex h-[132px] w-[208px] flex-col overflow-hidden rounded-[12px] border border-primary bg-[#1A1A1A] shadow-[0_6px_20px_#00000050] lg:left-[270px] lg:top-[100px] lg:h-[240px] lg:w-[220px]">
+			<div className="absolute left-[91px] top-[148px] flex h-[132px] w-[208px] flex-col overflow-hidden rounded-[12px] border border-primary bg-[#1A1A1A] shadow-[0_6px_20px_#00000050] lg:left-[50%] lg:top-[100px] lg:h-[240px] lg:w-[48%]">
 				<div className="flex h-[22px] shrink-0 items-center gap-[5px] bg-[#333333] px-2">
 					<div className="size-1.5 rounded-full bg-[#FF5F57]" />
 					<div className="size-1.5 rounded-full bg-[#FEBC2E]" />

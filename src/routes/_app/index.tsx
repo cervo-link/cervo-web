@@ -5,12 +5,20 @@ import {
 	Circle,
 	Cloud,
 	Crop,
+	Ear,
 	Globe,
+	Heart,
 	Info,
+	Layers,
 	Link,
+	Pencil,
 	PenTool,
 	Play,
+	Save,
 	Scissors,
+	Search,
+	Shuffle,
+	Sparkles,
 	Square,
 	TriangleRight,
 	Type,
@@ -22,8 +30,11 @@ import { FeatureSection } from "#/components/landing/feature-section";
 import { HeroSection } from "#/components/landing/hero-section";
 import { LandingNavbar } from "#/components/landing/landing-navbar";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
+import { DiscordWireframe } from "#/components/landing/wireframes/discord-wireframe";
+import { RichLinkWireframe } from "#/components/landing/wireframes/rich-link-wireframe";
 import { SemanticSearchWireframe } from "#/components/landing/wireframes/semantic-search-wireframe";
 import { SharedWorkspacesWireframe } from "#/components/landing/wireframes/shared-workspaces-wireframe";
+import { SmartTagsWireframe } from "#/components/landing/wireframes/smart-tags-wireframe";
 
 export const Route = createFileRoute("/_app/")({
 	component: LandingPage,
@@ -115,7 +126,6 @@ function LandingPage() {
 					title="Shared Workspaces"
 					body="Invite your team and build a shared knowledge base. Members can save, search, and browse links together — all in one place."
 					wireframe={<SharedWorkspacesWireframe />}
-					reverse
 					badge={{
 						icon: <Check className="size-3 text-primary" />,
 						text: "Works with your personal workspace out of the box",
@@ -137,6 +147,73 @@ function LandingPage() {
 						},
 					]}
 					cta={{ text: "Get Started", href: "/sign-in" }}
+				/>
+
+				<FeatureSection
+					title="Discord Integration"
+					body="Save links straight from Discord with a slash command. Watch a channel to auto-save every URL posted. Search your Cervo workspace without leaving the chat."
+					wireframe={<DiscordWireframe />}
+					centered
+					features={[
+						{
+							icon: <Save className="size-4 text-white" />,
+							text: "Save with /cervo save <url>",
+						},
+						{
+							icon: <Ear className="size-4 text-white" />,
+							text: "Auto-listen any channel",
+						},
+					]}
+				/>
+
+				<FeatureSection
+					title="Smart Tags"
+					body="Cervo's AI generates relevant tags for every link you save. Tags are freeform and workspace-scoped, making your collection effortlessly organized."
+					wireframe={<SmartTagsWireframe />}
+					features={[
+						{
+							icon: <Sparkles className="size-4 text-white" />,
+							text: "AI-generated from page content",
+							badge: "Pro",
+						},
+						{
+							icon: <Pencil className="size-4 text-white" />,
+							text: "Edit, add, or remove tags anytime",
+						},
+						{
+							icon: <Shuffle className="size-4 text-white" />,
+							text: "Workspace-scoped tag vocabulary",
+						},
+						{
+							icon: <Search className="size-4 text-white" />,
+							text: "Tags boost search relevance",
+						},
+						{
+							icon: <Type className="size-4 text-white" />,
+							text: "Freeform — no rigid categories",
+						},
+					]}
+				/>
+
+				<FeatureSection
+					title="Rich Link Details"
+					body="Every saved link gets its own detail page with a block editor. Edit the AI-generated title, description, and tags. Supported blocks: headings, paragraphs, lists, bold, italic, inline code, and links."
+					wireframe={<RichLinkWireframe />}
+					reverse
+					features={[
+						{
+							icon: <Heart className="size-4 text-white" />,
+							text: "Block editor for descriptions",
+						},
+						{
+							icon: <Sparkles className="size-4 text-white" />,
+							text: "Editable titles and tags",
+						},
+						{
+							icon: <Layers className="size-4 text-white" />,
+							text: "Copy or open original URL",
+						},
+					]}
 				/>
 			</div>
 		</div>

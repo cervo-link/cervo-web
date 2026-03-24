@@ -1,7 +1,7 @@
 export function SemanticSearchWireframe() {
 	return (
-		<div className="flex h-[260px] items-center justify-end bg-[#0C0C0C] lg:h-[380px]">
-			<div className="flex h-full w-full max-w-[420px] flex-col rounded-[14px] bg-[#141414] shadow-[0_4px_30px_#00000030]">
+		<div className="flex items-center justify-center bg-[#0C0C0C] lg:justify-end">
+			<div className="flex h-[260px] w-full max-w-[342px] flex-col rounded-[14px] bg-[#141414] shadow-[0_4px_30px_#00000030] lg:h-[380px] lg:max-w-none">
 				{/* Toolbar */}
 				<div className="flex h-7 shrink-0 items-center gap-1.5 rounded-t-[14px] bg-[#333333] px-2.5">
 					<div className="size-2 rounded-full bg-[#FF5F57]" />

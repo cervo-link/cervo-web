@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 
 export function SharedWorkspacesWireframe() {
 	return (
-		<div className="relative h-[280px] w-full bg-[#0C0C0C] lg:h-[414px]">
-			<div className="mx-auto flex h-[233px] w-[342px] overflow-hidden rounded-[14px] bg-[#141414] shadow-[0_4px_30px_#00000030] lg:ml-5 lg:mt-[25px] lg:h-[300px] lg:w-[440px]">
+		<div className="relative w-full bg-[#0C0C0C]">
+			<div className="mx-auto flex h-[233px] w-full max-w-[342px] overflow-hidden rounded-[14px] bg-[#141414] shadow-[0_4px_30px_#00000030] lg:mx-0 lg:h-[300px] lg:max-w-none">
 				{/* Sidebar - team members */}
 				<div className="flex w-[110px] shrink-0 flex-col gap-2.5 bg-[#1A1A1A] p-2.5">
 					<div className="h-2 w-[60px] rounded bg-white" />
