@@ -28,7 +28,7 @@ const columns: FooterColumn[] = [
 
 export function LandingFooter() {
 	return (
-		<footer className="bg-[#080808] px-6 py-10 lg:px-[163px] lg:py-[60px]">
+		<footer className="bg-[#0C0C0C] px-6 py-10 lg:px-[163px] lg:py-[60px]">
 			<div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:gap-10">
 				{columns.map((col) => (
 					<div key={col.title} className="flex flex-col gap-4 lg:w-[180px]">
