@@ -39,8 +39,6 @@ import { FeatureBanner } from "#/components/landing/feature-banner";
 import { FeatureSection } from "#/components/landing/feature-section";
 import { FeaturesGrid } from "#/components/landing/features-grid";
 import { HeroSection } from "#/components/landing/hero-section";
-import { LandingFooter } from "#/components/landing/landing-footer";
-import { LandingNavbar } from "#/components/landing/landing-navbar";
 import { NewsletterSection } from "#/components/landing/newsletter-section";
 import { TestimonialsCarousel } from "#/components/landing/testimonials-carousel";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
@@ -54,7 +52,7 @@ import { SharedWorkspacesWireframe } from "#/components/landing/wireframes/share
 import { SmartTagsWireframe } from "#/components/landing/wireframes/smart-tags-wireframe";
 import { ogImageUrl } from "#/lib/og";
 
-export const Route = createFileRoute("/_app/")({
+export const Route = createFileRoute("/_landing/")({
 	head: () => ({
 		meta: [
 			{ title: "Cervo — Smart Bookmark Management" },
@@ -69,7 +67,10 @@ export const Route = createFileRoute("/_app/")({
 			},
 			{
 				property: "og:image",
-				content: ogImageUrl("AI-powered bookmark manager", "Save by link. Find by meaning."),
+				content: ogImageUrl(
+					"AI-powered bookmark manager",
+					"Save by link. Find by meaning.",
+				),
 			},
 			{ name: "twitter:title", content: "Cervo — Smart Bookmark Management" },
 			{
@@ -78,7 +79,10 @@ export const Route = createFileRoute("/_app/")({
 			},
 			{
 				name: "twitter:image",
-				content: ogImageUrl("AI-powered bookmark manager", "Save by link. Find by meaning."),
+				content: ogImageUrl(
+					"AI-powered bookmark manager",
+					"Save by link. Find by meaning.",
+				),
 			},
 		],
 	}),
@@ -87,8 +91,7 @@ export const Route = createFileRoute("/_app/")({
 
 function LandingPage() {
 	return (
-		<div className="min-h-screen bg-[#0C0C0C] [&_a]:cursor-default [&_button]:cursor-default">
-			<LandingNavbar />
+		<>
 			<div className="mx-auto max-w-7xl px-6 lg:px-[163px]">
 				<HeroSection />
 				<FeatureBanner />
@@ -395,8 +398,6 @@ function LandingPage() {
 				<CtaBanner />
 				<NewsletterSection />
 			</div>
-
-			<LandingFooter />
-		</div>
+		</>
 	);
 }
