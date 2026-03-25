@@ -13,8 +13,8 @@ export const Route = createFileRoute("/api/og")({
 				const subtitle = rawSubtitle.slice(0, 120);
 
 				const baseUrl = new URL("/", request.url);
-				const [fontData, logoData] = await Promise.all([
-					fetch(new URL("/Inter-Bold.ttf", baseUrl)).then((res) =>
+				const [boldItalicFontData, logoData] = await Promise.all([
+					fetch(new URL("/Inter-BoldItalic.ttf", baseUrl)).then((res) =>
 						res.arrayBuffer(),
 					),
 					fetch(new URL("/cervo-horizontal.png", baseUrl)).then((res) =>
@@ -30,12 +30,13 @@ export const Route = createFileRoute("/api/og")({
 							display: "flex",
 							flexDirection: "column",
 							alignItems: "center",
-							justifyContent: "center",
+							justifyContent: "space-between",
 							width: "1200px",
 							height: "630px",
 							backgroundColor: "#000000",
 							color: "#ffffff",
 							fontFamily: "Inter",
+							padding: "80px 80px 60px",
 						}}
 					>
 						<div
@@ -45,17 +46,17 @@ export const Route = createFileRoute("/api/og")({
 								alignItems: "center",
 								justifyContent: "center",
 								flex: 1,
-								gap: "16px",
-								paddingTop: "40px",
+								gap: "24px",
 							}}
 						>
 							<div
 								style={{
-									fontSize: "60px",
+									fontSize: "86px",
 									fontWeight: 700,
+									fontStyle: "italic",
 									textAlign: "center",
-									lineHeight: 1.1,
-									maxWidth: "900px",
+									lineHeight: 1.05,
+									maxWidth: "1000px",
 								}}
 							>
 								{title}
@@ -63,10 +64,12 @@ export const Route = createFileRoute("/api/og")({
 							{subtitle ? (
 								<div
 									style={{
-										fontSize: "30px",
-										color: "#cccccc",
+										fontSize: "36px",
+										fontStyle: "italic",
+										color: "#b0b0b0",
 										textAlign: "center",
 										maxWidth: "800px",
+										lineHeight: 1.3,
 									}}
 								>
 									{subtitle}
@@ -78,10 +81,9 @@ export const Route = createFileRoute("/api/og")({
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
-								paddingBottom: "60px",
 							}}
 						>
-							<img src={logoBase64} alt="Cervo" width={160} height={40} />
+							<img src={logoBase64} alt="Cervo" width={200} height={50} />
 						</div>
 					</div>,
 					{
@@ -90,9 +92,9 @@ export const Route = createFileRoute("/api/og")({
 						fonts: [
 							{
 								name: "Inter",
-								data: fontData,
+								data: boldItalicFontData,
 								weight: 700 as const,
-								style: "normal" as const,
+								style: "italic" as const,
 							},
 						],
 						headers: {
