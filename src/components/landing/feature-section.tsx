@@ -23,7 +23,7 @@ interface FeatureSectionProps {
 	reverse?: boolean;
 	centered?: boolean;
 	link?: { text: string; icon?: ReactNode; href?: string };
-	badge?: { icon: ReactNode; text: string };
+	badge?: { icon: ReactNode; text: string; mobileText?: string };
 	features?: FeatureItem[];
 	toolIcons?: ToolIcon[][];
 	cta?: { text: string; href: string };
@@ -58,6 +58,10 @@ export function FeatureSection({
 					<p className="m-0 text-center font-sans text-base leading-[1.65] text-[#A3A3A3] lg:text-left lg:text-lg">
 						{body}
 					</p>
+
+					{/* Wireframe on mobile: between description and features */}
+					<div className="w-full lg:hidden">{wireframe}</div>
+
 					{toolIcons && <ToolIconsGrid rows={toolIcons} />}
 
 					{features && (
@@ -75,7 +79,8 @@ export function FeatureSection({
 						</div>
 					)}
 				</div>
-				<div className="w-full lg:order-1 lg:w-1/2 lg:shrink-0">
+				{/* Wireframe on desktop: side column */}
+				<div className="hidden lg:order-1 lg:block lg:w-1/2 lg:shrink-0">
 					{wireframe}
 				</div>
 			</section>
@@ -95,9 +100,16 @@ export function FeatureSection({
 						<div className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#0A3D23]">
 							{badge.icon}
 						</div>
-						<span className="text-center font-sans text-[13px] font-bold text-primary">
+						<span
+							className={`font-sans text-[13px] font-bold text-primary ${badge.mobileText ? "hidden lg:inline" : ""}`}
+						>
 							{badge.text}
 						</span>
+						{badge.mobileText && (
+							<span className="font-sans text-[13px] font-bold text-primary lg:hidden">
+								{badge.mobileText}
+							</span>
+						)}
 					</div>
 				)}
 
@@ -108,6 +120,9 @@ export function FeatureSection({
 				<p className="m-0 text-center font-sans text-base leading-[1.65] text-[#A3A3A3] lg:text-left lg:text-lg">
 					{body}
 				</p>
+
+				{/* Wireframe on mobile: between description and features */}
+				<div className="w-full lg:hidden">{wireframe}</div>
 
 				{link && (
 					<LandingLink href={link.href} icon={link.icon} iconPosition="left">
@@ -148,7 +163,8 @@ export function FeatureSection({
 				)}
 			</div>
 
-			<div className="w-full lg:w-1/2 lg:shrink-0">{wireframe}</div>
+			{/* Wireframe on desktop: side column */}
+			<div className="hidden lg:block lg:w-1/2 lg:shrink-0">{wireframe}</div>
 		</section>
 	);
 }

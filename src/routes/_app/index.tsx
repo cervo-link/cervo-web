@@ -146,6 +146,7 @@ function LandingPage() {
 					badge={{
 						icon: <Check className="size-3 text-primary" />,
 						text: "Works with your personal workspace out of the box",
+						mobileText: "Works out of the box",
 					}}
 					features={[
 						{

@@ -1,5 +1,12 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+	type TouchEvent as ReactTouchEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { LandingLink } from "./landing-link";
 import { useScrollAnimation } from "./use-scroll-animation";
 
@@ -63,24 +70,58 @@ export function TestimonialsCarousel({
 		setIndex((prev) => (direction === "right" ? prev + 1 : prev - 1));
 	}, []);
 
+	const touchStartX = useRef<number | null>(null);
+	const swiping = useRef(false);
+
+	const handleTouchStart = useCallback((e: ReactTouchEvent) => {
+		touchStartX.current = e.touches[0].clientX;
+		swiping.current = false;
+	}, []);
+
+	const handleTouchEnd = useCallback(
+		(e: ReactTouchEvent) => {
+			if (touchStartX.current === null) {
+				return;
+			}
+			const diff = touchStartX.current - e.changedTouches[0].clientX;
+			touchStartX.current = null;
+			if (Math.abs(diff) < 50) {
+				return;
+			}
+			swiping.current = true;
+			navigate(diff > 0 ? "right" : "left");
+		},
+		[navigate],
+	);
+
 	return (
 		<section
 			ref={ref}
 			className={`overflow-hidden py-[60px] transition-all duration-700 lg:py-20 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
 		>
-			{/* Mobile layout */}
+			{/* Mobile layout — controlled transform with touch gestures */}
 			<div className="lg:hidden">
 				<div className="flex flex-col items-center gap-4 px-6">
 					<Header />
 				</div>
-				<div className="relative mt-8 overflow-hidden px-6">
+				<div
+					className="relative mt-8 overflow-hidden px-6"
+					onTouchStart={handleTouchStart}
+					onTouchEnd={handleTouchEnd}
+				>
 					<div
 						onTransitionEnd={handleTransitionEnd}
 						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
-						style={{ transform: `translateX(calc(-${index} * (100% + 20px)))` }}
+						style={{
+							transform: `translateX(calc(-${index} * (100% + 20px)))`,
+						}}
 					>
 						{extended.map((t) => (
-							<Card key={`m-${t._pos}`} testimonial={t} className="w-full" />
+							<Card
+								key={`m-${t._pos}`}
+								testimonial={t}
+								className="w-full shrink-0"
+							/>
 						))}
 					</div>
 				</div>
@@ -103,8 +144,13 @@ export function TestimonialsCarousel({
 						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
 						style={{ transform: `translateX(-${index * 440}px)` }}
 					>
-						{extended.map((t) => (
-							<Card key={`d-${t._pos}`} testimonial={t} className="w-[420px]" />
+						{extended.map((t, cardIndex) => (
+							<Card
+								key={`d-${t._pos}`}
+								testimonial={t}
+								className="w-[420px]"
+								onClick={() => navigate(cardIndex === index ? "left" : "right")}
+							/>
 						))}
 					</div>
 					<div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#0C0C0C] to-transparent" />
@@ -147,11 +193,11 @@ function NavButtons({
 	onNavigate: (dir: "left" | "right") => void;
 }) {
 	return (
-		<div className="flex items-center gap-8">
+		<div className="flex items-center gap-4">
 			<button
 				type="button"
 				onClick={() => onNavigate("left")}
-				className="text-white transition-opacity hover:opacity-70"
+				className="flex h-11 w-11 items-center justify-center text-white transition-opacity hover:opacity-70"
 				aria-label="Previous testimonial"
 			>
 				<ChevronLeft className="size-6" />
@@ -159,7 +205,7 @@ function NavButtons({
 			<button
 				type="button"
 				onClick={() => onNavigate("right")}
-				className="text-white transition-opacity hover:opacity-70"
+				className="flex h-11 w-11 items-center justify-center text-white transition-opacity hover:opacity-70"
 				aria-label="Next testimonial"
 			>
 				<ChevronRight className="size-6" />
@@ -171,13 +217,25 @@ function NavButtons({
 function Card({
 	testimonial: t,
 	className,
+	onClick,
 }: {
 	testimonial: Testimonial;
 	className: string;
+	onClick?: () => void;
 }) {
 	return (
 		<div
 			className={`flex shrink-0 flex-col gap-6 rounded-[16px] bg-[#1A1A1A] p-8 ${className}`}
+			{...(onClick && {
+				onClick,
+				role: "button",
+				tabIndex: 0,
+				onKeyDown: (e: React.KeyboardEvent) => {
+					if (e.key === "Enter" || e.key === " ") {
+						onClick();
+					}
+				},
+			})}
 		>
 			<div className="flex items-center gap-3">
 				<img
