@@ -29,7 +29,6 @@ export function TestimonialsCarousel({
 }: TestimonialsCarouselProps) {
 	const { ref, isVisible } = useScrollAnimation();
 	const total = testimonials.length;
-	const mobileScrollRef = useRef<HTMLDivElement>(null);
 
 	const cloneCount = 2;
 
@@ -67,24 +66,16 @@ export function TestimonialsCarousel({
 		}
 	}, [animate]);
 
-	const navigateDesktop = useCallback((direction: "left" | "right") => {
+	const navigate = useCallback((direction: "left" | "right") => {
 		setIndex((prev) => (direction === "right" ? prev + 1 : prev - 1));
 	}, []);
 
-	const navigateMobile = useCallback((direction: "left" | "right") => {
-		const container = mobileScrollRef.current;
-		if (!container) {
-			return;
-		}
-		const cardWidth = container.offsetWidth;
-		const scrollAmount = direction === "right" ? cardWidth : -cardWidth;
-		container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-	}, []);
-
 	const touchStartX = useRef<number | null>(null);
+	const swiping = useRef(false);
 
 	const handleTouchStart = useCallback((e: ReactTouchEvent) => {
 		touchStartX.current = e.touches[0].clientX;
+		swiping.current = false;
 	}, []);
 
 	const handleTouchEnd = useCallback(
@@ -97,9 +88,10 @@ export function TestimonialsCarousel({
 			if (Math.abs(diff) < 50) {
 				return;
 			}
-			navigateMobile(diff > 0 ? "right" : "left");
+			swiping.current = true;
+			navigate(diff > 0 ? "right" : "left");
 		},
-		[navigateMobile],
+		[navigate],
 	);
 
 	return (
@@ -107,27 +99,34 @@ export function TestimonialsCarousel({
 			ref={ref}
 			className={`overflow-hidden py-[60px] transition-all duration-700 lg:py-20 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
 		>
-			{/* Mobile layout — native scroll snap */}
+			{/* Mobile layout — controlled transform with touch gestures */}
 			<div className="lg:hidden">
 				<div className="flex flex-col items-center gap-4 px-6">
 					<Header />
 				</div>
 				<div
-					ref={mobileScrollRef}
+					className="relative mt-8 overflow-hidden px-6"
 					onTouchStart={handleTouchStart}
 					onTouchEnd={handleTouchEnd}
-					className="mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 scrollbar-hide"
 				>
-					{testimonials.map((t) => (
-						<Card
-							key={`m-${t.name}`}
-							testimonial={t}
-							className="w-full shrink-0 snap-center"
-						/>
-					))}
+					<div
+						onTransitionEnd={handleTransitionEnd}
+						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
+						style={{
+							transform: `translateX(calc(-${index} * (100% + 20px)))`,
+						}}
+					>
+						{extended.map((t) => (
+							<Card
+								key={`m-${t._pos}`}
+								testimonial={t}
+								className="w-full shrink-0"
+							/>
+						))}
+					</div>
 				</div>
 				<div className="mt-4 flex justify-center pt-4">
-					<NavButtons onNavigate={navigateMobile} />
+					<NavButtons onNavigate={navigate} />
 				</div>
 			</div>
 
@@ -136,7 +135,7 @@ export function TestimonialsCarousel({
 				<div className="flex w-[380px] shrink-0 flex-col gap-4">
 					<Header />
 					<div className="pt-4">
-						<NavButtons onNavigate={navigateDesktop} />
+						<NavButtons onNavigate={navigate} />
 					</div>
 				</div>
 				<div className="relative min-w-0 flex-1 overflow-hidden">
