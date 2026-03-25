@@ -89,7 +89,8 @@ function LandingPage() {
 	return (
 		<div className="min-h-screen bg-[#0C0C0C] [&_a]:cursor-default [&_button]:cursor-default">
 			<LandingNavbar />
-			<div className="mx-auto max-w-7xl px-6 lg:px-[163px]">
+			<div className="px-6">
+			<div className="mx-auto max-w-7xl">
 				<HeroSection />
 				<FeatureBanner />
 
@@ -356,6 +357,7 @@ function LandingPage() {
 					footerLink={{ text: "See all features", href: "#features" }}
 				/>
 			</div>
+			</div>
 
 			<TestimonialsCarousel
 				testimonials={[
@@ -391,9 +393,11 @@ function LandingPage() {
 				]}
 			/>
 
-			<div className="mx-auto max-w-7xl px-6 lg:px-[163px]">
+			<div className="px-6">
+			<div className="mx-auto max-w-7xl">
 				<CtaBanner />
 				<NewsletterSection />
+			</div>
 			</div>
 
 			<LandingFooter />

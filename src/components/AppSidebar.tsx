@@ -91,8 +91,10 @@ export function AppSidebar() {
   return (
     <Sidebar side="left" variant="sidebar" onKeyDown={handleSidebarKeyDown}>
       <SidebarHeader className="gap-8 px-5 pt-10 pb-0">
-        <div>
-          <img src="/cervo-horizontal.png" alt="Cervo" className="h-8" />
+        <div className="flex justify-center">
+          <Link to="/" className="no-underline">
+            <img src="/cervo-horizontal.png" alt="Cervo" className="h-8" />
+          </Link>
         </div>
 
         <DropdownMenu>
