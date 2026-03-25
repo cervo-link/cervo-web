@@ -5,10 +5,9 @@ import { LandingButton } from "./landing-button";
 
 const NAV_LINKS = [
 	{ label: "Features", href: "/#features" },
-	{ label: "How it Works", href: "/#how-it-works" },
-	{ label: "Pricing", href: "/#pricing" },
+	{ label: "Pricing", href: "/pricing" },
+	{ label: "FAQ", href: "/faq" },
 	{ label: "Discord", href: "/discord" },
-	{ label: "FAQ", href: "/#faq" },
 ] as const;
 
 export function LandingNavbar() {

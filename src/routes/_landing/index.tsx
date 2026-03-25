@@ -356,7 +356,7 @@ function LandingPage() {
 								"A clean, focused web app built for speed. One input, instant results, zero clutter.",
 						},
 					]}
-					footerLink={{ text: "See all features", href: "#features" }}
+					footerLink={{ text: "See all features", href: "/#features" }}
 				/>
 			</div>
 
