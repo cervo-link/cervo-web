@@ -15,8 +15,8 @@ export function LandingNavbar() {
 
 	return (
 		<>
-			<nav className="sticky top-0 z-50 border-b border-[#2f2f2f] bg-[#0C0C0C]">
-				<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-[163px]">
+			<nav className="sticky top-0 z-50 border-b border-[#2f2f2f] bg-[#0C0C0C] px-6">
+				<div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
 					<a href="/" className="no-underline">
 						<img src="/cervo-horizontal.png" alt="Cervo" className="h-8" />
 					</a>

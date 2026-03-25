@@ -14,7 +14,6 @@ export default defineConfig({
 			client: 'react-query',
 			httpClient: 'fetch',
 			clean: true,
-			biome: true,
 			override: {
 				mutator: {
 					path: 'src/lib/api-client.ts',
