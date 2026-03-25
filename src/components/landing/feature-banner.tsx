@@ -17,6 +17,7 @@ export function FeatureBanner() {
 
 	return (
 		<section
+			id="features"
 			ref={ref}
 			className={`transition-all duration-700 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
 		>
@@ -43,7 +44,7 @@ export function FeatureBanner() {
 						<LandingLink href="#features" size="lg">
 							Check all features
 						</LandingLink>
-						<LandingLink href="#changelog" size="lg">
+						<LandingLink href="/changelog" size="lg">
 							What&apos;s new?
 						</LandingLink>
 					</div>
