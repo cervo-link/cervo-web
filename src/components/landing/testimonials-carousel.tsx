@@ -144,8 +144,13 @@ export function TestimonialsCarousel({
 						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
 						style={{ transform: `translateX(-${index * 440}px)` }}
 					>
-						{extended.map((t) => (
-							<Card key={`d-${t._pos}`} testimonial={t} className="w-[420px]" />
+						{extended.map((t, cardIndex) => (
+							<Card
+								key={`d-${t._pos}`}
+								testimonial={t}
+								className="w-[420px] cursor-pointer"
+								onClick={() => navigate(cardIndex === index ? "left" : "right")}
+							/>
 						))}
 					</div>
 					<div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-[#0C0C0C] to-transparent" />
@@ -212,13 +217,25 @@ function NavButtons({
 function Card({
 	testimonial: t,
 	className,
+	onClick,
 }: {
 	testimonial: Testimonial;
 	className: string;
+	onClick?: () => void;
 }) {
 	return (
 		<div
 			className={`flex shrink-0 flex-col gap-6 rounded-[16px] bg-[#1A1A1A] p-8 ${className}`}
+			{...(onClick && {
+				onClick,
+				role: "button",
+				tabIndex: 0,
+				onKeyDown: (e: React.KeyboardEvent) => {
+					if (e.key === "Enter" || e.key === " ") {
+						onClick();
+					}
+				},
+			})}
 		>
 			<div className="flex items-center gap-3">
 				<img
