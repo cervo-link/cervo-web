@@ -17,14 +17,20 @@ Add per-route metadata (title, description, OG tags, Twitter cards) to all pages
 
 `GET /api/og?title=<string>&subtitle=<string>`
 
-**File:** `src/routes/api/og.ts`
+**File:** `src/routes/api.og.ts` (dot-delimited, following TanStack Start file-based routing convention)
 
 ### Query Parameters
 
-| Param | Required | Description |
-|-------|----------|-------------|
-| `title` | Yes | Main heading text (large, bold, white) |
-| `subtitle` | No | Secondary text below title (smaller, lighter) |
+| Param | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `title` | No | "Cervo" | Main heading text (large, bold, white). Max 80 characters. |
+| `subtitle` | No | (none) | Secondary text below title (smaller, lighter). Max 120 characters. |
+
+### Validation
+
+- If `title` is missing or empty, default to "Cervo"
+- Truncate `title` at 80 characters and `subtitle` at 120 characters to prevent layout overflow
+- Return `image/png` for all valid requests (no error responses — always produce an image)
 
 ### Image Spec
 
@@ -32,14 +38,14 @@ Add per-route metadata (title, description, OG tags, Twitter cards) to all pages
 - **Background:** `#000000` (solid black)
 - **Title:** White (`#ffffff`), bold, ~60px, centered horizontally, positioned in upper-center
 - **Subtitle:** Light gray (`#cccccc`), regular weight, ~30px, centered below title
-- **Logo:** `cervo-horizontal.png` from `/public`, centered near bottom of image
+- **Logo:** `cervo-horizontal.png` — loaded via `fetch(new URL('/cervo-horizontal.png', request.url))` at the edge runtime (cannot use `fs` at the edge)
 - **No border radius** (consistent with design system)
 
 ### Technology
 
 - `@vercel/og` — wraps Satori + resvg-wasm for JSX-to-PNG conversion
-- Font: embed a bold sans-serif font (Inter Bold or similar) via Satori font loading
-- Returns `image/png` with appropriate cache headers
+- Font: Inter Bold, loaded via fetch from a CDN URL (e.g., Google Fonts) as ArrayBuffer for Satori
+- Returns `image/png` with cache headers: `Cache-Control: public, max-age=86400, s-maxage=31536000, immutable`
 
 ### Layout (visual reference)
 
@@ -108,7 +114,7 @@ Every route's `head()` exports these tags:
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/routes/api/og.ts` | Create | OG image generation endpoint using `@vercel/og` |
+| `src/routes/api.og.ts` | Create | OG image generation endpoint using `@vercel/og` |
 | `src/routes/__root.tsx` | Modify | Add global fallback OG/Twitter meta tags |
 | `src/routes/_app/index.tsx` | Modify | Add `head()` with landing page metadata |
 | `src/routes/_auth/sign-in.tsx` | Modify | Add `head()` with sign-in metadata |
@@ -124,3 +130,5 @@ Every route's `head()` exports these tags:
 - Canonical URL tags
 - manifest.json updates
 - OG images for authenticated pages (they use the fallback)
+- `og:url` per route (can be added later)
+- Unit tests for OG endpoint (manual visual verification via direct URL access)
