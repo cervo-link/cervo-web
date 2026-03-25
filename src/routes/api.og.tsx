@@ -9,18 +9,22 @@ export const Route = createFileRoute("/api/og")({
 				const rawTitle = url.searchParams.get("title") || "Cervo";
 				const rawSubtitle = url.searchParams.get("subtitle") || "";
 
-				const title = rawTitle.slice(0, 80);
+				const title = rawTitle.slice(0, 80).toUpperCase();
 				const subtitle = rawSubtitle.slice(0, 120);
 
 				const baseUrl = new URL("/", request.url);
-				const [boldItalicFontData, logoData] = await Promise.all([
-					fetch(new URL("/JetBrainsMono-BoldItalic.ttf", baseUrl)).then(
-						(res) => res.arrayBuffer(),
-					),
-					fetch(new URL("/cervo-og.png", baseUrl)).then((res) =>
-						res.arrayBuffer(),
-					),
-				]);
+				const [boldItalicFontData, regularFontData, logoData] =
+					await Promise.all([
+						fetch(new URL("/JetBrainsMono-BoldItalic.ttf", baseUrl)).then(
+							(res) => res.arrayBuffer(),
+						),
+						fetch(new URL("/JetBrainsMono-Regular.ttf", baseUrl)).then((res) =>
+							res.arrayBuffer(),
+						),
+						fetch(new URL("/cervo-og.png", baseUrl)).then((res) =>
+							res.arrayBuffer(),
+						),
+					]);
 
 				const logoBase64 = `data:image/png;base64,${Buffer.from(logoData).toString("base64")}`;
 
@@ -33,10 +37,10 @@ export const Route = createFileRoute("/api/og")({
 							justifyContent: "center",
 							width: "1200px",
 							height: "630px",
-							backgroundColor: "#000000",
+							backgroundColor: "#0D0D0D",
 							color: "#ffffff",
 							fontFamily: "JetBrains Mono",
-							gap: "28px",
+							gap: "36px",
 						}}
 					>
 						<div
@@ -55,7 +59,8 @@ export const Route = createFileRoute("/api/og")({
 							<div
 								style={{
 									fontSize: "48px",
-									fontStyle: "italic",
+									fontWeight: 400,
+									fontStyle: "normal",
 									color: "#ffffff",
 									textAlign: "center",
 									maxWidth: "900px",
@@ -68,9 +73,9 @@ export const Route = createFileRoute("/api/og")({
 						<img
 							src={logoBase64}
 							alt="Cervo"
-							width={228}
-							height={70}
-							style={{ marginTop: "12px" }}
+							width={293}
+							height={90}
+							style={{ marginTop: "16px" }}
 						/>
 					</div>,
 					{
@@ -82,6 +87,12 @@ export const Route = createFileRoute("/api/og")({
 								data: boldItalicFontData,
 								weight: 700 as const,
 								style: "italic" as const,
+							},
+							{
+								name: "JetBrains Mono",
+								data: regularFontData,
+								weight: 400 as const,
+								style: "normal" as const,
 							},
 						],
 						headers: {
