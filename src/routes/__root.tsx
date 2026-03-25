@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { NuqsAdapter } from "nuqs/adapters/react";
+import { Toaster } from "#/components/ui/sonner";
 import { ogImageUrl } from "#/lib/og";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import TanStackQueryProvider from "../integrations/tanstack-query/root-provider";
@@ -136,6 +137,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 						]}
 					/>
 				</TanStackQueryProvider>
+				<Toaster />
 				<Scripts />
 			</body>
 		</html>

@@ -13,8 +13,7 @@ import {
 	ListOrdered,
 	Share2,
 } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { toast } from "sonner";
 import { Badge } from "#/components/ui/badge";
 import { Separator } from "#/components/ui/separator";
 
@@ -60,20 +59,6 @@ const MOCK_BULLETS = [
 ];
 
 export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
-	const [toastMessage, setToastMessage] = useState<string | null>(null);
-	const toastTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
-
-	const showToast = useCallback((message: string) => {
-		if (toastTimerRef.current) {
-			clearTimeout(toastTimerRef.current);
-		}
-		setToastMessage(message);
-		toastTimerRef.current = setTimeout(() => {
-			setToastMessage(null);
-			toastTimerRef.current = null;
-		}, 2500);
-	}, []);
-
 	return (
 		<div className="flex h-full flex-col overflow-auto p-8 md:px-10">
 			<div className="flex w-full max-w-[900px] flex-col gap-8">
@@ -93,7 +78,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 								navigator.clipboard
 									.writeText(`https://${link.url}`)
 									.catch(() => {});
-								showToast("URL copied to clipboard");
+								toast("URL copied to clipboard");
 							}}
 							className="flex size-10 items-center justify-center border border-transparent text-[#8a8a8a] outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 						>
@@ -107,7 +92,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 									"_blank",
 									"noopener,noreferrer",
 								);
-								showToast("Opening link in new tab");
+								toast("Opening link in new tab");
 							}}
 							className="flex size-10 items-center justify-center border border-transparent text-[#8a8a8a] outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 						>
@@ -117,7 +102,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 							type="button"
 							onClick={() => {
 								void navigator.clipboard.writeText(window.location.href);
-								showToast("Share link copied to clipboard");
+								toast("Share link copied to clipboard");
 							}}
 							className="flex size-10 items-center justify-center border border-transparent text-[#8a8a8a] outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 						>
@@ -249,14 +234,6 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 					</div>
 				</div>
 			</div>
-			{toastMessage &&
-				typeof window !== "undefined" &&
-				createPortal(
-					<div className="fixed right-6 bottom-6 z-[9999] border border-[#2f2f2f] border-l-[3px] border-l-primary bg-[#141414] px-4 py-3 font-mono text-[13px] font-medium text-foreground shadow-lg">
-						{toastMessage}
-					</div>,
-					document.body,
-				)}
 		</div>
 	);
 }
