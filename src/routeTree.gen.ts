@@ -29,6 +29,7 @@ import { Route as DashboardHelpRouteImport } from './routes/_dashboard/help'
 import { Route as DashboardAccountRouteImport } from './routes/_dashboard/account'
 import { Route as AuthWorkspaceRouteImport } from './routes/_auth/workspace'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
+import { Route as AuthCallbackRouteImport } from './routes/_auth/callback'
 import { Route as AppMcpRouteImport } from './routes/_app/mcp'
 import { Route as AppDemoTanstackQueryRouteImport } from './routes/_app/demo/tanstack-query'
 import { Route as AppDemoMcpTodosRouteImport } from './routes/_app/demo/mcp-todos'
@@ -131,6 +132,11 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AppMcpRoute = AppMcpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
@@ -160,6 +166,7 @@ const AppDemoApiMcpTodosRoute = AppDemoApiMcpTodosRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof LandingIndexRoute
   '/mcp': typeof AppMcpRoute
+  '/callback': typeof AuthCallbackRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
   '/account': typeof DashboardAccountRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof LandingIndexRoute
   '/mcp': typeof AppMcpRoute
+  '/callback': typeof AuthCallbackRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
   '/account': typeof DashboardAccountRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/_dashboard': typeof DashboardRouteWithChildren
   '/_landing': typeof LandingRouteWithChildren
   '/_app/mcp': typeof AppMcpRoute
+  '/_auth/callback': typeof AuthCallbackRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/workspace': typeof AuthWorkspaceRoute
   '/_dashboard/account': typeof DashboardAccountRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/mcp'
+    | '/callback'
     | '/sign-in'
     | '/workspace'
     | '/account'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/mcp'
+    | '/callback'
     | '/sign-in'
     | '/workspace'
     | '/account'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/_dashboard'
     | '/_landing'
     | '/_app/mcp'
+    | '/_auth/callback'
     | '/_auth/sign-in'
     | '/_auth/workspace'
     | '/_dashboard/account'
@@ -458,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/callback': {
+      id: '/_auth/callback'
+      path: '/callback'
+      fullPath: '/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_app/mcp': {
       id: '/_app/mcp'
       path: '/mcp'
@@ -515,11 +534,13 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthWorkspaceRoute: typeof AuthWorkspaceRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthWorkspaceRoute: AuthWorkspaceRoute,
 }

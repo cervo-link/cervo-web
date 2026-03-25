@@ -10,7 +10,9 @@ export async function apiClient<T>(
 		...options,
 		credentials: "include",
 		headers: {
-			"Content-Type": "application/json",
+			...(options?.body !== undefined
+				? { "Content-Type": "application/json" }
+				: {}),
 			...options?.headers,
 		},
 	});

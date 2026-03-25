@@ -62,14 +62,14 @@ function SignInPage() {
 	function handleGoogle() {
 		void authClient.signIn.social({
 			provider: "google",
-			callbackURL: `${window.location.origin}/links`,
+			callbackURL: `${window.location.origin}/callback`,
 		});
 	}
 
 	function handleGithub() {
 		void authClient.signIn.social({
 			provider: "github",
-			callbackURL: `${window.location.origin}/links`,
+			callbackURL: `${window.location.origin}/callback`,
 		});
 	}
 
