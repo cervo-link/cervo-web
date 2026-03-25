@@ -20,11 +20,12 @@ function WorkspacePage() {
 	const [error, setError] = useState<string | null>(null);
 	const navigate = useNavigate();
 
-	const { data: meData } = useGetMembersMe();
+	const { data: meResponse } = useGetMembersMe();
+	const meData = meResponse?.status === 200 ? meResponse.data : null;
 	const { mutateAsync: createWorkspace, isPending } = usePostWorkspacesCreate();
 
 	useEffect(() => {
-		if (meData?.member.workspace) {
+		if (meData?.workspace) {
 			void navigate({ to: "/links" });
 		}
 	}, [meData, navigate]);
