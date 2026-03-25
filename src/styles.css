@@ -377,3 +377,314 @@ code {
 .animate-w1-row4-title { animation: w1-row4-title 19.5s ease infinite; }
 .animate-w1-row6-bar { animation: w1-row6-bar 19.5s ease infinite; }
 .animate-w1-row6-title { animation: w1-row6-title 19.5s ease infinite; }
+
+/* ============================================================
+ * W2: AI Enrichment — Gray Skeleton → Sparkle Process → Green Enrichment
+ * 3 runs × 6.5s = 19.5s total cycle
+ *
+ * Both card containers + sparkle badge are ALWAYS visible.
+ * Per-run phases (% of total, each run offset by +33.3%):
+ *   1–7%      Gray content renders in both cards (staggered)
+ *   7.5–10.5% Sparkle spins 1× (AI processing)
+ *   10.5–13%  Sparkle bounces 2× then turns green
+ *   13.5–18%  Green content pops up in both cards + green borders
+ *   18–28%    Hold — everything visible
+ *   28–28.5%  Snap (content + green + borders reset, containers stay)
+ *   28.5–33.3% Reset gap (empty cards + gray sparkle)
+ * ============================================================ */
+
+/* Gray content — unique per-element opacity, intercalated L/R top-to-bottom.
+ * L=left card, R=right card. Each 0.5% apart so no two appear simultaneously.
+ * g-1(L1) 1% → g-2(R1) 1.5% → g-3(L2) 2% → g-4(R2) 2.5% → ... → g-13(R8) 7% */
+@keyframes w2-g-1 {
+  0%, 1% { opacity: 0 } 1.5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 34.3% { opacity: 0 } 34.8% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 67.7% { opacity: 0 } 68.2% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-2 {
+  0%, 1.5% { opacity: 0 } 2% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 34.8% { opacity: 0 } 35.3% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 68.2% { opacity: 0 } 68.7% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-3 {
+  0%, 2% { opacity: 0 } 2.5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 35.3% { opacity: 0 } 35.8% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 68.7% { opacity: 0 } 69.2% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-4 {
+  0%, 2.5% { opacity: 0 } 3% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 35.8% { opacity: 0 } 36.3% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 69.2% { opacity: 0 } 69.7% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-5 {
+  0%, 3% { opacity: 0 } 3.5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 36.3% { opacity: 0 } 36.8% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 69.7% { opacity: 0 } 70.2% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-6 {
+  0%, 3.5% { opacity: 0 } 4% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 36.8% { opacity: 0 } 37.3% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 70.2% { opacity: 0 } 70.7% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-7 {
+  0%, 4% { opacity: 0 } 4.5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 37.3% { opacity: 0 } 37.8% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 70.7% { opacity: 0 } 71.2% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-8 {
+  0%, 4.5% { opacity: 0 } 5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 37.8% { opacity: 0 } 38.3% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 71.2% { opacity: 0 } 71.7% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-9 {
+  0%, 5% { opacity: 0 } 5.5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 38.3% { opacity: 0 } 38.8% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 71.7% { opacity: 0 } 72.2% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-10 {
+  0%, 5.5% { opacity: 0 } 6% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 38.8% { opacity: 0 } 39.3% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 72.2% { opacity: 0 } 72.7% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-11 {
+  0%, 6% { opacity: 0 } 6.5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 39.3% { opacity: 0 } 39.8% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 72.7% { opacity: 0 } 73.2% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-12 {
+  0%, 6.5% { opacity: 0 } 7% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 39.8% { opacity: 0 } 40.3% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 73.2% { opacity: 0 } 73.7% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-g-13 {
+  0%, 7% { opacity: 0 } 7.5% { opacity: 1 } 28% { opacity: 1 }
+  28.5%, 40.3% { opacity: 0 } 40.8% { opacity: 1 } 61.3% { opacity: 1 }
+  61.8%, 73.7% { opacity: 0 } 74.2% { opacity: 1 } 94.7% { opacity: 1 }
+  95.2%, 100% { opacity: 0 }
+}
+
+/* Insert wrappers — height expansion only (pushes gray apart).
+ * Children handle their own staggered opacity via w2-gi-* classes. */
+@keyframes w2-insert-1 {
+  0%, 13% { max-height: 0; margin-top: 0 }
+  14% { max-height: 50px; margin-top: 8px }
+  28% { max-height: 50px; margin-top: 8px }
+  28.5%, 46.3% { max-height: 0; margin-top: 0 }
+  47.3% { max-height: 50px; margin-top: 8px }
+  61.3% { max-height: 50px; margin-top: 8px }
+  61.8%, 79.7% { max-height: 0; margin-top: 0 }
+  80.7% { max-height: 50px; margin-top: 8px }
+  94.7% { max-height: 50px; margin-top: 8px }
+  95.2%, 100% { max-height: 0; margin-top: 0 }
+}
+@keyframes w2-insert-2 {
+  0%, 15.5% { max-height: 0; margin-top: 0 }
+  16.5% { max-height: 50px; margin-top: 8px }
+  28% { max-height: 50px; margin-top: 8px }
+  28.5%, 48.8% { max-height: 0; margin-top: 0 }
+  49.8% { max-height: 50px; margin-top: 8px }
+  61.3% { max-height: 50px; margin-top: 8px }
+  61.8%, 82.2% { max-height: 0; margin-top: 0 }
+  83.2% { max-height: 50px; margin-top: 8px }
+  94.7% { max-height: 50px; margin-top: 8px }
+  95.2%, 100% { max-height: 0; margin-top: 0 }
+}
+@keyframes w2-insert-3 {
+  0%, 18% { max-height: 0; margin-top: 0 }
+  19% { max-height: 50px; margin-top: 8px }
+  28% { max-height: 50px; margin-top: 8px }
+  28.5%, 51.3% { max-height: 0; margin-top: 0 }
+  52.3% { max-height: 50px; margin-top: 8px }
+  61.3% { max-height: 50px; margin-top: 8px }
+  61.8%, 84.7% { max-height: 0; margin-top: 0 }
+  85.7% { max-height: 50px; margin-top: 8px }
+  94.7% { max-height: 50px; margin-top: 8px }
+  95.2%, 100% { max-height: 0; margin-top: 0 }
+}
+
+/* Green item opacity — staggered per-element fade-in (8 slots) */
+@keyframes w2-gi-1 {
+  0%, 14% { opacity: 0 } 14.5% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 47.3% { opacity: 0 } 47.8% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 80.7% { opacity: 0 } 81.2% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-gi-2 {
+  0%, 14.5% { opacity: 0 } 15% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 47.8% { opacity: 0 } 48.3% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 81.2% { opacity: 0 } 81.7% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-gi-3 {
+  0%, 15% { opacity: 0 } 15.5% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 48.3% { opacity: 0 } 48.8% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 81.7% { opacity: 0 } 82.2% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-gi-4 {
+  0%, 15.5% { opacity: 0 } 16% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 48.8% { opacity: 0 } 49.3% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 82.2% { opacity: 0 } 82.7% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-gi-5 {
+  0%, 16.8% { opacity: 0 } 17.3% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 50.1% { opacity: 0 } 50.6% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 83.5% { opacity: 0 } 84% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-gi-6 {
+  0%, 17.3% { opacity: 0 } 17.8% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 50.6% { opacity: 0 } 51.1% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 84% { opacity: 0 } 84.5% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-gi-7 {
+  0%, 19.3% { opacity: 0 } 19.8% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 52.6% { opacity: 0 } 53.1% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 86% { opacity: 0 } 86.5% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+@keyframes w2-gi-8 {
+  0%, 19.8% { opacity: 0 } 20.3% { opacity: 1 }
+  28% { opacity: 1 } 28.5%, 53.1% { opacity: 0 } 53.6% { opacity: 1 }
+  61.3% { opacity: 1 } 61.8%, 86.5% { opacity: 0 } 87% { opacity: 1 }
+  94.7% { opacity: 1 } 95.2%, 100% { opacity: 0 }
+}
+
+/* Tool icon rotation — each icon is active for 1/N of the cycle.
+ * For 12 icons: active window = 8.33%. Border draws during active,
+ * hidden otherwise. animation-delay offsets each icon. */
+
+/* Background + icon color: gray/white default, green during active window */
+@keyframes tool-icon-bg {
+  0% { background-color: #052E1C; color: var(--primary) }
+  5.8% { background-color: #052E1C; color: var(--primary) }
+  8.33% { background-color: #2A2A2A; color: #E5E5E5 }
+  100% { background-color: #2A2A2A; color: #E5E5E5 }
+}
+
+/* Border: draw clockwise during active window, snap hidden at end */
+@keyframes tool-icon-border {
+  0% { stroke-dashoffset: 100; stroke-opacity: 1 }
+  5.8% { stroke-dashoffset: 0; stroke-opacity: 1 }
+  7.5% { stroke-dashoffset: 0; stroke-opacity: 1 }
+  7.9% { stroke-opacity: 0 }
+  8.33% { stroke-dashoffset: 100; stroke-opacity: 0 }
+  8.5% { stroke-opacity: 0 }
+  100% { stroke-dashoffset: 100; stroke-opacity: 0 }
+}
+
+.animate-tool-icon-bg {
+  background-color: #2A2A2A;
+  color: #E5E5E5;
+  animation: tool-icon-bg ease-in-out infinite;
+}
+
+/* Force children to inherit animated color */
+.animate-tool-icon-bg svg { color: inherit !important; }
+
+.animate-tool-icon-border {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: tool-icon-border ease-in-out infinite;
+}
+
+/* Border color: transparent → green (applied to both cards) */
+@keyframes w2-border {
+  0%, 13% { border-color: transparent }
+  14% { border-color: var(--primary) }
+  28% { border-color: var(--primary) }
+  28.5%, 46.3% { border-color: transparent }
+  47.3% { border-color: var(--primary) }
+  61.3% { border-color: var(--primary) }
+  61.8%, 79.7% { border-color: transparent }
+  80.7% { border-color: var(--primary) }
+  94.7% { border-color: var(--primary) }
+  95.2%, 100% { border-color: transparent }
+}
+
+/* Sparkle: always visible, spin 1× → bounce 2× → turn green → reset */
+@keyframes w2-sparkle {
+  /* Run 1 — gray, static */
+  0% { transform: rotate(0deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  7.5% { transform: rotate(0deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  /* Spin */
+  10.5% { transform: rotate(360deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  /* Bounce 1 */
+  11% { transform: rotate(360deg) scale(1.25) }
+  11.5% { transform: rotate(360deg) scale(0.9) }
+  /* Bounce 2 */
+  12% { transform: rotate(360deg) scale(1.2) }
+  12.5% { transform: rotate(360deg) scale(0.9) }
+  /* Settle + turn green */
+  13% { transform: rotate(360deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  13.5% { transform: rotate(360deg) scale(1); background-color: #052E1C; color: var(--primary) }
+  /* Hold */
+  28% { transform: rotate(360deg) scale(1); background-color: #052E1C; color: var(--primary) }
+  /* Reset to gray */
+  28.5% { transform: rotate(0deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+
+  /* Run 2 */
+  40.8% { transform: rotate(0deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  43.8% { transform: rotate(360deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  44.3% { transform: rotate(360deg) scale(1.25) }
+  44.8% { transform: rotate(360deg) scale(0.9) }
+  45.3% { transform: rotate(360deg) scale(1.2) }
+  45.8% { transform: rotate(360deg) scale(0.9) }
+  46.3% { transform: rotate(360deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  46.8% { transform: rotate(360deg) scale(1); background-color: #052E1C; color: var(--primary) }
+  61.3% { transform: rotate(360deg) scale(1); background-color: #052E1C; color: var(--primary) }
+  61.8% { transform: rotate(0deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+
+  /* Run 3 */
+  74.2% { transform: rotate(0deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  77.2% { transform: rotate(360deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  77.7% { transform: rotate(360deg) scale(1.25) }
+  78.2% { transform: rotate(360deg) scale(0.9) }
+  78.7% { transform: rotate(360deg) scale(1.2) }
+  79.2% { transform: rotate(360deg) scale(0.9) }
+  79.7% { transform: rotate(360deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+  80.2% { transform: rotate(360deg) scale(1); background-color: #052E1C; color: var(--primary) }
+  94.7% { transform: rotate(360deg) scale(1); background-color: #052E1C; color: var(--primary) }
+  95.2%, 100% { transform: rotate(0deg) scale(1); background-color: #2a2a2a; color: #6a6a6a }
+}
+
+.animate-w2-g-1 { animation: w2-g-1 19.5s ease infinite; }
+.animate-w2-g-2 { animation: w2-g-2 19.5s ease infinite; }
+.animate-w2-g-3 { animation: w2-g-3 19.5s ease infinite; }
+.animate-w2-g-4 { animation: w2-g-4 19.5s ease infinite; }
+.animate-w2-g-5 { animation: w2-g-5 19.5s ease infinite; }
+.animate-w2-g-6 { animation: w2-g-6 19.5s ease infinite; }
+.animate-w2-g-7 { animation: w2-g-7 19.5s ease infinite; }
+.animate-w2-g-8 { animation: w2-g-8 19.5s ease infinite; }
+.animate-w2-g-9 { animation: w2-g-9 19.5s ease infinite; }
+.animate-w2-g-10 { animation: w2-g-10 19.5s ease infinite; }
+.animate-w2-g-11 { animation: w2-g-11 19.5s ease infinite; }
+.animate-w2-g-12 { animation: w2-g-12 19.5s ease infinite; }
+.animate-w2-g-13 { animation: w2-g-13 19.5s ease infinite; }
+.animate-w2-insert-1 { animation: w2-insert-1 19.5s ease infinite; }
+.animate-w2-insert-2 { animation: w2-insert-2 19.5s ease infinite; }
+.animate-w2-insert-3 { animation: w2-insert-3 19.5s ease infinite; }
+.animate-w2-gi-1 { animation: w2-gi-1 19.5s ease infinite; }
+.animate-w2-gi-2 { animation: w2-gi-2 19.5s ease infinite; }
+.animate-w2-gi-3 { animation: w2-gi-3 19.5s ease infinite; }
+.animate-w2-gi-4 { animation: w2-gi-4 19.5s ease infinite; }
+.animate-w2-gi-5 { animation: w2-gi-5 19.5s ease infinite; }
+.animate-w2-gi-6 { animation: w2-gi-6 19.5s ease infinite; }
+.animate-w2-gi-7 { animation: w2-gi-7 19.5s ease infinite; }
+.animate-w2-gi-8 { animation: w2-gi-8 19.5s ease infinite; }
+.animate-w2-border { animation: w2-border 19.5s ease infinite; }
+.animate-w2-sparkle { animation: w2-sparkle 19.5s ease infinite; }
