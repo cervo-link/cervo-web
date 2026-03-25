@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as LandingIndexRouteImport } from './routes/_landing/index'
 import { Route as ApiResumeChatRouteImport } from './routes/api.resume-chat'
 import { Route as ApiOgRouteImport } from './routes/api.og'
+import { Route as LandingTermsRouteImport } from './routes/_landing/terms'
+import { Route as LandingPrivacyRouteImport } from './routes/_landing/privacy'
+import { Route as LandingDiscordRouteImport } from './routes/_landing/discord'
+import { Route as LandingChangelogRouteImport } from './routes/_landing/changelog'
+import { Route as LandingBlogRouteImport } from './routes/_landing/blog'
 import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings'
 import { Route as DashboardLinksRouteImport } from './routes/_dashboard/links'
 import { Route as DashboardHelpRouteImport } from './routes/_dashboard/help'
@@ -27,6 +33,10 @@ import { Route as AppDemoMcpTodosRouteImport } from './routes/_app/demo/mcp-todo
 import { Route as AppDemoBetterAuthRouteImport } from './routes/_app/demo/better-auth'
 import { Route as AppDemoApiMcpTodosRouteImport } from './routes/_app/demo/api.mcp-todos'
 
+const LandingRoute = LandingRouteImport.update({
+  id: '/_landing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
@@ -39,10 +49,10 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
+const LandingIndexRoute = LandingIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => LandingRoute,
 } as any)
 const ApiResumeChatRoute = ApiResumeChatRouteImport.update({
   id: '/api/resume-chat',
@@ -53,6 +63,31 @@ const ApiOgRoute = ApiOgRouteImport.update({
   id: '/api/og',
   path: '/api/og',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LandingTermsRoute = LandingTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingPrivacyRoute = LandingPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingDiscordRoute = LandingDiscordRouteImport.update({
+  id: '/discord',
+  path: '/discord',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingChangelogRoute = LandingChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingBlogRoute = LandingBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => LandingRoute,
 } as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
@@ -111,7 +146,7 @@ const AppDemoApiMcpTodosRoute = AppDemoApiMcpTodosRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
+  '/': typeof LandingIndexRoute
   '/mcp': typeof AppMcpRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
@@ -119,6 +154,11 @@ export interface FileRoutesByFullPath {
   '/help': typeof DashboardHelpRoute
   '/links': typeof DashboardLinksRoute
   '/settings': typeof DashboardSettingsRoute
+  '/blog': typeof LandingBlogRoute
+  '/changelog': typeof LandingChangelogRoute
+  '/discord': typeof LandingDiscordRoute
+  '/privacy': typeof LandingPrivacyRoute
+  '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
@@ -127,7 +167,7 @@ export interface FileRoutesByFullPath {
   '/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppIndexRoute
+  '/': typeof LandingIndexRoute
   '/mcp': typeof AppMcpRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
@@ -135,6 +175,11 @@ export interface FileRoutesByTo {
   '/help': typeof DashboardHelpRoute
   '/links': typeof DashboardLinksRoute
   '/settings': typeof DashboardSettingsRoute
+  '/blog': typeof LandingBlogRoute
+  '/changelog': typeof LandingChangelogRoute
+  '/discord': typeof LandingDiscordRoute
+  '/privacy': typeof LandingPrivacyRoute
+  '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
@@ -147,6 +192,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/_landing': typeof LandingRouteWithChildren
   '/_app/mcp': typeof AppMcpRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/workspace': typeof AuthWorkspaceRoute
@@ -154,9 +200,14 @@ export interface FileRoutesById {
   '/_dashboard/help': typeof DashboardHelpRoute
   '/_dashboard/links': typeof DashboardLinksRoute
   '/_dashboard/settings': typeof DashboardSettingsRoute
+  '/_landing/blog': typeof LandingBlogRoute
+  '/_landing/changelog': typeof LandingChangelogRoute
+  '/_landing/discord': typeof LandingDiscordRoute
+  '/_landing/privacy': typeof LandingPrivacyRoute
+  '/_landing/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
-  '/_app/': typeof AppIndexRoute
+  '/_landing/': typeof LandingIndexRoute
   '/_app/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/_app/demo/mcp-todos': typeof AppDemoMcpTodosRoute
   '/_app/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
@@ -173,6 +224,11 @@ export interface FileRouteTypes {
     | '/help'
     | '/links'
     | '/settings'
+    | '/blog'
+    | '/changelog'
+    | '/discord'
+    | '/privacy'
+    | '/terms'
     | '/api/og'
     | '/api/resume-chat'
     | '/demo/better-auth'
@@ -189,6 +245,11 @@ export interface FileRouteTypes {
     | '/help'
     | '/links'
     | '/settings'
+    | '/blog'
+    | '/changelog'
+    | '/discord'
+    | '/privacy'
+    | '/terms'
     | '/api/og'
     | '/api/resume-chat'
     | '/demo/better-auth'
@@ -200,6 +261,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_auth'
     | '/_dashboard'
+    | '/_landing'
     | '/_app/mcp'
     | '/_auth/sign-in'
     | '/_auth/workspace'
@@ -207,9 +269,14 @@ export interface FileRouteTypes {
     | '/_dashboard/help'
     | '/_dashboard/links'
     | '/_dashboard/settings'
+    | '/_landing/blog'
+    | '/_landing/changelog'
+    | '/_landing/discord'
+    | '/_landing/privacy'
+    | '/_landing/terms'
     | '/api/og'
     | '/api/resume-chat'
-    | '/_app/'
+    | '/_landing/'
     | '/_app/demo/better-auth'
     | '/_app/demo/mcp-todos'
     | '/_app/demo/tanstack-query'
@@ -220,12 +287,20 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
+  LandingRoute: typeof LandingRouteWithChildren
   ApiOgRoute: typeof ApiOgRoute
   ApiResumeChatRoute: typeof ApiResumeChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_landing': {
+      id: '/_landing'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_dashboard': {
       id: '/_dashboard'
       path: ''
@@ -247,12 +322,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/': {
-      id: '/_app/'
+    '/_landing/': {
+      id: '/_landing/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof LandingIndexRouteImport
+      parentRoute: typeof LandingRoute
     }
     '/api/resume-chat': {
       id: '/api/resume-chat'
@@ -267,6 +342,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/og'
       preLoaderRoute: typeof ApiOgRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_landing/terms': {
+      id: '/_landing/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof LandingTermsRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/privacy': {
+      id: '/_landing/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof LandingPrivacyRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/discord': {
+      id: '/_landing/discord'
+      path: '/discord'
+      fullPath: '/discord'
+      preLoaderRoute: typeof LandingDiscordRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/changelog': {
+      id: '/_landing/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof LandingChangelogRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/blog': {
+      id: '/_landing/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof LandingBlogRouteImport
+      parentRoute: typeof LandingRoute
     }
     '/_dashboard/settings': {
       id: '/_dashboard/settings'
@@ -350,7 +460,6 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppMcpRoute: typeof AppMcpRoute
-  AppIndexRoute: typeof AppIndexRoute
   AppDemoBetterAuthRoute: typeof AppDemoBetterAuthRoute
   AppDemoMcpTodosRoute: typeof AppDemoMcpTodosRoute
   AppDemoTanstackQueryRoute: typeof AppDemoTanstackQueryRoute
@@ -359,7 +468,6 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppMcpRoute: AppMcpRoute,
-  AppIndexRoute: AppIndexRoute,
   AppDemoBetterAuthRoute: AppDemoBetterAuthRoute,
   AppDemoMcpTodosRoute: AppDemoMcpTodosRoute,
   AppDemoTanstackQueryRoute: AppDemoTanstackQueryRoute,
@@ -398,22 +506,35 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface LandingRouteChildren {
+  LandingBlogRoute: typeof LandingBlogRoute
+  LandingChangelogRoute: typeof LandingChangelogRoute
+  LandingDiscordRoute: typeof LandingDiscordRoute
+  LandingPrivacyRoute: typeof LandingPrivacyRoute
+  LandingTermsRoute: typeof LandingTermsRoute
+  LandingIndexRoute: typeof LandingIndexRoute
+}
+
+const LandingRouteChildren: LandingRouteChildren = {
+  LandingBlogRoute: LandingBlogRoute,
+  LandingChangelogRoute: LandingChangelogRoute,
+  LandingDiscordRoute: LandingDiscordRoute,
+  LandingPrivacyRoute: LandingPrivacyRoute,
+  LandingTermsRoute: LandingTermsRoute,
+  LandingIndexRoute: LandingIndexRoute,
+}
+
+const LandingRouteWithChildren =
+  LandingRoute._addFileChildren(LandingRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
+  LandingRoute: LandingRouteWithChildren,
   ApiOgRoute: ApiOgRoute,
   ApiResumeChatRoute: ApiResumeChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
