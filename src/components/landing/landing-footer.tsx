@@ -57,7 +57,7 @@ export function LandingFooter() {
 	return (
 		<footer
 			ref={ref}
-			className={`bg-[#080808] px-6 py-10 transition-all duration-700 lg:px-[163px] lg:py-[60px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+			className={`bg-[#080808] px-6 py-10 transition-all duration-700 lg:py-[60px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
 		>
 			<div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:gap-10">
 				{columns.map((col) => (
