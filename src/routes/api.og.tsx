@@ -68,7 +68,7 @@ export const Route = createFileRoute("/api/og")({
 						<img
 							src={logoBase64}
 							alt="Cervo"
-							width={280}
+							width={228}
 							height={70}
 							style={{ marginTop: "12px" }}
 						/>
