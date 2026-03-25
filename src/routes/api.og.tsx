@@ -13,18 +13,17 @@ export const Route = createFileRoute("/api/og")({
 				const subtitle = rawSubtitle.slice(0, 120);
 
 				const baseUrl = new URL("/", request.url);
-				const [boldItalicFontData, regularFontData, logoData] =
-					await Promise.all([
-						fetch(new URL("/JetBrainsMono-BoldItalic.ttf", baseUrl)).then(
-							(res) => res.arrayBuffer(),
-						),
-						fetch(new URL("/JetBrainsMono-Regular.ttf", baseUrl)).then((res) =>
-							res.arrayBuffer(),
-						),
-						fetch(new URL("/cervo-og.png", baseUrl)).then((res) =>
-							res.arrayBuffer(),
-						),
-					]);
+				const [boldFontData, regularFontData, logoData] = await Promise.all([
+					fetch(new URL("/JetBrainsMono-Bold.ttf", baseUrl)).then((res) =>
+						res.arrayBuffer(),
+					),
+					fetch(new URL("/JetBrainsMono-Regular.ttf", baseUrl)).then((res) =>
+						res.arrayBuffer(),
+					),
+					fetch(new URL("/cervo-og.png", baseUrl)).then((res) =>
+						res.arrayBuffer(),
+					),
+				]);
 
 				const logoBase64 = `data:image/png;base64,${Buffer.from(logoData).toString("base64")}`;
 
@@ -40,14 +39,14 @@ export const Route = createFileRoute("/api/og")({
 							backgroundColor: "#0D0D0D",
 							color: "#ffffff",
 							fontFamily: "JetBrains Mono",
-							gap: "36px",
+							gap: "48px",
 						}}
 					>
 						<div
 							style={{
 								fontSize: "100px",
 								fontWeight: 700,
-								fontStyle: "italic",
+								fontStyle: "normal",
 								textAlign: "center",
 								lineHeight: 1.05,
 								maxWidth: "1000px",
@@ -73,8 +72,8 @@ export const Route = createFileRoute("/api/og")({
 						<img
 							src={logoBase64}
 							alt="Cervo"
-							width={293}
-							height={90}
+							width={358}
+							height={110}
 							style={{ marginTop: "16px" }}
 						/>
 					</div>,
@@ -84,9 +83,9 @@ export const Route = createFileRoute("/api/og")({
 						fonts: [
 							{
 								name: "JetBrains Mono",
-								data: boldItalicFontData,
+								data: boldFontData,
 								weight: 700 as const,
-								style: "italic" as const,
+								style: "normal" as const,
 							},
 							{
 								name: "JetBrains Mono",
