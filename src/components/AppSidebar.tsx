@@ -8,7 +8,7 @@ import {
 	User,
 } from "lucide-react";
 import { useCallback, useRef } from "react";
-import { useGetMembersMe } from "#/api/members/members";
+import { useGetWorkspacesMe } from "#/api/workspaces/workspaces";
 import { Avatar, AvatarFallback } from "#/components/ui/avatar";
 import {
 	Sidebar,
@@ -39,9 +39,10 @@ function getInitials(name: string): string {
 
 export function AppSidebar() {
 	const { data: session } = authClient.useSession();
-	const { data: meResponse } = useGetMembersMe();
+	const { data: workspacesData } = useGetWorkspacesMe();
 	const workspace =
-		meResponse?.status === 200 ? meResponse.data.workspace : null;
+		(workspacesData as unknown as { workspaces: { name: string }[] } | undefined)
+			?.workspaces?.[0] ?? null;
 
 	const userName = session?.user?.name ?? "User";
 	const initials = getInitials(userName);
