@@ -59,10 +59,10 @@ export function FeatureSection({
 						{body}
 					</p>
 
-					{/* Wireframe on mobile: between description and features */}
-					<div className="w-full lg:hidden">{wireframe}</div>
-
 					{toolIcons && <ToolIconsGrid rows={toolIcons} />}
+
+					{/* Wireframe on mobile: after tool icons */}
+					<div className="w-full lg:hidden">{wireframe}</div>
 
 					{features && (
 						<div className="flex flex-col gap-3">
@@ -170,30 +170,44 @@ export function FeatureSection({
 }
 
 function ToolIconsGrid({ rows }: { rows: ToolIcon[][] }) {
+	const allIcons = rows.flat();
+	const count = allIcons.length;
+	/* Each icon is "active" for 3s. Full cycle = count × 3s.
+	 * animation-delay offsets each icon so only one is active at a time. */
+	const cycleDuration = count * 3;
+
 	return (
-		<div className="flex w-full flex-col items-center gap-2 lg:items-start">
-			{rows.map((row) => {
-				const rowKey = row.map((i) => i.id).join("-");
-				return (
-					<div
-						key={rowKey}
-						className="flex justify-center gap-2 lg:justify-start"
+		<div className="flex w-full max-w-[232px] flex-wrap justify-center gap-2 lg:max-w-none lg:justify-start">
+			{allIcons.map((item, index) => (
+				<div
+					key={item.id}
+					className="animate-tool-icon-bg relative flex size-8 items-center justify-center rounded-[8px]"
+					style={{
+						animationDuration: `${cycleDuration}s`,
+						animationDelay: `-${(count - index) * 3}s`,
+					}}
+				>
+					<svg
+						aria-hidden="true"
+						className="pointer-events-none absolute inset-[-1px] size-[34px]"
+						viewBox="0 0 34 34"
+						fill="none"
 					>
-						{row.map((item) => (
-							<div
-								key={item.id}
-								className={`flex size-8 items-center justify-center rounded-[8px] ${
-									item.highlighted
-										? "border-[1.5px] border-primary bg-[#052E1C]"
-										: "bg-[#2A2A2A]"
-								}`}
-							>
-								{item.icon}
-							</div>
-						))}
-					</div>
-				);
-			})}
+						<path
+							d="M17 0.75 H26 A7.25 7.25 0 0 1 33.25 8 V26 A7.25 7.25 0 0 1 26 33.25 H8 A7.25 7.25 0 0 1 0.75 26 V8 A7.25 7.25 0 0 1 8 0.75 Z"
+							stroke="var(--primary)"
+							strokeWidth="1.5"
+							pathLength={100}
+							className="animate-tool-icon-border"
+							style={{
+								animationDuration: `${cycleDuration}s`,
+								animationDelay: `-${(count - index) * 3}s`,
+							}}
+						/>
+					</svg>
+					{item.icon}
+				</div>
+			))}
 		</div>
 	);
 }
