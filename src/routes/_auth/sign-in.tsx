@@ -3,8 +3,36 @@ import { useEffect } from "react";
 import { GoogleIcon } from "#/components/icons/google";
 import { Button } from "#/components/ui/button";
 import { authClient } from "#/lib/auth-client";
+import { ogImageUrl } from "#/lib/og";
 
 export const Route = createFileRoute("/_auth/sign-in")({
+	head: () => ({
+		meta: [
+			{ title: "Sign In — Cervo" },
+			{
+				name: "description",
+				content: "Sign in to your Cervo account",
+			},
+			{ property: "og:title", content: "Sign In — Cervo" },
+			{
+				property: "og:description",
+				content: "Sign in to your Cervo account",
+			},
+			{
+				property: "og:image",
+				content: ogImageUrl("Sign In", "Access your bookmarks"),
+			},
+			{ name: "twitter:title", content: "Sign In — Cervo" },
+			{
+				name: "twitter:description",
+				content: "Sign in to your Cervo account",
+			},
+			{
+				name: "twitter:image",
+				content: ogImageUrl("Sign In", "Access your bookmarks"),
+			},
+		],
+	}),
 	component: SignInPage,
 });
 
