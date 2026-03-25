@@ -39,6 +39,11 @@ import type {
   PostMembersMemberIdIdentities404,
   PostMembersMemberIdIdentities422,
   PostMembersMemberIdIdentitiesBody,
+  PostMembersSync200,
+  PostMembersSync201,
+  PostMembersSync401,
+  PostMembersSync422,
+  PostMembersSync500,
   PutMembersAdd201,
   PutMembersAdd400,
   PutMembersAdd404,
@@ -169,6 +174,106 @@ export function useGetMembersMe<TData = Awaited<ReturnType<typeof getMembersMe>>
 
 
 /**
+ * Create member from active session if not exists (idempotent)
+ */
+export type postMembersSyncResponse200 = {
+  data: PostMembersSync200
+  status: 200
+}
+
+export type postMembersSyncResponse201 = {
+  data: PostMembersSync201
+  status: 201
+}
+
+export type postMembersSyncResponse401 = {
+  data: PostMembersSync401
+  status: 401
+}
+
+export type postMembersSyncResponse422 = {
+  data: PostMembersSync422
+  status: 422
+}
+
+export type postMembersSyncResponse500 = {
+  data: PostMembersSync500
+  status: 500
+}
+
+export type postMembersSyncResponseSuccess = (postMembersSyncResponse200 | postMembersSyncResponse201) & {
+  headers: Headers;
+};
+export type postMembersSyncResponseError = (postMembersSyncResponse401 | postMembersSyncResponse422 | postMembersSyncResponse500) & {
+  headers: Headers;
+};
+
+export type postMembersSyncResponse = (postMembersSyncResponseSuccess | postMembersSyncResponseError)
+
+export const getPostMembersSyncUrl = () => {
+
+
+
+
+  return `/members/sync`
+}
+
+export const postMembersSync = async ( options?: RequestInit): Promise<postMembersSyncResponse> => {
+
+  return apiClient<postMembersSyncResponse>(getPostMembersSyncUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getPostMembersSyncMutationOptions = <TError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersSync>>, TError,void, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postMembersSync>>, TError,void, TContext> => {
+
+const mutationKey = ['postMembersSync'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMembersSync>>, void> = () => {
+
+
+          return  postMembersSync(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostMembersSyncMutationResult = NonNullable<Awaited<ReturnType<typeof postMembersSync>>>
+
+    export type PostMembersSyncMutationError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500
+
+    export const usePostMembersSync = <TError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersSync>>, TError,void, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postMembersSync>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getPostMembersSyncMutationOptions(options), queryClient);
+    }
+    /**
  * Create a member
  */
 export type postMembersCreateResponse201 = {

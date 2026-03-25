@@ -369,6 +369,67 @@ export type GetMembersMe401 = {
   message: string;
 };
 
+export type PostMembersSync200Member = {
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Member already exists
+ */
+export type PostMembersSync200 = {
+  member: PostMembersSync200Member;
+};
+
+export type PostMembersSync201Member = {
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Member created
+ */
+export type PostMembersSync201 = {
+  member: PostMembersSync201Member;
+};
+
+/**
+ * Unauthorized
+ */
+export type PostMembersSync401 = {
+  message: string;
+};
+
+/**
+ * Member already exists with different userId
+ */
+export type PostMembersSync422 = {
+  message: string;
+};
+
+/**
+ * Failed to sync member
+ */
+export type PostMembersSync500 = {
+  message: string;
+};
+
 export type PostMembersCreateBody = {
   /** @minLength 1 */
   name: string;
