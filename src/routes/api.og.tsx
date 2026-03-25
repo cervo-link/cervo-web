@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ImageResponse } from "@vercel/og";
 
-const INTER_BOLD_URL = "https://rsms.me/inter/font-files/Inter-Bold.woff2";
-
 export const Route = createFileRoute("/api/og")({
 	server: {
 		handlers: {
@@ -14,9 +12,12 @@ export const Route = createFileRoute("/api/og")({
 				const title = rawTitle.slice(0, 80);
 				const subtitle = rawSubtitle.slice(0, 120);
 
+				const baseUrl = new URL("/", request.url);
 				const [fontData, logoData] = await Promise.all([
-					fetch(INTER_BOLD_URL).then((res) => res.arrayBuffer()),
-					fetch(new URL("/cervo-horizontal.png", request.url)).then((res) =>
+					fetch(new URL("/Inter-Bold.ttf", baseUrl)).then((res) =>
+						res.arrayBuffer(),
+					),
+					fetch(new URL("/cervo-horizontal.png", baseUrl)).then((res) =>
 						res.arrayBuffer(),
 					),
 				]);
@@ -80,12 +81,7 @@ export const Route = createFileRoute("/api/og")({
 								paddingBottom: "60px",
 							}}
 						>
-							<img
-								src={logoBase64}
-								alt="Cervo"
-								height="40"
-								style={{ objectFit: "contain" }}
-							/>
+							<img src={logoBase64} alt="Cervo" width={160} height={40} />
 						</div>
 					</div>,
 					{
