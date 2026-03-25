@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiResumeChatRouteImport } from './routes/api.resume-chat'
+import { Route as ApiOgRouteImport } from './routes/api.og'
 import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings'
 import { Route as DashboardLinksRouteImport } from './routes/_dashboard/links'
 import { Route as DashboardHelpRouteImport } from './routes/_dashboard/help'
@@ -46,6 +47,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const ApiResumeChatRoute = ApiResumeChatRouteImport.update({
   id: '/api/resume-chat',
   path: '/api/resume-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOgRoute = ApiOgRouteImport.update({
+  id: '/api/og',
+  path: '/api/og',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/help': typeof DashboardHelpRoute
   '/links': typeof DashboardLinksRoute
   '/settings': typeof DashboardSettingsRoute
+  '/api/og': typeof ApiOgRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/help': typeof DashboardHelpRoute
   '/links': typeof DashboardLinksRoute
   '/settings': typeof DashboardSettingsRoute
+  '/api/og': typeof ApiOgRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/demo/better-auth': typeof AppDemoBetterAuthRoute
   '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/_dashboard/help': typeof DashboardHelpRoute
   '/_dashboard/links': typeof DashboardLinksRoute
   '/_dashboard/settings': typeof DashboardSettingsRoute
+  '/api/og': typeof ApiOgRoute
   '/api/resume-chat': typeof ApiResumeChatRoute
   '/_app/': typeof AppIndexRoute
   '/_app/demo/better-auth': typeof AppDemoBetterAuthRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/links'
     | '/settings'
+    | '/api/og'
     | '/api/resume-chat'
     | '/demo/better-auth'
     | '/demo/mcp-todos'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/links'
     | '/settings'
+    | '/api/og'
     | '/api/resume-chat'
     | '/demo/better-auth'
     | '/demo/mcp-todos'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/_dashboard/help'
     | '/_dashboard/links'
     | '/_dashboard/settings'
+    | '/api/og'
     | '/api/resume-chat'
     | '/_app/'
     | '/_app/demo/better-auth'
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
+  ApiOgRoute: typeof ApiOgRoute
   ApiResumeChatRoute: typeof ApiResumeChatRoute
 }
 
@@ -246,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/api/resume-chat'
       fullPath: '/api/resume-chat'
       preLoaderRoute: typeof ApiResumeChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/og': {
+      id: '/api/og'
+      path: '/api/og'
+      fullPath: '/api/og'
+      preLoaderRoute: typeof ApiOgRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_dashboard/settings': {
@@ -382,6 +402,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
+  ApiOgRoute: ApiOgRoute,
   ApiResumeChatRoute: ApiResumeChatRoute,
 }
 export const routeTree = rootRouteImport
