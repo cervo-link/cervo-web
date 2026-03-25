@@ -18,6 +18,8 @@ import { Route as ApiResumeChatRouteImport } from './routes/api.resume-chat'
 import { Route as ApiOgRouteImport } from './routes/api.og'
 import { Route as LandingTermsRouteImport } from './routes/_landing/terms'
 import { Route as LandingPrivacyRouteImport } from './routes/_landing/privacy'
+import { Route as LandingPricingRouteImport } from './routes/_landing/pricing'
+import { Route as LandingFaqRouteImport } from './routes/_landing/faq'
 import { Route as LandingDiscordRouteImport } from './routes/_landing/discord'
 import { Route as LandingChangelogRouteImport } from './routes/_landing/changelog'
 import { Route as LandingBlogRouteImport } from './routes/_landing/blog'
@@ -72,6 +74,16 @@ const LandingTermsRoute = LandingTermsRouteImport.update({
 const LandingPrivacyRoute = LandingPrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingPricingRoute = LandingPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingFaqRoute = LandingFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => LandingRoute,
 } as any)
 const LandingDiscordRoute = LandingDiscordRouteImport.update({
@@ -157,6 +169,8 @@ export interface FileRoutesByFullPath {
   '/blog': typeof LandingBlogRoute
   '/changelog': typeof LandingChangelogRoute
   '/discord': typeof LandingDiscordRoute
+  '/faq': typeof LandingFaqRoute
+  '/pricing': typeof LandingPricingRoute
   '/privacy': typeof LandingPrivacyRoute
   '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
@@ -178,6 +192,8 @@ export interface FileRoutesByTo {
   '/blog': typeof LandingBlogRoute
   '/changelog': typeof LandingChangelogRoute
   '/discord': typeof LandingDiscordRoute
+  '/faq': typeof LandingFaqRoute
+  '/pricing': typeof LandingPricingRoute
   '/privacy': typeof LandingPrivacyRoute
   '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
@@ -203,6 +219,8 @@ export interface FileRoutesById {
   '/_landing/blog': typeof LandingBlogRoute
   '/_landing/changelog': typeof LandingChangelogRoute
   '/_landing/discord': typeof LandingDiscordRoute
+  '/_landing/faq': typeof LandingFaqRoute
+  '/_landing/pricing': typeof LandingPricingRoute
   '/_landing/privacy': typeof LandingPrivacyRoute
   '/_landing/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
@@ -227,6 +245,8 @@ export interface FileRouteTypes {
     | '/blog'
     | '/changelog'
     | '/discord'
+    | '/faq'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/api/og'
@@ -248,6 +268,8 @@ export interface FileRouteTypes {
     | '/blog'
     | '/changelog'
     | '/discord'
+    | '/faq'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/api/og'
@@ -272,6 +294,8 @@ export interface FileRouteTypes {
     | '/_landing/blog'
     | '/_landing/changelog'
     | '/_landing/discord'
+    | '/_landing/faq'
+    | '/_landing/pricing'
     | '/_landing/privacy'
     | '/_landing/terms'
     | '/api/og'
@@ -355,6 +379,20 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof LandingPrivacyRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/pricing': {
+      id: '/_landing/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof LandingPricingRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/faq': {
+      id: '/_landing/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof LandingFaqRouteImport
       parentRoute: typeof LandingRoute
     }
     '/_landing/discord': {
@@ -510,6 +548,8 @@ interface LandingRouteChildren {
   LandingBlogRoute: typeof LandingBlogRoute
   LandingChangelogRoute: typeof LandingChangelogRoute
   LandingDiscordRoute: typeof LandingDiscordRoute
+  LandingFaqRoute: typeof LandingFaqRoute
+  LandingPricingRoute: typeof LandingPricingRoute
   LandingPrivacyRoute: typeof LandingPrivacyRoute
   LandingTermsRoute: typeof LandingTermsRoute
   LandingIndexRoute: typeof LandingIndexRoute
@@ -519,6 +559,8 @@ const LandingRouteChildren: LandingRouteChildren = {
   LandingBlogRoute: LandingBlogRoute,
   LandingChangelogRoute: LandingChangelogRoute,
   LandingDiscordRoute: LandingDiscordRoute,
+  LandingFaqRoute: LandingFaqRoute,
+  LandingPricingRoute: LandingPricingRoute,
   LandingPrivacyRoute: LandingPrivacyRoute,
   LandingTermsRoute: LandingTermsRoute,
   LandingIndexRoute: LandingIndexRoute,
