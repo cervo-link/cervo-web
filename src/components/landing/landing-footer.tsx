@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { useScrollAnimation } from "./use-scroll-animation";
 
 interface FooterColumn {
 	title: string;
@@ -10,8 +9,8 @@ const columns: FooterColumn[] = [
 	{
 		title: "Product",
 		links: [
-			{ label: "Features", href: "#features" },
-			{ label: "Pricing", href: "#pricing" },
+			{ label: "Features", href: "/#features" },
+			{ label: "Pricing", href: "/#pricing" },
 			{ label: "Changelog", href: "/changelog", isRoute: true },
 			{ label: "Blog", href: "/blog", isRoute: true },
 			{ label: "Discord", href: "/discord", isRoute: true },
@@ -28,13 +27,8 @@ const columns: FooterColumn[] = [
 ];
 
 export function LandingFooter() {
-	const { ref, isVisible } = useScrollAnimation();
-
 	return (
-		<footer
-			ref={ref}
-			className={`bg-[#080808] px-6 py-10 transition-all duration-700 lg:px-[163px] lg:py-[60px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
-		>
+		<footer className="bg-[#080808] px-6 py-10 lg:px-[163px] lg:py-[60px]">
 			<div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:gap-10">
 				{columns.map((col) => (
 					<div key={col.title} className="flex flex-col gap-4 lg:w-[180px]">

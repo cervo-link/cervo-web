@@ -8,9 +8,11 @@ export const Route = createFileRoute("/_landing")({
 
 function LandingLayout() {
 	return (
-		<div className="min-h-screen bg-[#0C0C0C] [&_a]:cursor-default [&_button]:cursor-default">
+		<div className="flex min-h-screen flex-col bg-[#0C0C0C] [&_a]:cursor-default [&_button]:cursor-default">
 			<LandingNavbar />
-			<Outlet />
+			<div className="flex-1">
+				<Outlet />
+			</div>
 			<LandingFooter />
 		</div>
 	);
