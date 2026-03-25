@@ -379,7 +379,6 @@ function LandingPage() {
 						rolePrefix: "𝕏",
 						quote:
 							"I share links all day in Discord and always lost track of the good ones. Now with Cervo's channel watch, everything gets auto-saved and enriched. The semantic search is a game-changer — I found a tutorial from months ago just by typing 'React state management patterns'.",
-						link: { text: "View on 𝕏", href: "#" },
 					},
 					{
 						avatar:
@@ -389,7 +388,6 @@ function LandingPage() {
 						roleColor: "primary",
 						quote:
 							"As a researcher, I save dozens of papers and articles weekly. Cervo's AI enrichment means I never have to manually tag or describe anything. And the 'matched because' explanations on search results? Chef's kiss. It tells me exactly why it surfaced a link.",
-						link: { text: "Read more", href: "#" },
 					},
 				]}
 			/>

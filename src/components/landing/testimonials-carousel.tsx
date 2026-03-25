@@ -7,7 +7,6 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { LandingLink } from "./landing-link";
 import { useScrollAnimation } from "./use-scroll-animation";
 
 interface Testimonial {
@@ -17,7 +16,6 @@ interface Testimonial {
 	roleColor?: "white" | "primary";
 	rolePrefix?: string;
 	quote: string;
-	link?: { text: string; href: string };
 }
 
 interface TestimonialsCarouselProps {
@@ -178,11 +176,6 @@ function Header() {
 					Based on user reviews.
 				</span>
 			</div>
-			<div className="pt-4">
-				<LandingLink href="#stories" size="sm">
-					Read more stories
-				</LandingLink>
-			</div>
 		</>
 	);
 }
@@ -258,11 +251,6 @@ function Card({
 			<p className="m-0 flex-1 font-sans text-base leading-[1.7] text-[#A3A3A3]">
 				{t.quote}
 			</p>
-			{t.link && (
-				<LandingLink href={t.link.href} size="sm">
-					{t.link.text}
-				</LandingLink>
-			)}
 		</div>
 	);
 }
