@@ -1,5 +1,12 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+	type TouchEvent as ReactTouchEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { LandingLink } from "./landing-link";
 import { useScrollAnimation } from "./use-scroll-animation";
 
@@ -22,6 +29,7 @@ export function TestimonialsCarousel({
 }: TestimonialsCarouselProps) {
 	const { ref, isVisible } = useScrollAnimation();
 	const total = testimonials.length;
+	const mobileScrollRef = useRef<HTMLDivElement>(null);
 
 	const cloneCount = 2;
 
@@ -59,33 +67,67 @@ export function TestimonialsCarousel({
 		}
 	}, [animate]);
 
-	const navigate = useCallback((direction: "left" | "right") => {
+	const navigateDesktop = useCallback((direction: "left" | "right") => {
 		setIndex((prev) => (direction === "right" ? prev + 1 : prev - 1));
 	}, []);
+
+	const navigateMobile = useCallback((direction: "left" | "right") => {
+		const container = mobileScrollRef.current;
+		if (!container) {
+			return;
+		}
+		const cardWidth = container.offsetWidth;
+		const scrollAmount = direction === "right" ? cardWidth : -cardWidth;
+		container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+	}, []);
+
+	const touchStartX = useRef<number | null>(null);
+
+	const handleTouchStart = useCallback((e: ReactTouchEvent) => {
+		touchStartX.current = e.touches[0].clientX;
+	}, []);
+
+	const handleTouchEnd = useCallback(
+		(e: ReactTouchEvent) => {
+			if (touchStartX.current === null) {
+				return;
+			}
+			const diff = touchStartX.current - e.changedTouches[0].clientX;
+			touchStartX.current = null;
+			if (Math.abs(diff) < 50) {
+				return;
+			}
+			navigateMobile(diff > 0 ? "right" : "left");
+		},
+		[navigateMobile],
+	);
 
 	return (
 		<section
 			ref={ref}
 			className={`overflow-hidden py-[60px] transition-all duration-700 lg:py-20 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
 		>
-			{/* Mobile layout */}
+			{/* Mobile layout — native scroll snap */}
 			<div className="lg:hidden">
 				<div className="flex flex-col items-center gap-4 px-6">
 					<Header />
 				</div>
-				<div className="relative mt-8 overflow-hidden px-6">
-					<div
-						onTransitionEnd={handleTransitionEnd}
-						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
-						style={{ transform: `translateX(calc(-${index} * (100% + 20px)))` }}
-					>
-						{extended.map((t) => (
-							<Card key={`m-${t._pos}`} testimonial={t} className="w-full" />
-						))}
-					</div>
+				<div
+					ref={mobileScrollRef}
+					onTouchStart={handleTouchStart}
+					onTouchEnd={handleTouchEnd}
+					className="mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 scrollbar-hide"
+				>
+					{testimonials.map((t) => (
+						<Card
+							key={`m-${t.name}`}
+							testimonial={t}
+							className="w-full shrink-0 snap-center"
+						/>
+					))}
 				</div>
 				<div className="mt-4 flex justify-center pt-4">
-					<NavButtons onNavigate={navigate} />
+					<NavButtons onNavigate={navigateMobile} />
 				</div>
 			</div>
 
@@ -94,7 +136,7 @@ export function TestimonialsCarousel({
 				<div className="flex w-[380px] shrink-0 flex-col gap-4">
 					<Header />
 					<div className="pt-4">
-						<NavButtons onNavigate={navigate} />
+						<NavButtons onNavigate={navigateDesktop} />
 					</div>
 				</div>
 				<div className="relative min-w-0 flex-1 overflow-hidden">
@@ -147,11 +189,11 @@ function NavButtons({
 	onNavigate: (dir: "left" | "right") => void;
 }) {
 	return (
-		<div className="flex items-center gap-8">
+		<div className="flex items-center gap-4">
 			<button
 				type="button"
 				onClick={() => onNavigate("left")}
-				className="text-white transition-opacity hover:opacity-70"
+				className="flex h-11 w-11 items-center justify-center text-white transition-opacity hover:opacity-70"
 				aria-label="Previous testimonial"
 			>
 				<ChevronLeft className="size-6" />
@@ -159,7 +201,7 @@ function NavButtons({
 			<button
 				type="button"
 				onClick={() => onNavigate("right")}
-				className="text-white transition-opacity hover:opacity-70"
+				className="flex h-11 w-11 items-center justify-center text-white transition-opacity hover:opacity-70"
 				aria-label="Next testimonial"
 			>
 				<ChevronRight className="size-6" />
