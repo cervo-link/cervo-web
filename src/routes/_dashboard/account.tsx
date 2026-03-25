@@ -1,6 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_dashboard/account")({
+	head: () => ({
+		meta: [
+			{ title: "Account — Cervo" },
+			{
+				name: "description",
+				content: "Manage your Cervo account",
+			},
+		],
+	}),
 	component: AccountPage,
 });
 

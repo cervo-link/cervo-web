@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Search, SearchX, X } from "lucide-react";
-import { useQueryState, parseAsString } from "nuqs";
+import { parseAsString, useQueryState } from "nuqs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LinkDetailView } from "#/components/LinkDetailView";
 import { LinkListItem } from "#/components/LinkListItem";
@@ -9,6 +9,15 @@ import { Input } from "#/components/ui/input";
 import { Separator } from "#/components/ui/separator";
 
 export const Route = createFileRoute("/_dashboard/links")({
+	head: () => ({
+		meta: [
+			{ title: "Links — Cervo" },
+			{
+				name: "description",
+				content: "Your bookmarks, organized",
+			},
+		],
+	}),
 	component: LinksPage,
 });
 

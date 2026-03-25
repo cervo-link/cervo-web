@@ -1,6 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_dashboard/help")({
+	head: () => ({
+		meta: [
+			{ title: "Help — Cervo" },
+			{
+				name: "description",
+				content: "Get help with Cervo",
+			},
+		],
+	}),
 	component: HelpPage,
 });
 
