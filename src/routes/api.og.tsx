@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/og")({
 						>
 							<div
 								style={{
-									fontSize: "86px",
+									fontSize: "100px",
 									fontWeight: 700,
 									fontStyle: "italic",
 									textAlign: "center",
@@ -64,12 +64,12 @@ export const Route = createFileRoute("/api/og")({
 							{subtitle ? (
 								<div
 									style={{
-										fontSize: "36px",
+										fontSize: "48px",
 										fontStyle: "italic",
-										color: "#b0b0b0",
+										color: "#ffffff",
 										textAlign: "center",
-										maxWidth: "800px",
-										lineHeight: 1.3,
+										maxWidth: "900px",
+										lineHeight: 1.2,
 									}}
 								>
 									{subtitle}
@@ -83,7 +83,7 @@ export const Route = createFileRoute("/api/og")({
 								justifyContent: "center",
 							}}
 						>
-							<img src={logoBase64} alt="Cervo" width={200} height={50} />
+							<img src={logoBase64} alt="Cervo" width={280} height={70} />
 						</div>
 					</div>,
 					{
