@@ -148,7 +148,7 @@ export function TestimonialsCarousel({
 							<Card
 								key={`d-${t._pos}`}
 								testimonial={t}
-								className="w-[420px] cursor-pointer"
+								className="w-[420px]"
 								onClick={() => navigate(cardIndex === index ? "left" : "right")}
 							/>
 						))}
