@@ -69,7 +69,7 @@ export const Route = createFileRoute("/_app/")({
 			},
 			{
 				property: "og:image",
-				content: ogImageUrl("Cervo", "Save by link. Find by meaning."),
+				content: ogImageUrl("AI-powered bookmark manager", "Save by link. Find by meaning."),
 			},
 			{ name: "twitter:title", content: "Cervo — Smart Bookmark Management" },
 			{
@@ -78,7 +78,7 @@ export const Route = createFileRoute("/_app/")({
 			},
 			{
 				name: "twitter:image",
-				content: ogImageUrl("Cervo", "Save by link. Find by meaning."),
+				content: ogImageUrl("AI-powered bookmark manager", "Save by link. Find by meaning."),
 			},
 		],
 	}),
