@@ -17,7 +17,7 @@ export const Route = createFileRoute("/api/og")({
 					fetch(new URL("/Inter-BoldItalic.ttf", baseUrl)).then((res) =>
 						res.arrayBuffer(),
 					),
-					fetch(new URL("/cervo-horizontal.png", baseUrl)).then((res) =>
+					fetch(new URL("/cervo-og.png", baseUrl)).then((res) =>
 						res.arrayBuffer(),
 					),
 				]);
@@ -30,61 +30,48 @@ export const Route = createFileRoute("/api/og")({
 							display: "flex",
 							flexDirection: "column",
 							alignItems: "center",
-							justifyContent: "space-between",
+							justifyContent: "center",
 							width: "1200px",
 							height: "630px",
 							backgroundColor: "#000000",
 							color: "#ffffff",
 							fontFamily: "Inter",
-							padding: "80px 80px 60px",
+							gap: "28px",
 						}}
 					>
 						<div
 							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								justifyContent: "center",
-								flex: 1,
-								gap: "24px",
+								fontSize: "100px",
+								fontWeight: 700,
+								fontStyle: "italic",
+								textAlign: "center",
+								lineHeight: 1.05,
+								maxWidth: "1000px",
 							}}
 						>
+							{title}
+						</div>
+						{subtitle ? (
 							<div
 								style={{
-									fontSize: "100px",
-									fontWeight: 700,
+									fontSize: "48px",
 									fontStyle: "italic",
+									color: "#ffffff",
 									textAlign: "center",
-									lineHeight: 1.05,
-									maxWidth: "1000px",
+									maxWidth: "900px",
+									lineHeight: 1.2,
 								}}
 							>
-								{title}
+								{subtitle}
 							</div>
-							{subtitle ? (
-								<div
-									style={{
-										fontSize: "48px",
-										fontStyle: "italic",
-										color: "#ffffff",
-										textAlign: "center",
-										maxWidth: "900px",
-										lineHeight: 1.2,
-									}}
-								>
-									{subtitle}
-								</div>
-							) : null}
-						</div>
-						<div
-							style={{
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-							}}
-						>
-							<img src={logoBase64} alt="Cervo" width={280} height={70} />
-						</div>
+						) : null}
+						<img
+							src={logoBase64}
+							alt="Cervo"
+							width={280}
+							height={70}
+							style={{ marginTop: "12px" }}
+						/>
 					</div>,
 					{
 						width: 1200,
