@@ -19,4 +19,4 @@ mcp-todos.json
 skills-lock.json
 .vercel
 cervo.db
-src/api/*
+/src/api/*
