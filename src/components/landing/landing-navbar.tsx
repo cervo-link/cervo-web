@@ -7,7 +7,7 @@ const NAV_LINKS = [
 	{ label: "Features", href: "#features" },
 	{ label: "How it Works", href: "#how-it-works" },
 	{ label: "Pricing", href: "#pricing" },
-	{ label: "Discord", href: "#discord" },
+	{ label: "Discord", href: "/discord" },
 	{ label: "FAQ", href: "#faq" },
 ] as const;
 
