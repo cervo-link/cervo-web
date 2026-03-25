@@ -5,8 +5,9 @@ import {
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
-import { NuqsAdapter } from "nuqs/adapters/react";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { NuqsAdapter } from "nuqs/adapters/react";
+import { ogImageUrl } from "#/lib/og";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import TanStackQueryProvider from "../integrations/tanstack-query/root-provider";
 
@@ -36,6 +37,46 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 			{
 				title: "cervo",
+			},
+			{
+				name: "description",
+				content: "Save, organize, and search your bookmarks with AI",
+			},
+			{
+				property: "og:site_name",
+				content: "Cervo",
+			},
+			{
+				property: "og:type",
+				content: "website",
+			},
+			{
+				property: "og:title",
+				content: "Cervo",
+			},
+			{
+				property: "og:description",
+				content: "Save, organize, and search your bookmarks with AI",
+			},
+			{
+				property: "og:image",
+				content: ogImageUrl("Cervo", "Smart Bookmark Management"),
+			},
+			{
+				name: "twitter:card",
+				content: "summary_large_image",
+			},
+			{
+				name: "twitter:title",
+				content: "Cervo",
+			},
+			{
+				name: "twitter:description",
+				content: "Save, organize, and search your bookmarks with AI",
+			},
+			{
+				name: "twitter:image",
+				content: ogImageUrl("Cervo", "Smart Bookmark Management"),
 			},
 		],
 		links: [

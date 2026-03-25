@@ -36,12 +36,12 @@ import {
 } from "lucide-react";
 import { CtaBanner } from "#/components/landing/cta-banner";
 import { FeatureBanner } from "#/components/landing/feature-banner";
-import { LandingFooter } from "#/components/landing/landing-footer";
-import { NewsletterSection } from "#/components/landing/newsletter-section";
 import { FeatureSection } from "#/components/landing/feature-section";
 import { FeaturesGrid } from "#/components/landing/features-grid";
 import { HeroSection } from "#/components/landing/hero-section";
+import { LandingFooter } from "#/components/landing/landing-footer";
 import { LandingNavbar } from "#/components/landing/landing-navbar";
+import { NewsletterSection } from "#/components/landing/newsletter-section";
 import { TestimonialsCarousel } from "#/components/landing/testimonials-carousel";
 import { AIEnrichmentWireframe } from "#/components/landing/wireframes/ai-enrichment-wireframe";
 import { DiscordWireframe } from "#/components/landing/wireframes/discord-wireframe";
@@ -52,8 +52,36 @@ import { RichLinkWireframe } from "#/components/landing/wireframes/rich-link-wir
 import { SemanticSearchWireframe } from "#/components/landing/wireframes/semantic-search-wireframe";
 import { SharedWorkspacesWireframe } from "#/components/landing/wireframes/shared-workspaces-wireframe";
 import { SmartTagsWireframe } from "#/components/landing/wireframes/smart-tags-wireframe";
+import { ogImageUrl } from "#/lib/og";
 
 export const Route = createFileRoute("/_app/")({
+	head: () => ({
+		meta: [
+			{ title: "Cervo — Smart Bookmark Management" },
+			{
+				name: "description",
+				content: "Save, organize, and search your bookmarks with AI",
+			},
+			{ property: "og:title", content: "Cervo — Smart Bookmark Management" },
+			{
+				property: "og:description",
+				content: "Save, organize, and search your bookmarks with AI",
+			},
+			{
+				property: "og:image",
+				content: ogImageUrl("Cervo", "Smart Bookmark Management"),
+			},
+			{ name: "twitter:title", content: "Cervo — Smart Bookmark Management" },
+			{
+				name: "twitter:description",
+				content: "Save, organize, and search your bookmarks with AI",
+			},
+			{
+				name: "twitter:image",
+				content: ogImageUrl("Cervo", "Smart Bookmark Management"),
+			},
+		],
+	}),
 	component: LandingPage,
 });
 
