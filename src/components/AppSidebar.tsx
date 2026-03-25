@@ -50,11 +50,8 @@ function getInitials(name: string): string {
 export function AppSidebar() {
   const { data: session } = authClient.useSession();
   const { data: workspacesData } = useGetWorkspacesMe();
-  const workspaces =
-    (workspacesData as unknown as { workspaces: GetWorkspacesMe200WorkspacesItem[] } | undefined)
-      ?.workspaces ?? [];
+  const workspaces = workspacesData?.workspaces ?? [];
 
-  console.log(workspacesData);
   const [workspaceId, setWorkspaceId] = useQueryState(
     "workspace",
     parseAsString.withDefault(""),
