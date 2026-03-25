@@ -60,7 +60,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 			{
 				property: "og:image",
-				content: ogImageUrl("Cervo", "Smart Bookmark Management"),
+				content: ogImageUrl("Cervo", "Save by link. Find by meaning."),
 			},
 			{
 				name: "twitter:card",
@@ -76,7 +76,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 			{
 				name: "twitter:image",
-				content: ogImageUrl("Cervo", "Smart Bookmark Management"),
+				content: ogImageUrl("Cervo", "Save by link. Find by meaning."),
 			},
 		],
 		links: [

@@ -14,8 +14,8 @@ export const Route = createFileRoute("/api/og")({
 
 				const baseUrl = new URL("/", request.url);
 				const [boldItalicFontData, logoData] = await Promise.all([
-					fetch(new URL("/Inter-BoldItalic.ttf", baseUrl)).then((res) =>
-						res.arrayBuffer(),
+					fetch(new URL("/JetBrainsMono-BoldItalic.ttf", baseUrl)).then(
+						(res) => res.arrayBuffer(),
 					),
 					fetch(new URL("/cervo-og.png", baseUrl)).then((res) =>
 						res.arrayBuffer(),
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/api/og")({
 							height: "630px",
 							backgroundColor: "#000000",
 							color: "#ffffff",
-							fontFamily: "Inter",
+							fontFamily: "JetBrains Mono",
 							gap: "28px",
 						}}
 					>
@@ -78,7 +78,7 @@ export const Route = createFileRoute("/api/og")({
 						height: 630,
 						fonts: [
 							{
-								name: "Inter",
+								name: "JetBrains Mono",
 								data: boldItalicFontData,
 								weight: 700 as const,
 								style: "italic" as const,
