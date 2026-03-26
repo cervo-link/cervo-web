@@ -16,12 +16,23 @@ export type Healthcheck200 = {
   message: Healthcheck200Message;
 };
 
+export type PostBookmarksBodySource = typeof PostBookmarksBodySource[keyof typeof PostBookmarksBodySource];
+
+
+export const PostBookmarksBodySource = {
+  web: 'web',
+  discord: 'discord',
+  raycast: 'raycast',
+  api: 'api',
+} as const;
+
 export type PostBookmarksBody = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
   workspaceId: string;
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
   memberId: string;
   url: string;
+  source?: PostBookmarksBodySource;
 };
 
 /**
@@ -95,6 +106,7 @@ export type GetBookmarks200Item = {
   tags: string[] | null;
   /** @nullable */
   failureReason: string | null;
+  source: string;
   createdAt: string;
   updatedAt: string;
   visible: boolean;

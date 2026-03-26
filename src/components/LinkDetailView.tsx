@@ -24,6 +24,9 @@ interface LinkDetailLink {
 	url: string;
 	tag: string;
 	timeAgo: string;
+	savedBy: string;
+	savedAt: string;
+	source: string;
 }
 
 interface LinkDetailViewProps {
@@ -58,6 +61,10 @@ const MOCK_BULLETS = [
 	"Autonomy and ownership are more effective retention tools than equity or salary hikes.",
 ];
 
+function toHref(url: string) {
+	return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
 export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 	return (
 		<div className="flex h-full flex-col overflow-auto p-8 md:px-10">
@@ -76,7 +83,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 							type="button"
 							onClick={() => {
 								navigator.clipboard
-									.writeText(`https://${link.url}`)
+									.writeText(toHref(link.url))
 									.catch(() => {});
 								toast("URL copied to clipboard");
 							}}
@@ -88,7 +95,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 							type="button"
 							onClick={() => {
 								window.open(
-									`https://${link.url}`,
+									toHref(link.url),
 									"_blank",
 									"noopener,noreferrer",
 								);
@@ -118,7 +125,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 
 					<div className="flex items-center gap-3">
 						<a
-							href={`https://${link.url}`}
+							href={toHref(link.url)}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="font-mono text-[11px] text-[#8a8a8a] transition-colors hover:text-primary"
@@ -214,13 +221,15 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 								Saved by
 							</span>
 							<span className="font-mono text-[11px] font-bold text-foreground">
-								Victor Nogueira
+								{link.savedBy}
 							</span>
 						</div>
 						<div className="flex items-center gap-2">
-							<span className="font-mono text-[11px] text-[#6a6a6a]">Info</span>
+							<span className="font-mono text-[11px] text-[#6a6a6a]">
+								Saved at
+							</span>
 							<span className="font-mono text-[11px] font-bold text-foreground">
-								2026-01-15
+								{link.savedAt}
 							</span>
 						</div>
 						<div className="flex items-center gap-2">
@@ -228,7 +237,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 								Source
 							</span>
 							<span className="font-mono text-[11px] font-bold text-primary">
-								Web
+								{link.source}
 							</span>
 						</div>
 					</div>
