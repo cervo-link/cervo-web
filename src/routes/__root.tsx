@@ -6,6 +6,7 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Analytics } from "@vercel/analytics/react";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { Toaster } from "#/components/ui/sonner";
 import { ogImageUrl } from "#/lib/og";
@@ -138,6 +139,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 					/>
 				</TanStackQueryProvider>
 				<Toaster />
+				<Analytics />
 				<Scripts />
 			</body>
 		</html>
