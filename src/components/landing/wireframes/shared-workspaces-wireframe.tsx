@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react'
 
 export function SharedWorkspacesWireframe() {
 	return (
@@ -55,7 +55,7 @@ export function SharedWorkspacesWireframe() {
 				]}
 			/>
 		</div>
-	);
+	)
 }
 
 function TeamMember({
@@ -63,34 +63,34 @@ function TeamMember({
 	nameWidth,
 	online,
 }: {
-	color: string;
-	nameWidth: string;
-	online: boolean;
+	color: string
+	nameWidth: string
+	online: boolean
 }) {
 	return (
 		<div className="flex items-center gap-1.5">
 			<div className={`size-[18px] shrink-0 rounded-full ${color}`} />
 			<div className={`h-1.5 rounded bg-[#A3A3A3] ${nameWidth}`} />
 			<div
-				className={`ml-auto size-1.5 shrink-0 rounded-full ${online ? "bg-primary" : "bg-[#6a6a6a]"}`}
+				className={`ml-auto size-1.5 shrink-0 rounded-full ${online ? 'bg-primary' : 'bg-[#6a6a6a]'}`}
 			/>
 		</div>
-	);
+	)
 }
 
 function BookmarkRow({
 	titleWidth,
 	descWidth,
 }: {
-	titleWidth: string;
-	descWidth: string;
+	titleWidth: string
+	descWidth: string
 }) {
 	return (
 		<div className="rounded-[6px] bg-[#2A2A2A] px-2 py-2">
 			<div className={`h-[7px] rounded bg-white ${titleWidth}`} />
 			<div className={`mt-2 h-1 rounded bg-[#6a6a6a] ${descWidth}`} />
 		</div>
-	);
+	)
 }
 
 function FloatingCursor({
@@ -100,33 +100,33 @@ function FloatingCursor({
 	duration,
 	points,
 }: {
-	color: string;
-	startX: number;
-	startY: number;
-	duration: number;
-	points: [number, number][];
+	color: string
+	startX: number
+	startY: number
+	duration: number
+	points: [number, number][]
 }) {
-	const ref = useRef<SVGSVGElement>(null);
+	const ref = useRef<SVGSVGElement>(null)
 
 	useEffect(() => {
-		const el = ref.current;
+		const el = ref.current
 		if (!el) {
-			return;
+			return
 		}
 
-		const closed = [...points, points[0]];
+		const closed = [...points, points[0]]
 		const keyframes = closed.map(([x, y]) => ({
 			transform: `translate(${x}px, ${y}px)`,
-			easing: "ease-in-out",
-		}));
+			easing: 'ease-in-out',
+		}))
 
 		const animation = el.animate(keyframes, {
 			duration: duration * 1000,
 			iterations: Number.POSITIVE_INFINITY,
-		});
+		})
 
-		return () => animation.cancel();
-	}, [duration, points]);
+		return () => animation.cancel()
+	}, [duration, points])
 
 	return (
 		<svg
@@ -138,5 +138,5 @@ function FloatingCursor({
 		>
 			<path d="M5 3l14 9-7 2-3 7z" />
 		</svg>
-	);
+	)
 }

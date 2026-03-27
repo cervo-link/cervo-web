@@ -1,4 +1,4 @@
-import { Lock, ShieldCheck } from "lucide-react";
+import { Lock, ShieldCheck } from 'lucide-react'
 
 export function PrivacyWireframe() {
 	return (
@@ -30,36 +30,36 @@ export function PrivacyWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }
 
 function SecurityCard({ active = false }: { active?: boolean }) {
 	return (
 		<div
 			className={`flex flex-1 flex-col gap-2 rounded-[8px] bg-[#1A1A1A] p-2.5 ${
-				active ? "border border-primary/20" : "border border-[#2f2f2f]"
+				active ? 'border border-primary/20' : 'border border-[#2f2f2f]'
 			}`}
 		>
 			<div className="flex items-center gap-1.5">
 				<Lock
-					className={`size-3 ${active ? "text-primary" : "text-[#6a6a6a]"}`}
+					className={`size-3 ${active ? 'text-primary' : 'text-[#6a6a6a]'}`}
 				/>
 				<div
-					className={`h-[7px] w-[50px] rounded ${active ? "bg-primary" : "bg-[#6a6a6a]"}`}
+					className={`h-[7px] w-[50px] rounded ${active ? 'bg-primary' : 'bg-[#6a6a6a]'}`}
 				/>
 			</div>
 			<div className="flex items-center gap-1.5">
 				<div
-					className={`size-1.5 rounded-full ${active ? "bg-primary" : "bg-[#6a6a6a]"}`}
+					className={`size-1.5 rounded-full ${active ? 'bg-primary' : 'bg-[#6a6a6a]'}`}
 				/>
 				<div className="h-[5px] w-[90px] rounded bg-[#A3A3A3]" />
 			</div>
 			<div className="flex items-center gap-1.5">
 				<div
-					className={`size-1.5 rounded-full ${active ? "bg-primary" : "bg-[#6a6a6a]"}`}
+					className={`size-1.5 rounded-full ${active ? 'bg-primary' : 'bg-[#6a6a6a]'}`}
 				/>
 				<div className="h-[5px] w-[70px] rounded bg-[#A3A3A3]" />
 			</div>
 		</div>
-	);
+	)
 }

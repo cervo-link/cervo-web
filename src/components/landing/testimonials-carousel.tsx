@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
 	type TouchEvent as ReactTouchEvent,
 	useCallback,
@@ -6,29 +6,29 @@ import {
 	useMemo,
 	useRef,
 	useState,
-} from "react";
-import { useScrollAnimation } from "./use-scroll-animation";
+} from 'react'
+import { useScrollAnimation } from './use-scroll-animation'
 
 interface Testimonial {
-	avatar: string;
-	name: string;
-	role: string;
-	roleColor?: "white" | "primary";
-	rolePrefix?: string;
-	quote: string;
+	avatar: string
+	name: string
+	role: string
+	roleColor?: 'white' | 'primary'
+	rolePrefix?: string
+	quote: string
 }
 
 interface TestimonialsCarouselProps {
-	testimonials: Testimonial[];
+	testimonials: Testimonial[]
 }
 
 export function TestimonialsCarousel({
 	testimonials,
 }: TestimonialsCarouselProps) {
-	const { ref, isVisible } = useScrollAnimation();
-	const total = testimonials.length;
+	const { ref, isVisible } = useScrollAnimation()
+	const total = testimonials.length
 
-	const cloneCount = 2;
+	const cloneCount = 2
 
 	const extended = useMemo(
 		() =>
@@ -41,61 +41,61 @@ export function TestimonialsCarousel({
 					.slice(0, cloneCount)
 					.map((t, idx) => ({ ...t, _pos: `clone-head-${idx}` })),
 			] as Array<Testimonial & { _pos: string }>,
-		[testimonials],
-	);
+		[testimonials]
+	)
 
-	const [index, setIndex] = useState(cloneCount);
-	const [animate, setAnimate] = useState(true);
+	const [index, setIndex] = useState(cloneCount)
+	const [animate, setAnimate] = useState(true)
 
 	function handleTransitionEnd() {
 		if (index <= cloneCount - 1) {
-			setAnimate(false);
-			setIndex(index + total);
+			setAnimate(false)
+			setIndex(index + total)
 		}
 		if (index >= total + cloneCount) {
-			setAnimate(false);
-			setIndex(index - total);
+			setAnimate(false)
+			setIndex(index - total)
 		}
 	}
 
 	useEffect(() => {
 		if (!animate) {
-			requestAnimationFrame(() => setAnimate(true));
+			requestAnimationFrame(() => setAnimate(true))
 		}
-	}, [animate]);
+	}, [animate])
 
-	const navigate = useCallback((direction: "left" | "right") => {
-		setIndex((prev) => (direction === "right" ? prev + 1 : prev - 1));
-	}, []);
+	const navigate = useCallback((direction: 'left' | 'right') => {
+		setIndex(prev => (direction === 'right' ? prev + 1 : prev - 1))
+	}, [])
 
-	const touchStartX = useRef<number | null>(null);
-	const swiping = useRef(false);
+	const touchStartX = useRef<number | null>(null)
+	const swiping = useRef(false)
 
 	const handleTouchStart = useCallback((e: ReactTouchEvent) => {
-		touchStartX.current = e.touches[0].clientX;
-		swiping.current = false;
-	}, []);
+		touchStartX.current = e.touches[0].clientX
+		swiping.current = false
+	}, [])
 
 	const handleTouchEnd = useCallback(
 		(e: ReactTouchEvent) => {
 			if (touchStartX.current === null) {
-				return;
+				return
 			}
-			const diff = touchStartX.current - e.changedTouches[0].clientX;
-			touchStartX.current = null;
+			const diff = touchStartX.current - e.changedTouches[0].clientX
+			touchStartX.current = null
 			if (Math.abs(diff) < 50) {
-				return;
+				return
 			}
-			swiping.current = true;
-			navigate(diff > 0 ? "right" : "left");
+			swiping.current = true
+			navigate(diff > 0 ? 'right' : 'left')
 		},
-		[navigate],
-	);
+		[navigate]
+	)
 
 	return (
 		<section
 			ref={ref}
-			className={`overflow-hidden py-[60px] transition-all duration-700 lg:py-20 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+			className={`overflow-hidden py-[60px] transition-all duration-700 lg:py-20 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
 		>
 			{/* Mobile layout — controlled transform with touch gestures */}
 			<div className="lg:hidden">
@@ -109,12 +109,12 @@ export function TestimonialsCarousel({
 				>
 					<div
 						onTransitionEnd={handleTransitionEnd}
-						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
+						className={`flex gap-5 ${animate ? 'transition-transform duration-500 ease-in-out' : ''}`}
 						style={{
 							transform: `translateX(calc(-${index} * (100% + 20px)))`,
 						}}
 					>
-						{extended.map((t) => (
+						{extended.map(t => (
 							<Card
 								key={`m-${t._pos}`}
 								testimonial={t}
@@ -139,7 +139,7 @@ export function TestimonialsCarousel({
 				<div className="relative min-w-0 flex-1 overflow-hidden">
 					<div
 						onTransitionEnd={handleTransitionEnd}
-						className={`flex gap-5 ${animate ? "transition-transform duration-500 ease-in-out" : ""}`}
+						className={`flex gap-5 ${animate ? 'transition-transform duration-500 ease-in-out' : ''}`}
 						style={{ transform: `translateX(-${index * 440}px)` }}
 					>
 						{extended.map((t, cardIndex) => (
@@ -147,7 +147,7 @@ export function TestimonialsCarousel({
 								key={`d-${t._pos}`}
 								testimonial={t}
 								className="w-[420px]"
-								onClick={() => navigate(cardIndex === index ? "left" : "right")}
+								onClick={() => navigate(cardIndex === index ? 'left' : 'right')}
 							/>
 						))}
 					</div>
@@ -155,7 +155,7 @@ export function TestimonialsCarousel({
 				</div>
 			</div>
 		</section>
-	);
+	)
 }
 
 function Header() {
@@ -177,19 +177,19 @@ function Header() {
 				</span>
 			</div>
 		</>
-	);
+	)
 }
 
 function NavButtons({
 	onNavigate,
 }: {
-	onNavigate: (dir: "left" | "right") => void;
+	onNavigate: (dir: 'left' | 'right') => void
 }) {
 	return (
 		<div className="flex items-center gap-4">
 			<button
 				type="button"
-				onClick={() => onNavigate("left")}
+				onClick={() => onNavigate('left')}
 				className="flex h-11 w-11 items-center justify-center text-white transition-opacity hover:opacity-70"
 				aria-label="Previous testimonial"
 			>
@@ -197,14 +197,14 @@ function NavButtons({
 			</button>
 			<button
 				type="button"
-				onClick={() => onNavigate("right")}
+				onClick={() => onNavigate('right')}
 				className="flex h-11 w-11 items-center justify-center text-white transition-opacity hover:opacity-70"
 				aria-label="Next testimonial"
 			>
 				<ChevronRight className="size-6" />
 			</button>
 		</div>
-	);
+	)
 }
 
 function Card({
@@ -212,20 +212,20 @@ function Card({
 	className,
 	onClick,
 }: {
-	testimonial: Testimonial;
-	className: string;
-	onClick?: () => void;
+	testimonial: Testimonial
+	className: string
+	onClick?: () => void
 }) {
 	return (
 		<div
 			className={`flex shrink-0 flex-col gap-6 rounded-[16px] bg-[#1A1A1A] p-8 ${className}`}
 			{...(onClick && {
 				onClick,
-				role: "button",
+				role: 'button',
 				tabIndex: 0,
 				onKeyDown: (e: React.KeyboardEvent) => {
-					if (e.key === "Enter" || e.key === " ") {
-						onClick();
+					if (e.key === 'Enter' || e.key === ' ') {
+						onClick()
 					}
 				},
 			})}
@@ -241,7 +241,7 @@ function Card({
 						{t.name}
 					</span>
 					<span
-						className={`font-sans text-[15px] font-medium ${t.roleColor === "primary" ? "text-primary" : "text-white"}`}
+						className={`font-sans text-[15px] font-medium ${t.roleColor === 'primary' ? 'text-primary' : 'text-white'}`}
 					>
 						{t.rolePrefix && <span className="mr-1">{t.rolePrefix}</span>}
 						{t.role}
@@ -252,5 +252,5 @@ function Card({
 				{t.quote}
 			</p>
 		</div>
-	);
+	)
 }

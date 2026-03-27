@@ -1,4 +1,4 @@
-import { ImageIcon } from "lucide-react";
+import { ImageIcon } from 'lucide-react'
 
 export function RichLinkWireframe() {
 	return (
@@ -46,5 +46,5 @@ export function RichLinkWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

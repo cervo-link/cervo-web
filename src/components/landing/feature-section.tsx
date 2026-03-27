@@ -1,33 +1,33 @@
-import type { ComponentProps, ReactNode } from "react";
-import { LandingButton } from "./landing-button";
-import { LandingLink } from "./landing-link";
-import { TestimonialCard } from "./testimonial-card";
-import { useScrollAnimation } from "./use-scroll-animation";
+import type { ComponentProps, ReactNode } from 'react'
+import { LandingButton } from './landing-button'
+import { LandingLink } from './landing-link'
+import { TestimonialCard } from './testimonial-card'
+import { useScrollAnimation } from './use-scroll-animation'
 
 interface FeatureItem {
-	icon: ReactNode;
-	text: string;
-	badge?: string;
+	icon: ReactNode
+	text: string
+	badge?: string
 }
 
 interface ToolIcon {
-	id: string;
-	icon: ReactNode;
-	highlighted?: boolean;
+	id: string
+	icon: ReactNode
+	highlighted?: boolean
 }
 
 interface FeatureSectionProps {
-	title: string;
-	body: string;
-	wireframe: ReactNode;
-	reverse?: boolean;
-	centered?: boolean;
-	link?: { text: string; icon?: ReactNode; href?: string };
-	badge?: { icon: ReactNode; text: string; mobileText?: string };
-	features?: FeatureItem[];
-	toolIcons?: ToolIcon[][];
-	cta?: { text: string; href: string };
-	testimonial?: ComponentProps<typeof TestimonialCard>;
+	title: string
+	body: string
+	wireframe: ReactNode
+	reverse?: boolean
+	centered?: boolean
+	link?: { text: string; icon?: ReactNode; href?: string }
+	badge?: { icon: ReactNode; text: string; mobileText?: string }
+	features?: FeatureItem[]
+	toolIcons?: ToolIcon[][]
+	cta?: { text: string; href: string }
+	testimonial?: ComponentProps<typeof TestimonialCard>
 }
 
 export function FeatureSection({
@@ -43,13 +43,13 @@ export function FeatureSection({
 	cta,
 	testimonial,
 }: FeatureSectionProps) {
-	const { ref, isVisible } = useScrollAnimation();
+	const { ref, isVisible } = useScrollAnimation()
 
 	if (centered) {
 		return (
 			<section
 				ref={ref}
-				className={`flex flex-col items-center gap-8 py-[60px] transition-all duration-700 lg:flex-row lg:items-center lg:gap-[60px] lg:py-[120px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+				className={`flex flex-col items-center gap-8 py-[60px] transition-all duration-700 lg:flex-row lg:items-center lg:gap-[60px] lg:py-[120px] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
 			>
 				<div className="flex w-full flex-col items-center gap-4 lg:order-2 lg:items-start">
 					<h2 className="m-0 text-center font-sans text-[28px] font-bold text-white lg:text-left lg:text-4xl">
@@ -66,7 +66,7 @@ export function FeatureSection({
 
 					{features && (
 						<div className="flex flex-col gap-3">
-							{features.map((feat) => (
+							{features.map(feat => (
 								<div key={feat.text} className="flex items-center gap-2.5">
 									<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#2A2A2A]">
 										{feat.icon}
@@ -84,15 +84,15 @@ export function FeatureSection({
 					{wireframe}
 				</div>
 			</section>
-		);
+		)
 	}
 
 	return (
 		<section
 			ref={ref}
 			className={`flex flex-col items-center gap-8 py-[60px] transition-all duration-700 lg:items-start lg:gap-[60px] lg:py-[120px] ${
-				reverse ? "lg:flex-row-reverse" : "lg:flex-row"
-			} ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+				reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'
+			} ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
 		>
 			<div className="flex w-full flex-col items-center gap-4 lg:items-start lg:gap-4">
 				{badge && (
@@ -101,7 +101,7 @@ export function FeatureSection({
 							{badge.icon}
 						</div>
 						<span
-							className={`font-sans text-[13px] font-bold text-primary ${badge.mobileText ? "hidden lg:inline" : ""}`}
+							className={`font-sans text-[13px] font-bold text-primary ${badge.mobileText ? 'hidden lg:inline' : ''}`}
 						>
 							{badge.text}
 						</span>
@@ -132,7 +132,7 @@ export function FeatureSection({
 
 				{features && (
 					<div className="flex flex-col gap-3">
-						{features.map((feat) => (
+						{features.map(feat => (
 							<div key={feat.text} className="flex items-center gap-2.5">
 								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#2A2A2A]">
 									{feat.icon}
@@ -166,15 +166,15 @@ export function FeatureSection({
 			{/* Wireframe on desktop: side column */}
 			<div className="hidden lg:block lg:w-1/2 lg:shrink-0">{wireframe}</div>
 		</section>
-	);
+	)
 }
 
 function ToolIconsGrid({ rows }: { rows: ToolIcon[][] }) {
-	const allIcons = rows.flat();
-	const count = allIcons.length;
+	const allIcons = rows.flat()
+	const count = allIcons.length
 	/* Each icon is "active" for 3s. Full cycle = count × 3s.
 	 * animation-delay offsets each icon so only one is active at a time. */
-	const cycleDuration = count * 3;
+	const cycleDuration = count * 3
 
 	return (
 		<div className="flex w-full max-w-[232px] flex-wrap justify-center gap-2 lg:max-w-none lg:justify-start">
@@ -209,5 +209,5 @@ function ToolIconsGrid({ rows }: { rows: ToolIcon[][] }) {
 				</div>
 			))}
 		</div>
-	);
+	)
 }

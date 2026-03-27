@@ -12,57 +12,57 @@ import {
 	List,
 	ListOrdered,
 	Share2,
-} from "lucide-react";
-import { toast } from "sonner";
-import { Badge } from "#/components/ui/badge";
-import { Separator } from "#/components/ui/separator";
+} from 'lucide-react'
+import { toast } from 'sonner'
+import { Badge } from '#/components/ui/badge'
+import { Separator } from '#/components/ui/separator'
 
 interface LinkDetailLink {
-	id: string;
-	title: string;
-	description: string;
-	url: string;
-	tag: string;
-	timeAgo: string;
-	savedBy: string;
-	savedAt: string;
-	source: string;
+	id: string
+	title: string
+	description: string
+	url: string
+	tag: string
+	timeAgo: string
+	savedBy: string
+	savedAt: string
+	source: string
 }
 
 interface LinkDetailViewProps {
-	link: LinkDetailLink;
-	onBack: () => void;
+	link: LinkDetailLink
+	onBack: () => void
 }
 
-const MOCK_TAGS = ["Article", "Interviews", "Engineering", "Culture"];
+const MOCK_TAGS = ['Article', 'Interviews', 'Engineering', 'Culture']
 
 const TOOLBAR_GROUPS = [
 	[
-		{ icon: Bold, label: "Bold" },
-		{ icon: Italic, label: "Italic" },
-		{ icon: Code, label: "Code" },
-		{ icon: Link, label: "Link" },
+		{ icon: Bold, label: 'Bold' },
+		{ icon: Italic, label: 'Italic' },
+		{ icon: Code, label: 'Code' },
+		{ icon: Link, label: 'Link' },
 	],
 	[
-		{ icon: Heading1, label: "H1" },
-		{ icon: Heading2, label: "H2" },
-		{ icon: Heading3, label: "H3" },
+		{ icon: Heading1, label: 'H1' },
+		{ icon: Heading2, label: 'H2' },
+		{ icon: Heading3, label: 'H3' },
 	],
 	[
-		{ icon: List, label: "List" },
-		{ icon: ListOrdered, label: "Ordered List" },
+		{ icon: List, label: 'List' },
+		{ icon: ListOrdered, label: 'Ordered List' },
 	],
-] as const;
+] as const
 
 const MOCK_BULLETS = [
 	"Startups/Founders often hire for skills rather than learning ability, leading to teams that can't adapt to the product evolution.",
 	'The "move fast and break things" culture actively repels senior engineers who value craft and maintainability.',
-	"Interview processes that focus on algorithmic puzzles miss the collaborative and systems-thinking skills that matter most at a startup.",
-	"Autonomy and ownership are more effective retention tools than equity or salary hikes.",
-];
+	'Interview processes that focus on algorithmic puzzles miss the collaborative and systems-thinking skills that matter most at a startup.',
+	'Autonomy and ownership are more effective retention tools than equity or salary hikes.',
+]
 
 function toHref(url: string) {
-	return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+	return /^https?:\/\//i.test(url) ? url : `https://${url}`
 }
 
 export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
@@ -82,10 +82,8 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 						<button
 							type="button"
 							onClick={() => {
-								navigator.clipboard
-									.writeText(toHref(link.url))
-									.catch(() => {});
-								toast("URL copied to clipboard");
+								navigator.clipboard.writeText(toHref(link.url)).catch(() => {})
+								toast('URL copied to clipboard')
 							}}
 							className="flex size-10 items-center justify-center border border-transparent text-[#8a8a8a] outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 						>
@@ -94,12 +92,8 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 						<button
 							type="button"
 							onClick={() => {
-								window.open(
-									toHref(link.url),
-									"_blank",
-									"noopener,noreferrer",
-								);
-								toast("Opening link in new tab");
+								window.open(toHref(link.url), '_blank', 'noopener,noreferrer')
+								toast('Opening link in new tab')
 							}}
 							className="flex size-10 items-center justify-center border border-transparent text-[#8a8a8a] outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 						>
@@ -108,8 +102,8 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 						<button
 							type="button"
 							onClick={() => {
-								void navigator.clipboard.writeText(window.location.href);
-								toast("Share link copied to clipboard");
+								void navigator.clipboard.writeText(window.location.href)
+								toast('Share link copied to clipboard')
 							}}
 							className="flex size-10 items-center justify-center border border-transparent text-[#8a8a8a] outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 						>
@@ -141,7 +135,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 					</div>
 
 					<div className="flex items-center gap-2">
-						{MOCK_TAGS.map((tag) => (
+						{MOCK_TAGS.map(tag => (
 							<Badge
 								key={tag}
 								variant="outline"
@@ -158,11 +152,11 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 				<div className="flex items-center gap-0">
 					{TOOLBAR_GROUPS.map((group, groupIndex) => (
 						<div
-							key={group.map((t) => t.label).join("-")}
+							key={group.map(t => t.label).join('-')}
 							className="flex items-center"
 						>
 							{groupIndex > 0 && <div className="mx-2 h-5 w-px bg-[#2f2f2f]" />}
-							{group.map((tool) => (
+							{group.map(tool => (
 								<button
 									key={tool.label}
 									type="button"
@@ -191,7 +185,7 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 						Key Takeaways
 					</h2>
 					<ul className="flex flex-col gap-3 pl-3">
-						{MOCK_BULLETS.map((bullet) => (
+						{MOCK_BULLETS.map(bullet => (
 							<li
 								key={bullet.slice(0, 20)}
 								className="flex gap-3 font-mono text-[13px] leading-relaxed text-[#8a8a8a]"
@@ -244,5 +238,5 @@ export function LinkDetailView({ link, onBack }: LinkDetailViewProps) {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

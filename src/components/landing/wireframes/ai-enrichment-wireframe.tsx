@@ -6,7 +6,7 @@
  * Then sparkle spins/bounces/turns green.
  * Then green elements insert one at a time (gi-1 → gi-8).
  */
-import { Sparkles } from "lucide-react";
+import { Sparkles } from 'lucide-react'
 
 export function AIEnrichmentWireframe() {
 	return (
@@ -129,5 +129,5 @@ export function AIEnrichmentWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

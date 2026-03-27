@@ -1,39 +1,39 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/_landing/changelog")({
+export const Route = createFileRoute('/_landing/changelog')({
 	head: () => ({
 		meta: [
-			{ title: "Changelog — Cervo" },
+			{ title: 'Changelog — Cervo' },
 			{
-				name: "description",
+				name: 'description',
 				content: "See what's new in Cervo",
 			},
 		],
 	}),
 	component: ChangelogPage,
-});
+})
 
 interface ChangelogEntry {
-	date: string;
-	version: string;
-	title: string;
-	changes: string[];
+	date: string
+	version: string
+	title: string
+	changes: string[]
 }
 
 const entries: ChangelogEntry[] = [
 	{
-		date: "March 25, 2026",
-		version: "0.1.0",
-		title: "Initial Release",
+		date: 'March 25, 2026',
+		version: '0.1.0',
+		title: 'Initial Release',
 		changes: [
-			"Save bookmarks with a single click",
-			"AI-powered semantic search across all your links",
-			"Automatic tag suggestions based on content",
-			"Google and GitHub sign-in",
-			"Workspace support for organizing bookmarks",
+			'Save bookmarks with a single click',
+			'AI-powered semantic search across all your links',
+			'Automatic tag suggestions based on content',
+			'Google and GitHub sign-in',
+			'Workspace support for organizing bookmarks',
 		],
 	},
-];
+]
 
 function ChangelogPage() {
 	return (
@@ -45,7 +45,7 @@ function ChangelogPage() {
 				New updates and improvements to Cervo.
 			</p>
 			<div className="flex flex-col gap-12">
-				{entries.map((entry) => (
+				{entries.map(entry => (
 					<article
 						key={entry.version}
 						className="border-l border-[#2f2f2f] pl-6"
@@ -62,7 +62,7 @@ function ChangelogPage() {
 							{entry.title}
 						</h2>
 						<ul className="flex flex-col gap-2">
-							{entry.changes.map((change) => (
+							{entry.changes.map(change => (
 								<li
 									key={change}
 									className="font-sans text-base leading-[1.7] text-[#A3A3A3]"
@@ -75,5 +75,5 @@ function ChangelogPage() {
 				))}
 			</div>
 		</div>
-	);
+	)
 }

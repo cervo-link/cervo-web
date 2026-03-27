@@ -1,4 +1,4 @@
-import { TriangleAlert } from "lucide-react";
+import { TriangleAlert } from 'lucide-react'
 
 export function DuplicateDetectionWireframe() {
 	return (
@@ -36,5 +36,5 @@ export function DuplicateDetectionWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

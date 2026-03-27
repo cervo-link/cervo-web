@@ -1,17 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/_landing/terms")({
+export const Route = createFileRoute('/_landing/terms')({
 	head: () => ({
 		meta: [
-			{ title: "Terms of Service — Cervo" },
+			{ title: 'Terms of Service — Cervo' },
 			{
-				name: "description",
-				content: "Cervo Terms of Service",
+				name: 'description',
+				content: 'Cervo Terms of Service',
 			},
 		],
 	}),
 	component: TermsPage,
-});
+})
 
 function TermsPage() {
 	return (
@@ -74,5 +74,5 @@ function TermsPage() {
 				</section>
 			</div>
 		</div>
-	);
+	)
 }

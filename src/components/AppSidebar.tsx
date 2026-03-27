@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router'
 import {
 	HelpCircle,
 	Layers,
@@ -6,10 +6,10 @@ import {
 	LogOut,
 	Settings,
 	User,
-} from "lucide-react";
-import { useCallback, useRef } from "react";
-import { useGetWorkspacesMe } from "#/api/workspaces/workspaces";
-import { Avatar, AvatarFallback } from "#/components/ui/avatar";
+} from 'lucide-react'
+import { useCallback, useRef } from 'react'
+import { useGetWorkspacesMe } from '#/api/workspaces/workspaces'
+import { Avatar, AvatarFallback } from '#/components/ui/avatar'
 import {
 	Sidebar,
 	SidebarContent,
@@ -18,53 +18,56 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from "#/components/ui/sidebar";
-import { authClient } from "#/lib/auth-client";
+} from '#/components/ui/sidebar'
+import { authClient } from '#/lib/auth-client'
 
 const NAV_ITEMS = [
-	{ label: "Links", to: "/links", icon: LinkIcon },
-	{ label: "Workspace", to: "/settings", icon: Settings },
-	{ label: "Account", to: "/account", icon: User },
-	{ label: "Help", to: "/help", icon: HelpCircle },
-] as const;
+	{ label: 'Links', to: '/links', icon: LinkIcon },
+	{ label: 'Workspace', to: '/settings', icon: Settings },
+	{ label: 'Account', to: '/account', icon: User },
+	{ label: 'Help', to: '/help', icon: HelpCircle },
+] as const
 
 function getInitials(name: string): string {
 	return name
-		.split(" ")
-		.map((part) => part[0])
-		.join("")
+		.split(' ')
+		.map(part => part[0])
+		.join('')
 		.toUpperCase()
-		.slice(0, 2);
+		.slice(0, 2)
 }
 
 export function AppSidebar() {
-	const { data: session } = authClient.useSession();
-	const { data: workspacesData } = useGetWorkspacesMe();
+	const { data: session } = authClient.useSession()
+	const { data: workspacesData } = useGetWorkspacesMe()
 	const workspace =
-		(workspacesData as unknown as { workspaces: { name: string }[] } | undefined)
-			?.workspaces?.[0] ?? null;
+		(
+			workspacesData as unknown as
+				| { workspaces: { name: string }[] }
+				| undefined
+		)?.workspaces?.[0] ?? null
 
-	const userName = session?.user?.name ?? "User";
-	const initials = getInitials(userName);
-	const firstFocusRef = useRef<HTMLDivElement>(null);
+	const userName = session?.user?.name ?? 'User'
+	const initials = getInitials(userName)
+	const firstFocusRef = useRef<HTMLDivElement>(null)
 
 	const handleSidebarKeyDown = useCallback((e: React.KeyboardEvent) => {
-		if (e.key !== "Tab" || e.shiftKey) {
-			return;
+		if (e.key !== 'Tab' || e.shiftKey) {
+			return
 		}
-		const sidebar = e.currentTarget;
+		const sidebar = e.currentTarget
 		const focusableElements = sidebar.querySelectorAll<HTMLElement>(
-			'button, a, input, [tabindex]:not([tabindex="-1"])',
-		);
+			'button, a, input, [tabindex]:not([tabindex="-1"])'
+		)
 		const isAnyFocused = Array.from(focusableElements).some(
-			(el) => el === document.activeElement,
-		);
+			el => el === document.activeElement
+		)
 		if (isAnyFocused) {
-			return;
+			return
 		}
-		e.preventDefault();
-		firstFocusRef.current?.focus();
-	}, []);
+		e.preventDefault()
+		firstFocusRef.current?.focus()
+	}, [])
 
 	return (
 		<Sidebar side="left" variant="sidebar" onKeyDown={handleSidebarKeyDown}>
@@ -81,14 +84,14 @@ export function AppSidebar() {
 				>
 					<Layers className="size-4 text-muted-foreground" />
 					<span className="font-medium tracking-wide text-foreground">
-						{workspace?.name ?? "Loading..."}
+						{workspace?.name ?? 'Loading...'}
 					</span>
 				</div>
 			</SidebarHeader>
 
 			<SidebarContent className="px-5 pt-0">
 				<SidebarMenu className="gap-0">
-					{NAV_ITEMS.map((item) => (
+					{NAV_ITEMS.map(item => (
 						<SidebarMenuItem key={item.label}>
 							<SidebarMenuButton
 								asChild
@@ -99,14 +102,14 @@ export function AppSidebar() {
 									className="font-mono text-xs tracking-wide text-muted-foreground no-underline"
 									activeProps={{
 										className:
-											"bg-primary/[0.06] font-bold text-primary no-underline",
+											'bg-primary/[0.06] font-bold text-primary no-underline',
 									}}
-									onKeyDown={(e) => {
-										if (e.key !== " ") {
-											return;
+									onKeyDown={e => {
+										if (e.key !== ' ') {
+											return
 										}
-										e.preventDefault();
-										e.currentTarget.click();
+										e.preventDefault()
+										e.currentTarget.click()
 									}}
 								>
 									<item.icon className="size-4" />
@@ -142,5 +145,5 @@ export function AppSidebar() {
 				</button>
 			</SidebarFooter>
 		</Sidebar>
-	);
+	)
 }

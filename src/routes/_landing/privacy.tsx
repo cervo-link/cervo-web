@@ -1,17 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/_landing/privacy")({
+export const Route = createFileRoute('/_landing/privacy')({
 	head: () => ({
 		meta: [
-			{ title: "Privacy Policy — Cervo" },
+			{ title: 'Privacy Policy — Cervo' },
 			{
-				name: "description",
-				content: "Cervo Privacy Policy",
+				name: 'description',
+				content: 'Cervo Privacy Policy',
 			},
 		],
 	}),
 	component: PrivacyPage,
-});
+})
 
 function PrivacyPage() {
 	return (
@@ -73,5 +73,5 @@ function PrivacyPage() {
 				</section>
 			</div>
 		</div>
-	);
+	)
 }

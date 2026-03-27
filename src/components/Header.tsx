@@ -1,19 +1,19 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Button } from "#/components/ui/button";
-import { authClient } from "#/lib/auth-client";
+import { Link, useNavigate } from '@tanstack/react-router'
+import { Button } from '#/components/ui/button'
+import { authClient } from '#/lib/auth-client'
 
 export default function Header() {
-	const { data: session } = authClient.useSession();
-	const navigate = useNavigate();
+	const { data: session } = authClient.useSession()
+	const navigate = useNavigate()
 
 	function handleSignOut() {
 		void authClient.signOut({
 			fetchOptions: {
 				onSuccess: () => {
-					void navigate({ to: "/sign-in" });
+					void navigate({ to: '/sign-in' })
 				},
 			},
-		});
+		})
 	}
 
 	return (
@@ -30,14 +30,14 @@ export default function Header() {
 					<Link
 						to="/"
 						className="text-muted-foreground no-underline transition-colors hover:text-foreground"
-						activeProps={{ className: "text-foreground no-underline" }}
+						activeProps={{ className: 'text-foreground no-underline' }}
 					>
 						Home
 					</Link>
 					<Link
 						to="/components"
 						className="text-muted-foreground no-underline transition-colors hover:text-foreground"
-						activeProps={{ className: "text-foreground no-underline" }}
+						activeProps={{ className: 'text-foreground no-underline' }}
 					>
 						Components
 					</Link>
@@ -66,5 +66,5 @@ export default function Header() {
 				</div>
 			</nav>
 		</header>
-	);
+	)
 }

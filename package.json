@@ -10,9 +10,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "format": "biome format",
-    "lint": "biome lint",
-    "check": "biome check",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint src",
+    "lint:fix": "biome lint --write src",
+    "format": "biome format --write src",
     "generate": "orval --config orval.config.ts"
   },
   "dependencies": {

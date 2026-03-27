@@ -1,55 +1,55 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ImageResponse } from "@vercel/og";
+import { createFileRoute } from '@tanstack/react-router'
+import { ImageResponse } from '@vercel/og'
 
-export const Route = createFileRoute("/api/og")({
+export const Route = createFileRoute('/api/og')({
 	server: {
 		handlers: {
 			GET: async ({ request }) => {
-				const url = new URL(request.url);
-				const rawTitle = url.searchParams.get("title") || "Cervo";
-				const rawSubtitle = url.searchParams.get("subtitle") || "";
+				const url = new URL(request.url)
+				const rawTitle = url.searchParams.get('title') || 'Cervo'
+				const rawSubtitle = url.searchParams.get('subtitle') || ''
 
-				const title = rawTitle.slice(0, 80).toUpperCase();
-				const subtitle = rawSubtitle.slice(0, 120);
+				const title = rawTitle.slice(0, 80).toUpperCase()
+				const subtitle = rawSubtitle.slice(0, 120)
 
-				const baseUrl = new URL("/", request.url);
+				const baseUrl = new URL('/', request.url)
 				const [boldFontData, regularFontData, logoData] = await Promise.all([
-					fetch(new URL("/JetBrainsMono-Bold.ttf", baseUrl)).then((res) =>
-						res.arrayBuffer(),
+					fetch(new URL('/JetBrainsMono-Bold.ttf', baseUrl)).then(res =>
+						res.arrayBuffer()
 					),
-					fetch(new URL("/JetBrainsMono-Regular.ttf", baseUrl)).then((res) =>
-						res.arrayBuffer(),
+					fetch(new URL('/JetBrainsMono-Regular.ttf', baseUrl)).then(res =>
+						res.arrayBuffer()
 					),
-					fetch(new URL("/cervo-og.png", baseUrl)).then((res) =>
-						res.arrayBuffer(),
+					fetch(new URL('/cervo-og.png', baseUrl)).then(res =>
+						res.arrayBuffer()
 					),
-				]);
+				])
 
-				const logoBase64 = `data:image/png;base64,${Buffer.from(logoData).toString("base64")}`;
+				const logoBase64 = `data:image/png;base64,${Buffer.from(logoData).toString('base64')}`
 
 				return new ImageResponse(
 					<div
 						style={{
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "center",
-							justifyContent: "center",
-							width: "1200px",
-							height: "630px",
-							backgroundColor: "#0D0D0D",
-							color: "#ffffff",
-							fontFamily: "JetBrains Mono",
-							gap: "48px",
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'center',
+							justifyContent: 'center',
+							width: '1200px',
+							height: '630px',
+							backgroundColor: '#0D0D0D',
+							color: '#ffffff',
+							fontFamily: 'JetBrains Mono',
+							gap: '48px',
 						}}
 					>
 						<div
 							style={{
-								fontSize: "100px",
+								fontSize: '100px',
 								fontWeight: 700,
-								fontStyle: "normal",
-								textAlign: "center",
+								fontStyle: 'normal',
+								textAlign: 'center',
 								lineHeight: 1.05,
-								maxWidth: "1000px",
+								maxWidth: '1000px',
 							}}
 						>
 							{title}
@@ -57,12 +57,12 @@ export const Route = createFileRoute("/api/og")({
 						{subtitle ? (
 							<div
 								style={{
-									fontSize: "48px",
+									fontSize: '48px',
 									fontWeight: 400,
-									fontStyle: "normal",
-									color: "#ffffff",
-									textAlign: "center",
-									maxWidth: "900px",
+									fontStyle: 'normal',
+									color: '#ffffff',
+									textAlign: 'center',
+									maxWidth: '900px',
 									lineHeight: 1.2,
 								}}
 							>
@@ -74,7 +74,7 @@ export const Route = createFileRoute("/api/og")({
 							alt="Cervo"
 							width={358}
 							height={110}
-							style={{ marginTop: "16px" }}
+							style={{ marginTop: '16px' }}
 						/>
 					</div>,
 					{
@@ -82,25 +82,25 @@ export const Route = createFileRoute("/api/og")({
 						height: 630,
 						fonts: [
 							{
-								name: "JetBrains Mono",
+								name: 'JetBrains Mono',
 								data: boldFontData,
 								weight: 700 as const,
-								style: "normal" as const,
+								style: 'normal' as const,
 							},
 							{
-								name: "JetBrains Mono",
+								name: 'JetBrains Mono',
 								data: regularFontData,
 								weight: 400 as const,
-								style: "normal" as const,
+								style: 'normal' as const,
 							},
 						],
 						headers: {
-							"Cache-Control":
-								"public, max-age=86400, s-maxage=31536000, immutable",
+							'Cache-Control':
+								'public, max-age=86400, s-maxage=31536000, immutable',
 						},
-					},
-				);
+					}
+				)
 			},
 		},
 	},
-});
+})

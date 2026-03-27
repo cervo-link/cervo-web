@@ -1,14 +1,14 @@
-import { ChevronDown, ClipboardPaste, Link, Sparkles } from "lucide-react";
-import { LandingButton } from "./landing-button";
-import { useScrollAnimation } from "./use-scroll-animation";
+import { ChevronDown, ClipboardPaste, Link, Sparkles } from 'lucide-react'
+import { LandingButton } from './landing-button'
+import { useScrollAnimation } from './use-scroll-animation'
 
 export function CtaBanner() {
-	const { ref, isVisible } = useScrollAnimation();
+	const { ref, isVisible } = useScrollAnimation()
 
 	return (
 		<section
 			ref={ref}
-			className={`py-8 transition-all duration-700 lg:py-16 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+			className={`py-8 transition-all duration-700 lg:py-16 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
 		>
 			<div className="relative overflow-hidden rounded-[16px]">
 				<MeshGradientBackground />
@@ -16,11 +16,10 @@ export function CtaBanner() {
 				<div className="relative z-10 flex flex-col items-center gap-6 px-6 py-10 text-center lg:flex-row lg:items-center lg:justify-between lg:px-16 lg:py-0 lg:text-left">
 					<div className="flex flex-col items-center gap-6 lg:items-start lg:min-h-[424px] lg:justify-center">
 						<h2 className="whitespace-pre-line font-sans text-[28px] font-extrabold leading-[1.2] text-white lg:text-[44px]">
-							{"Stop losing links.\nStart finding them."}
+							{'Stop losing links.\nStart finding them.'}
 						</h2>
 						<p className="max-w-[500px] font-sans text-[15px] text-white/90 lg:text-lg">
-							Save any URL. Cervo enriches it with AI. Find it
-							later by meaning.
+							Save any URL. Cervo enriches it with AI. Find it later by meaning.
 						</p>
 						<LandingButton
 							href="/sign-in"
@@ -37,7 +36,7 @@ export function CtaBanner() {
 				</div>
 			</div>
 		</section>
-	);
+	)
 }
 
 function MeshGradientBackground() {
@@ -48,19 +47,19 @@ function MeshGradientBackground() {
 				className="absolute inset-0 opacity-80"
 				style={{
 					background:
-						"radial-gradient(ellipse at 0% 0%, #03ff88 0%, transparent 50%), radial-gradient(ellipse at 100% 100%, #03ff88 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, #0e6d42 0%, transparent 60%), radial-gradient(ellipse at 0% 100%, #001d10 0%, transparent 50%), radial-gradient(ellipse at 100% 0%, #002e18 0%, transparent 50%)",
+						'radial-gradient(ellipse at 0% 0%, #03ff88 0%, transparent 50%), radial-gradient(ellipse at 100% 100%, #03ff88 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, #0e6d42 0%, transparent 60%), radial-gradient(ellipse at 0% 100%, #001d10 0%, transparent 50%), radial-gradient(ellipse at 100% 0%, #002e18 0%, transparent 50%)',
 				}}
 			/>
 			<div
 				className="absolute inset-0"
 				style={{
 					background:
-						"radial-gradient(ellipse at 30% 70%, #009b53 0%, transparent 40%)",
+						'radial-gradient(ellipse at 30% 70%, #009b53 0%, transparent 40%)',
 					opacity: 0.5,
 				}}
 			/>
 		</div>
-	);
+	)
 }
 
 function DecorativeIllustration() {
@@ -121,5 +120,5 @@ function DecorativeIllustration() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

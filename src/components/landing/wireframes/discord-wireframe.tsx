@@ -51,15 +51,15 @@ export function DiscordWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }
 
 function ChatMessage({
 	nameWidth,
 	textWidth,
 }: {
-	nameWidth: string;
-	textWidth: string;
+	nameWidth: string
+	textWidth: string
 }) {
 	return (
 		<div className="flex gap-2">
@@ -69,7 +69,7 @@ function ChatMessage({
 				<div className={`h-[5px] rounded bg-[#6a6a6a] ${textWidth}`} />
 			</div>
 		</div>
-	);
+	)
 }
 
 function CervoMessage() {
@@ -84,5 +84,5 @@ function CervoMessage() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

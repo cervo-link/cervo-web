@@ -1,28 +1,28 @@
-import type { ReactNode } from "react";
-import { LandingLink } from "./landing-link";
-import { useScrollAnimation } from "./use-scroll-animation";
+import type { ReactNode } from 'react'
+import { LandingLink } from './landing-link'
+import { useScrollAnimation } from './use-scroll-animation'
 
 interface FeatureCard {
-	icon: ReactNode;
-	title: string;
-	description: string;
+	icon: ReactNode
+	title: string
+	description: string
 }
 
 interface FeaturesGridProps {
-	cards: FeatureCard[];
-	footerLink?: { text: string; href: string };
+	cards: FeatureCard[]
+	footerLink?: { text: string; href: string }
 }
 
 export function FeaturesGrid({ cards, footerLink }: FeaturesGridProps) {
-	const { ref, isVisible } = useScrollAnimation();
+	const { ref, isVisible } = useScrollAnimation()
 
 	return (
 		<section
 			ref={ref}
-			className={`flex flex-col items-center gap-10 py-[60px] transition-all duration-700 lg:py-[120px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+			className={`flex flex-col items-center gap-10 py-[60px] transition-all duration-700 lg:py-[120px] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
 		>
 			<div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-3">
-				{cards.map((card) => (
+				{cards.map(card => (
 					<div key={card.title} className="flex flex-col items-center gap-2.5">
 						<div className="flex size-12 items-center justify-center rounded-[10px] bg-[#2A2A2A]">
 							{card.icon}
@@ -43,5 +43,5 @@ export function FeaturesGrid({ cards, footerLink }: FeaturesGridProps) {
 				</LandingLink>
 			)}
 		</section>
-	);
+	)
 }
