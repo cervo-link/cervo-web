@@ -16,8 +16,6 @@
 			"!**/src/styles.css",
 			"!**/src/api",
 			"!**/src/components/ui/**",
-			"!**/src/routes/_app/demo/**",
-			"!**/src/integrations/**"
 		]
 	},
 	"formatter": {
