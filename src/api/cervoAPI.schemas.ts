@@ -320,6 +320,46 @@ export type DeleteWorkspacesWorkspaceId500 = {
   message: string;
 };
 
+export type PostWorkspacesWorkspaceIdMembersBody = {
+  /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
+  email: string;
+};
+
+/**
+ * Member invited
+ */
+export type PostWorkspacesWorkspaceIdMembers201 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type PostWorkspacesWorkspaceIdMembers403 = {
+  message: string;
+};
+
+/**
+ * Workspace or member not found
+ */
+export type PostWorkspacesWorkspaceIdMembers404 = {
+  message: string;
+};
+
+/**
+ * Member already in workspace
+ */
+export type PostWorkspacesWorkspaceIdMembers422 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type PostWorkspacesWorkspaceIdMembers500 = {
+  message: string;
+};
+
 export type GetWorkspacesMe200WorkspacesItem = {
   id: string;
   /** @nullable */

@@ -10,12 +10,12 @@ import type {
 	GetMembersMe200Member,
 } from '#/api/cervoAPI.schemas'
 import { useGetMembersMe } from '#/api/members/members'
-import { useGetWorkspacesMe } from '#/api/workspaces/workspaces'
 import { LinkDetailView } from '#/components/LinkDetailView'
 import { LinkListItem } from '#/components/LinkListItem'
 import { Badge } from '#/components/ui/badge'
 import { Input } from '#/components/ui/input'
 import { Separator } from '#/components/ui/separator'
+import { useWorkspace } from '#/lib/workspace-context'
 
 export const Route = createFileRoute('/_dashboard/links')({
 	head: () => ({
@@ -70,13 +70,9 @@ function LinksPage() {
 	const listRef = useRef<HTMLDivElement>(null)
 
 	const { data: membersData } = useGetMembersMe()
-	const { data: workspacesData } = useGetWorkspacesMe()
+	const { workspace } = useWorkspace()
 	const member =
 		membersData?.status === 200 ? (membersData.data.member ?? null) : null
-	const workspace =
-		workspacesData?.status === 200
-			? (workspacesData.data.workspaces[0] ?? null)
-			: null
 
 	const isSearching = searchValue.trim().length > 0
 

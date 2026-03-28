@@ -44,7 +44,13 @@ import type {
   PostWorkspacesCreate400,
   PostWorkspacesCreate422,
   PostWorkspacesCreate500,
-  PostWorkspacesCreateBody
+  PostWorkspacesCreateBody,
+  PostWorkspacesWorkspaceIdMembers201,
+  PostWorkspacesWorkspaceIdMembers403,
+  PostWorkspacesWorkspaceIdMembers404,
+  PostWorkspacesWorkspaceIdMembers422,
+  PostWorkspacesWorkspaceIdMembers500,
+  PostWorkspacesWorkspaceIdMembersBody
 } from '../cervoAPI.schemas';
 
 import { apiClient } from '../../lib/api-client';
@@ -346,6 +352,108 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getDeleteWorkspacesWorkspaceIdMutationOptions(options), queryClient);
+    }
+    /**
+ * Invite a member to a workspace by email
+ */
+export type postWorkspacesWorkspaceIdMembersResponse201 = {
+  data: PostWorkspacesWorkspaceIdMembers201
+  status: 201
+}
+
+export type postWorkspacesWorkspaceIdMembersResponse403 = {
+  data: PostWorkspacesWorkspaceIdMembers403
+  status: 403
+}
+
+export type postWorkspacesWorkspaceIdMembersResponse404 = {
+  data: PostWorkspacesWorkspaceIdMembers404
+  status: 404
+}
+
+export type postWorkspacesWorkspaceIdMembersResponse422 = {
+  data: PostWorkspacesWorkspaceIdMembers422
+  status: 422
+}
+
+export type postWorkspacesWorkspaceIdMembersResponse500 = {
+  data: PostWorkspacesWorkspaceIdMembers500
+  status: 500
+}
+
+export type postWorkspacesWorkspaceIdMembersResponseSuccess = (postWorkspacesWorkspaceIdMembersResponse201) & {
+  headers: Headers;
+};
+export type postWorkspacesWorkspaceIdMembersResponseError = (postWorkspacesWorkspaceIdMembersResponse403 | postWorkspacesWorkspaceIdMembersResponse404 | postWorkspacesWorkspaceIdMembersResponse422 | postWorkspacesWorkspaceIdMembersResponse500) & {
+  headers: Headers;
+};
+
+export type postWorkspacesWorkspaceIdMembersResponse = (postWorkspacesWorkspaceIdMembersResponseSuccess | postWorkspacesWorkspaceIdMembersResponseError)
+
+export const getPostWorkspacesWorkspaceIdMembersUrl = (workspaceId: string,) => {
+
+
+
+
+  return `/workspaces/${workspaceId}/members`
+}
+
+export const postWorkspacesWorkspaceIdMembers = async (workspaceId: string,
+    postWorkspacesWorkspaceIdMembersBody: PostWorkspacesWorkspaceIdMembersBody, options?: RequestInit): Promise<postWorkspacesWorkspaceIdMembersResponse> => {
+
+  return apiClient<postWorkspacesWorkspaceIdMembersResponse>(getPostWorkspacesWorkspaceIdMembersUrl(workspaceId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postWorkspacesWorkspaceIdMembersBody,)
+  }
+);}
+
+
+
+
+export const getPostWorkspacesWorkspaceIdMembersMutationOptions = <TError = PostWorkspacesWorkspaceIdMembers403 | PostWorkspacesWorkspaceIdMembers404 | PostWorkspacesWorkspaceIdMembers422 | PostWorkspacesWorkspaceIdMembers500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdMembers>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdMembersBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdMembers>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdMembersBody}, TContext> => {
+
+const mutationKey = ['postWorkspacesWorkspaceIdMembers'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdMembers>>, {workspaceId: string;data: PostWorkspacesWorkspaceIdMembersBody}> = (props) => {
+          const {workspaceId,data} = props ?? {};
+
+          return  postWorkspacesWorkspaceIdMembers(workspaceId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostWorkspacesWorkspaceIdMembersMutationResult = NonNullable<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdMembers>>>
+    export type PostWorkspacesWorkspaceIdMembersMutationBody = PostWorkspacesWorkspaceIdMembersBody
+    export type PostWorkspacesWorkspaceIdMembersMutationError = PostWorkspacesWorkspaceIdMembers403 | PostWorkspacesWorkspaceIdMembers404 | PostWorkspacesWorkspaceIdMembers422 | PostWorkspacesWorkspaceIdMembers500
+
+    export const usePostWorkspacesWorkspaceIdMembers = <TError = PostWorkspacesWorkspaceIdMembers403 | PostWorkspacesWorkspaceIdMembers404 | PostWorkspacesWorkspaceIdMembers422 | PostWorkspacesWorkspaceIdMembers500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdMembers>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdMembersBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postWorkspacesWorkspaceIdMembers>>,
+        TError,
+        {workspaceId: string;data: PostWorkspacesWorkspaceIdMembersBody},
+        TContext
+      > => {
+      return useMutation(getPostWorkspacesWorkspaceIdMembersMutationOptions(options), queryClient);
     }
     /**
  * List all workspaces the authenticated member belongs to

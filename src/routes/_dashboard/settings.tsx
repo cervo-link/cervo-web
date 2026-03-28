@@ -14,6 +14,7 @@ import {
 	deleteWorkspacesWorkspaceId,
 	getGetWorkspacesMeQueryKey,
 	patchWorkspacesWorkspaceId,
+	postWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
 import { useWorkspace } from '#/lib/workspace-context'
 
@@ -120,7 +121,19 @@ function WorkspaceDetails({
 	)
 	const [wsIsPublic, setWsIsPublic] = useState(workspace?.isPublic ?? false)
 	const [providerId, setProviderId] = useState('')
+	const [inviteEmail, setInviteEmail] = useState('')
 	const queryClient = useQueryClient()
+
+	const { mutate: inviteMember, isPending: isInviting } = useMutation({
+		mutationFn: (email: string) =>
+			postWorkspacesWorkspaceIdMembers(workspace?.id ?? '', { email }),
+		onSuccess: result => {
+			if (result.status !== 201) return
+			setInviteEmail('')
+			toast.success('Member invited.')
+		},
+		onError: () => toast.error('Failed to invite member.'),
+	})
 
 	const { mutate: addIntegration, isPending: isAddingIntegration } =
 		useMutation({
@@ -169,6 +182,11 @@ function WorkspaceDetails({
 		if (descriptionChanged) payload.description = wsDescription.trim() || null
 		if (visibilityChanged) payload.isPublic = wsIsPublic
 		updateWorkspace(payload)
+	}
+
+	function handleInviteMember() {
+		if (!inviteEmail.trim()) return
+		inviteMember(inviteEmail.trim())
 	}
 
 	function handleAddIntegration() {
@@ -291,6 +309,25 @@ function WorkspaceDetails({
 						) : (
 							<div className="h-16 animate-pulse" />
 						)}
+					</div>
+					<div className="flex gap-2">
+						<input
+							value={inviteEmail}
+							onChange={e => setInviteEmail(e.target.value)}
+							onKeyDown={e => {
+								if (e.key === 'Enter') handleInviteMember()
+							}}
+							placeholder="Invite by email..."
+							className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] hover:border-primary focus:border-primary"
+						/>
+						<button
+							type="button"
+							onClick={handleInviteMember}
+							disabled={!inviteEmail.trim() || isInviting}
+							className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+						>
+							{isInviting ? 'INVITING...' : 'INVITE'}
+						</button>
 					</div>
 				</div>
 			)}
