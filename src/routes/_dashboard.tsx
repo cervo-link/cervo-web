@@ -7,6 +7,7 @@ import {
 } from '#/components/ui/sidebar'
 // Toaster moved to LinkDetailView for SSR module singleton compatibility
 import { authClient } from '#/lib/auth-client'
+import { WorkspaceProvider } from '#/lib/workspace-context'
 
 export const Route = createFileRoute('/_dashboard')({
 	component: DashboardLayout,
@@ -32,14 +33,16 @@ function DashboardLayout() {
 	// }
 
 	return (
-		<SidebarProvider>
-			<AppSidebar />
-			<SidebarInset>
-				<header className="flex h-12 items-center px-4 md:hidden">
-					<SidebarTrigger />
-				</header>
-				<Outlet />
-			</SidebarInset>
-		</SidebarProvider>
+		<WorkspaceProvider>
+			<SidebarProvider>
+				<AppSidebar />
+				<SidebarInset>
+					<header className="flex h-12 items-center px-4 md:hidden">
+						<SidebarTrigger />
+					</header>
+					<Outlet />
+				</SidebarInset>
+			</SidebarProvider>
+		</WorkspaceProvider>
 	)
 }

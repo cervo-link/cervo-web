@@ -1,125 +1,126 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Globe, Hash, Lock, Plus, Trash2, Users, Zap } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import type {
-	GetMembersMe200Member,
-	GetWorkspacesMe200WorkspacesItem,
-} from '#/api/cervoAPI.schemas'
+import type { GetMembersMe200Member } from '#/api/cervoAPI.schemas'
 import { useGetMembersMe } from '#/api/members/members'
+import { getGetWorkspacesMeQueryKey } from '#/api/workspaces/workspaces'
 import { usePostWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
-import { useGetWorkspacesMe } from '#/api/workspaces/workspaces'
-import { Input } from '#/components/ui/input'
-import { Separator } from '#/components/ui/separator'
+import { clientEnv } from '#/lib/env'
+import { useWorkspace } from '#/lib/workspace-context'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/_dashboard/settings')({
 	head: () => ({
 		meta: [
-			{ title: 'Workspace — Cervo' },
-			{
-				name: 'description',
-				content: 'Workspace settings',
-			},
+			{ title: 'Workspace Settings — Cervo' },
+			{ name: 'description', content: 'Workspace settings' },
 		],
 	}),
 	component: SettingsPage,
 })
 
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
 	return (
-		<span className="font-mono text-[11px] font-medium tracking-[0.5px] text-[#6a6a6a]">
+		<span className="font-mono text-[11px] font-semibold tracking-[0.5px] text-[#6a6a6a]">
 			{children}
 		</span>
 	)
 }
 
-function ReadOnlyField({ label, value }: { label: string; value: string }) {
-	return (
-		<div className="flex flex-col gap-1.5">
-			<span className="font-mono text-[11px] font-medium text-[#6a6a6a]">
-				{label}
-			</span>
-			<div className="flex h-11 items-center border border-sidebar-border bg-[#0A0A0A] px-4">
-				<span className="font-mono text-[13px] font-medium text-foreground">
-					{value}
-				</span>
-			</div>
-		</div>
-	)
-}
-
-function SettingsSection({
-	icon: Icon,
-	title,
-	description,
-	children,
+function MemberRow({
+	member,
+	role = 'Member',
 }: {
-	icon: React.ElementType
-	title: string
-	description?: string
-	children: React.ReactNode
+	member: GetMembersMe200Member
+	role?: 'Owner' | 'Member' | 'Guest'
 }) {
+	const initial = (member.name ?? member.email ?? '?')[0].toUpperCase()
+	const isOwner = role === 'Owner'
+
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="flex items-start gap-3">
-				<div className="flex size-9 items-center justify-center border border-sidebar-border bg-[#141414]">
-					<Icon className="size-4 text-muted-foreground" />
+		<div className="flex items-center justify-between px-5 py-4">
+			<div className="flex items-center gap-3">
+				<div className="flex size-8 items-center justify-center bg-[#1A1A1A]">
+					<span
+						className={`font-mono text-[12px] font-semibold ${isOwner ? 'text-[#00FF88]' : 'text-[#8a8a8a]'}`}
+					>
+						{initial}
+					</span>
 				</div>
 				<div className="flex flex-col gap-0.5">
-					<span className="font-mono text-[13px] font-medium text-foreground">
-						{title}
+					<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
+						{member.name ?? member.username ?? 'Unknown'}
 					</span>
-					{description && (
-						<span className="font-mono text-[12px] text-[#8a8a8a]">
-							{description}
-						</span>
-					)}
+					<span className="font-mono text-[11px] tracking-[0.5px] text-[#6a6a6a]">
+						{member.email ?? ''}
+					</span>
 				</div>
 			</div>
-			<div className="ml-12 flex flex-col gap-4">{children}</div>
-		</div>
-	)
-}
-
-function MemberRow({ member }: { member: GetMembersMe200Member }) {
-	const initials = (member.name ?? member.email ?? '?')
-		.split(' ')
-		.map(p => p[0])
-		.join('')
-		.toUpperCase()
-		.slice(0, 2)
-
-	return (
-		<div className="flex h-11 items-center gap-3 border border-sidebar-border bg-[#141414] px-4">
-			<div className="flex size-6 items-center justify-center bg-sidebar-accent font-mono text-[10px] font-bold text-foreground">
-				{initials}
+			<div className="flex items-center gap-3">
+				<div
+					className={`flex items-center px-2 py-1 ${isOwner ? 'bg-[#00FF8820]' : 'bg-[#141414]'}`}
+				>
+					<span
+						className={`font-mono text-[9px] font-bold tracking-[0.5px] ${isOwner ? 'text-[#00FF88]' : 'text-[#8a8a8a]'}`}
+					>
+						{role}
+					</span>
+				</div>
+				{!isOwner && (
+					<button
+						type="button"
+						className="flex size-7 items-center justify-center text-[#6a6a6a] transition-colors hover:text-[#FF4444]"
+					>
+						<Trash2 className="size-3.5" />
+					</button>
+				)}
 			</div>
-			<span className="flex-1 font-mono text-[13px] font-medium text-foreground">
-				{member.name ?? member.username ?? member.email ?? 'Unknown'}
-			</span>
-			<span className="font-mono text-[11px] text-[#6a6a6a]">you</span>
 		</div>
 	)
 }
 
-function WorkspaceDetails({
-	workspace,
-	member,
-}: {
-	workspace: GetWorkspacesMe200WorkspacesItem
-	member: GetMembersMe200Member | null
-}) {
-	const provider = 'discord'
+function WorkspaceDetails({ member }: { member: GetMembersMe200Member | null }) {
+	const { workspace, setWorkspace, workspaces } = useWorkspace()
+	const [wsName, setWsName] = useState(workspace?.name ?? '')
 	const [providerId, setProviderId] = useState('')
+	const queryClient = useQueryClient()
+
+	if (!workspace) return null
 	const { mutate: addIntegration, isPending: isAddingIntegration } =
 		usePostWorkspacesWorkspaceIdIntegrations()
+
+	const { mutate: deleteWorkspace, isPending: isDeleting } = useMutation({
+		mutationFn: async (workspaceId: string) => {
+			const res = await fetch(
+				`${clientEnv.VITE_API_URL}/workspaces/${workspaceId}`,
+				{ method: 'DELETE', credentials: 'include' }
+			)
+			if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+		},
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({
+				queryKey: getGetWorkspacesMeQueryKey(),
+			})
+			const remaining = workspaces.filter(ws => ws.id !== workspace.id)
+			if (remaining.length > 0) setWorkspace(remaining[0])
+			toast.success('Workspace deleted.')
+		},
+		onError: () => toast.error('Failed to delete workspace.'),
+	})
+
+	function handleDeleteWorkspace() {
+		if (!confirm(`Delete "${workspace.name}"? This cannot be undone.`)) return
+		deleteWorkspace(workspace.id)
+	}
 
 	function handleAddIntegration() {
 		if (!providerId.trim()) return
 		addIntegration(
 			{
 				workspaceId: workspace.id,
-				data: { provider, providerId: providerId.trim() },
+				data: { provider: 'discord', providerId: providerId.trim() },
 			},
 			{
 				onSuccess: () => {
@@ -134,131 +135,132 @@ function WorkspaceDetails({
 	}
 
 	return (
-		<div className="flex flex-col gap-10">
-			{/* Workspace Info */}
-			<div className="flex flex-col gap-5">
-				<SectionLabel>WORKSPACE INFO</SectionLabel>
-				<Separator className="bg-[#2f2f2f]" />
-				<SettingsSection
-					icon={Hash}
-					title="Details"
-					description="Your workspace name and visibility settings."
-				>
-					<div className="flex flex-col gap-3">
-						<ReadOnlyField label="Name" value={workspace.name} />
+		<div className="flex max-w-2xl flex-col gap-10">
+			{/* GENERAL */}
+			<div className="flex flex-col gap-4">
+				<SectionLabel>GENERAL</SectionLabel>
+				<div className="border border-[#2f2f2f] bg-[#0A0A0A] p-6">
+					<div className="flex flex-col gap-5">
+						<div className="flex flex-col gap-2">
+							<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
+								Workspace Name
+							</span>
+							<span className="font-mono text-[11px] leading-relaxed text-[#6a6a6a]">
+								This is your workspace display name visible to all members.
+							</span>
+						</div>
 						{workspace.isPersonal && (
 							<p className="font-mono text-[12px] leading-relaxed text-[#8a8a8a]">
 								This is your personal workspace. Using this workspace you can
 								search links across all workspaces you belong to.
 							</p>
 						)}
-						<ReadOnlyField
-							label="Description"
-							value={workspace.description ?? '—'}
-						/>
-						<div className="flex flex-col gap-1.5">
-							<span className="font-mono text-[11px] font-medium text-[#6a6a6a]">
-								Visibility
-							</span>
-							<div className="flex h-11 items-center gap-2.5 border border-sidebar-border bg-[#0A0A0A] px-4">
-								{workspace.isPublic ? (
-									<Globe className="size-3.5 text-muted-foreground" />
-								) : (
-									<Lock className="size-3.5 text-muted-foreground" />
-								)}
-								<span className="font-mono text-[13px] font-medium text-foreground">
-									{workspace.isPublic ? 'Public' : 'Private'}
-								</span>
-							</div>
+						<div className="flex items-center gap-3">
+							<input
+								value={wsName}
+								disabled={workspace.isPersonal}
+								onChange={e => setWsName(e.target.value)}
+								className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary focus:border-primary disabled:hover:border-[#2f2f2f]"
+							/>
+							<button
+								type="button"
+								disabled={
+									workspace.isPersonal ||
+									wsName.trim() === workspace.name ||
+									!wsName.trim()
+								}
+								className="flex h-11 items-center border border-[#00FF88] bg-[#00FF88] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[#00E07A]"
+							>
+								SAVE
+							</button>
 						</div>
 					</div>
-				</SettingsSection>
+				</div>
 			</div>
 
-			{/* Members */}
+			{/* MEMBERS */}
 			{!workspace.isPersonal && (
-				<div className="flex flex-col gap-5">
+				<div className="flex flex-col gap-4">
 					<SectionLabel>MEMBERS</SectionLabel>
-					<Separator className="bg-[#2f2f2f]" />
-					<SettingsSection
-						icon={Users}
-						title="Team members"
-						description="People who have access to this workspace."
-					>
-						<div className="flex flex-col gap-2">
-							{member ? (
-								<MemberRow member={member} />
-							) : (
-								<div className="h-11 animate-pulse border border-sidebar-border bg-[#141414]" />
-							)}
-						</div>
-					</SettingsSection>
+					<div className="border border-[#2f2f2f] bg-[#0A0A0A]">
+						{member ? (
+							<MemberRow member={member} role="Owner" />
+						) : (
+							<div className="h-16 animate-pulse" />
+						)}
+					</div>
 				</div>
 			)}
 
-			{/* Integrations */}
-			<div className="flex flex-col gap-5">
+			{/* INTEGRATIONS */}
+			<div className="flex flex-col gap-4">
 				<SectionLabel>INTEGRATIONS</SectionLabel>
-				<Separator className="bg-[#2f2f2f]" />
-				<SettingsSection
-					icon={Zap}
-					title="Platform integrations"
-					description="Connect bots and external services to this workspace."
-				>
-					<div className="flex flex-col gap-3">
-						<div className="flex flex-col gap-1.5">
-							<span className="font-mono text-[11px] font-medium text-[#6a6a6a]">
-								Provider
-							</span>
-							<div className="flex h-11 items-center border border-sidebar-border bg-[#0A0A0A] px-4">
-								<span className="font-mono text-[13px] font-medium text-foreground">
-									discord
+				<div className="border border-[#2f2f2f] bg-[#0A0A0A] p-5">
+					<div className="flex flex-col gap-4">
+						<div className="flex items-center gap-3">
+							<div className="flex size-9 items-center justify-center bg-[#5865F2]">
+								<span className="font-mono text-base font-bold text-white">
+									D
 								</span>
 							</div>
-						</div>
-						<div className="flex gap-2">
-							<Input
-								value={providerId}
-								onChange={e => setProviderId(e.target.value)}
-								onKeyDown={e => {
-									if (e.key === 'Enter') handleAddIntegration()
-								}}
-								placeholder="Guild or channel ID..."
-								className="h-11 border-sidebar-border bg-[#0A0A0A] font-mono text-[13px] font-medium text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary focus-visible:border-primary focus-visible:ring-0"
-							/>
+							<div className="flex flex-1 flex-col gap-0.5">
+								<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
+									Discord
+								</span>
+								<span className="font-mono text-[11px] text-[#6a6a6a]">
+									Discord server integration
+								</span>
+							</div>
 							<button
 								type="button"
 								onClick={handleAddIntegration}
 								disabled={!providerId.trim() || isAddingIntegration}
-								className="flex h-11 items-center gap-2 border border-sidebar-border bg-[#141414] px-5 font-mono text-[13px] font-medium text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+								className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
 							>
-								<Plus className="size-3.5" />
-								{isAddingIntegration ? 'Connecting...' : 'Connect'}
+								{isAddingIntegration ? 'CONNECTING...' : 'CONNECT DISCORD'}
+							</button>
+						</div>
+						<p className="font-mono text-[12px] leading-relaxed text-[#6a6a6a]">
+							Connect your Discord server to automatically save links shared in
+							your channels.
+						</p>
+						<input
+							value={providerId}
+							onChange={e => setProviderId(e.target.value)}
+							onKeyDown={e => {
+								if (e.key === 'Enter') handleAddIntegration()
+							}}
+							placeholder="Guild or server ID..."
+							className="h-11 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] hover:border-primary focus:border-primary"
+						/>
+					</div>
+				</div>
+			</div>
+
+			{/* DANGER ZONE */}
+			{!workspace.isPersonal && (
+				<div className="flex flex-col gap-4">
+					<SectionLabel>DANGER ZONE</SectionLabel>
+					<div className="border border-[#3a1a1a] bg-[#0A0A0A] p-5">
+						<div className="flex flex-col gap-3">
+							<span className="font-mono text-[13px] font-semibold text-foreground">
+								Delete workspace
+							</span>
+							<p className="font-mono text-[12px] leading-relaxed text-[#6a6a6a]">
+								Permanently delete this workspace and all its data. This cannot
+								be undone.
+							</p>
+							<button
+								type="button"
+								onClick={handleDeleteWorkspace}
+								disabled={isDeleting}
+								className="flex h-10 w-fit cursor-pointer items-center gap-2 bg-[#FF4444] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-white transition-colors hover:bg-[#E63C3C] active:bg-[#CC3333] disabled:cursor-not-allowed disabled:opacity-40"
+							>
+								<Trash2 className="size-3.5" />
+								{isDeleting ? 'DELETING...' : 'DELETE WORKSPACE'}
 							</button>
 						</div>
 					</div>
-				</SettingsSection>
-			</div>
-
-			{/* Danger Zone */}
-			{!workspace.isPersonal && (
-				<div className="flex flex-col gap-5">
-					<SectionLabel>DANGER ZONE</SectionLabel>
-					<Separator className="bg-[#2f2f2f]" />
-					<SettingsSection
-						icon={Trash2}
-						title="Delete workspace"
-						description="Permanently delete this workspace and all its data. This cannot be undone."
-					>
-						<button
-							type="button"
-							disabled
-							className="flex h-11 w-fit items-center gap-2 border border-[#3a1a1a] bg-[#1a0a0a] px-5 font-mono text-[13px] font-medium text-[#8a4a4a] transition-colors hover:border-red-800 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
-						>
-							<Trash2 className="size-3.5" />
-							Delete workspace
-						</button>
-					</SettingsSection>
 				</div>
 			)}
 		</div>
@@ -266,55 +268,30 @@ function WorkspaceDetails({
 }
 
 function SettingsPage() {
-	const { data: workspacesRaw } = useGetWorkspacesMe()
+	const { workspace } = useWorkspace()
 	const { data: membersMeRaw } = useGetMembersMe()
-	const [selectedIndex, setSelectedIndex] = useState(0)
-
-	const workspaces =
-		(
-			workspacesRaw as unknown as
-				| { workspaces: GetWorkspacesMe200WorkspacesItem[] }
-				| undefined
-		)?.workspaces ?? []
 
 	const member =
 		(membersMeRaw as unknown as { member: GetMembersMe200Member } | undefined)
 			?.member ?? null
 
-	const workspace = workspaces[selectedIndex] ?? null
-
 	return (
 		<div className="flex h-full flex-col gap-10 p-8 md:px-10">
-			<h1 className="font-heading text-4xl font-bold tracking-tight text-foreground">
-				Workspace
-			</h1>
-
-			{workspaces.length > 1 && (
-				<div className="flex gap-0">
-					{workspaces.map((ws, i) => (
-						<button
-							key={ws.id}
-							type="button"
-							onClick={() => setSelectedIndex(i)}
-							className={`h-11 border px-5 font-mono text-[13px] font-medium transition-colors ${
-								i === selectedIndex
-									? 'border-primary bg-primary/[0.06] text-primary'
-									: 'border-sidebar-border bg-[#141414] text-muted-foreground hover:border-primary hover:text-foreground'
-							} ${i > 0 ? '-ml-px' : ''}`}
-						>
-							{ws.name}
-						</button>
-					))}
-				</div>
-			)}
-
-			<div className="max-w-2xl">
-				{workspace ? (
-					<WorkspaceDetails workspace={workspace} member={member} />
-				) : (
-					<div className="h-11 animate-pulse border border-sidebar-border bg-[#141414]" />
-				)}
+			{/* Header */}
+			<div className="flex flex-col gap-3">
+				<h1 className="font-heading text-[42px] font-bold leading-none tracking-tight text-foreground">
+					Workspace Settings
+				</h1>
+				<p className="font-mono text-[14px] text-[#8a8a8a]">
+					Manage workspace members and integrations.
+				</p>
 			</div>
+
+			{workspace ? (
+				<WorkspaceDetails key={workspace.id} member={member} />
+			) : (
+				<div className="h-11 animate-pulse border border-sidebar-border bg-[#141414]" />
+			)}
 		</div>
 	)
 }
