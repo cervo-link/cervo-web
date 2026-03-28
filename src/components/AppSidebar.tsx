@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import {
 	ChevronDown,
@@ -28,7 +29,6 @@ import {
 } from '#/components/ui/sidebar'
 import { authClient } from '#/lib/auth-client'
 import { useWorkspace } from '#/lib/workspace-context'
-import { useQueryClient } from '@tanstack/react-query'
 
 const NAV_ITEMS = [
 	{ label: 'Links', to: '/links', icon: LinkIcon },
@@ -54,11 +54,8 @@ function WorkspaceDropdown() {
 
 	const queryClient = useQueryClient()
 	const { data: membersMeRaw } = useGetMembersMe()
-	const memberId = (
-		membersMeRaw as unknown as
-			| { member: { id: string } }
-			| undefined
-	)?.member?.id
+	const memberId =
+		membersMeRaw?.status === 200 ? membersMeRaw.data.member.id : undefined
 
 	const { mutate: createWorkspace, isPending: isCreating } =
 		usePostWorkspacesCreate()
@@ -81,8 +78,7 @@ function WorkspaceDropdown() {
 
 	useEffect(() => {
 		const handler = (e: MouseEvent) => {
-			if (ref.current && !ref.current.contains(e.target as Node))
-				setOpen(false)
+			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
 		}
 		document.addEventListener('mousedown', handler)
 		return () => document.removeEventListener('mousedown', handler)

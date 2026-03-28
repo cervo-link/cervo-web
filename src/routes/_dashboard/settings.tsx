@@ -1,14 +1,14 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { Trash2 } from 'lucide-react'
+import { Globe, Lock, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import type { GetMembersMe200Member } from '#/api/cervoAPI.schemas'
 import { useGetMembersMe } from '#/api/members/members'
-import { getGetWorkspacesMeQueryKey } from '#/api/workspaces/workspaces'
 import { usePostWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
+import { getGetWorkspacesMeQueryKey } from '#/api/workspaces/workspaces'
 import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/_dashboard/settings')({
 	head: () => ({
@@ -20,7 +20,6 @@ export const Route = createFileRoute('/_dashboard/settings')({
 	component: SettingsPage,
 })
 
-
 function SectionLabel({ children }: { children: React.ReactNode }) {
 	return (
 		<span className="font-mono text-[11px] font-semibold tracking-[0.5px] text-[#6a6a6a]">
@@ -29,15 +28,36 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 	)
 }
 
+function FieldLabel({
+	children,
+	description,
+}: {
+	children: React.ReactNode
+	description?: string
+}) {
+	return (
+		<div className="flex flex-col gap-1">
+			<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
+				{children}
+			</span>
+			{description && (
+				<span className="font-mono text-[11px] leading-relaxed text-[#6a6a6a]">
+					{description}
+				</span>
+			)}
+		</div>
+	)
+}
+
 function MemberRow({
 	member,
-	role = 'Member',
+	memberRole = 'Member',
 }: {
 	member: GetMembersMe200Member
-	role?: 'Owner' | 'Member' | 'Guest'
+	memberRole?: 'Owner' | 'Member' | 'Guest'
 }) {
 	const initial = (member.name ?? member.email ?? '?')[0].toUpperCase()
-	const isOwner = role === 'Owner'
+	const isOwner = memberRole === 'Owner'
 
 	return (
 		<div className="flex items-center justify-between px-5 py-4">
@@ -65,7 +85,7 @@ function MemberRow({
 					<span
 						className={`font-mono text-[9px] font-bold tracking-[0.5px] ${isOwner ? 'text-[#00FF88]' : 'text-[#8a8a8a]'}`}
 					>
-						{role}
+						{memberRole}
 					</span>
 				</div>
 				{!isOwner && (
@@ -81,15 +101,54 @@ function MemberRow({
 	)
 }
 
-function WorkspaceDetails({ member }: { member: GetMembersMe200Member | null }) {
+interface UpdateWorkspacePayload {
+	name?: string
+	description?: string | null
+	isPublic?: boolean
+}
+
+function WorkspaceDetails({
+	member,
+}: {
+	member: GetMembersMe200Member | null
+}) {
 	const { workspace, setWorkspace, workspaces } = useWorkspace()
 	const [wsName, setWsName] = useState(workspace?.name ?? '')
+	const [wsDescription, setWsDescription] = useState(
+		workspace?.description ?? ''
+	)
+	const [wsIsPublic, setWsIsPublic] = useState(workspace?.isPublic ?? false)
 	const [providerId, setProviderId] = useState('')
 	const queryClient = useQueryClient()
 
-	if (!workspace) return null
 	const { mutate: addIntegration, isPending: isAddingIntegration } =
 		usePostWorkspacesWorkspaceIdIntegrations()
+
+	const { mutate: updateWorkspace, isPending: isSaving } = useMutation({
+		mutationFn: async (payload: UpdateWorkspacePayload) => {
+			const res = await fetch(
+				`${clientEnv.VITE_API_URL}/workspaces/${workspace?.id}`,
+				{
+					method: 'PATCH',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(payload),
+				}
+			)
+			if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+			return res.json() as Promise<{
+				workspace: NonNullable<typeof workspace>
+			}>
+		},
+		onSuccess: async ({ workspace: updated }) => {
+			setWorkspace(updated)
+			await queryClient.invalidateQueries({
+				queryKey: getGetWorkspacesMeQueryKey(),
+			})
+			toast.success('Workspace updated.')
+		},
+		onError: () => toast.error('Failed to update workspace.'),
+	})
 
 	const { mutate: deleteWorkspace, isPending: isDeleting } = useMutation({
 		mutationFn: async (workspaceId: string) => {
@@ -103,16 +162,27 @@ function WorkspaceDetails({ member }: { member: GetMembersMe200Member | null }) 
 			await queryClient.invalidateQueries({
 				queryKey: getGetWorkspacesMeQueryKey(),
 			})
-			const remaining = workspaces.filter(ws => ws.id !== workspace.id)
+			const remaining = workspaces.filter(ws => ws.id !== workspace?.id)
 			if (remaining.length > 0) setWorkspace(remaining[0])
 			toast.success('Workspace deleted.')
 		},
 		onError: () => toast.error('Failed to delete workspace.'),
 	})
 
-	function handleDeleteWorkspace() {
-		if (!confirm(`Delete "${workspace.name}"? This cannot be undone.`)) return
-		deleteWorkspace(workspace.id)
+	if (!workspace) return null
+
+	const nameChanged = wsName.trim() !== workspace.name
+	const descriptionChanged =
+		(wsDescription.trim() || null) !== workspace.description
+	const visibilityChanged = wsIsPublic !== workspace.isPublic
+	const hasChanges = nameChanged || descriptionChanged || visibilityChanged
+
+	function handleSave() {
+		const payload: UpdateWorkspacePayload = {}
+		if (nameChanged) payload.name = wsName.trim()
+		if (descriptionChanged) payload.description = wsDescription.trim() || null
+		if (visibilityChanged) payload.isPublic = wsIsPublic
+		updateWorkspace(payload)
 	}
 
 	function handleAddIntegration() {
@@ -134,46 +204,96 @@ function WorkspaceDetails({ member }: { member: GetMembersMe200Member | null }) 
 		)
 	}
 
+	function handleDeleteWorkspace() {
+		if (!confirm(`Delete "${workspace.name}"? This cannot be undone.`)) return
+		deleteWorkspace(workspace.id)
+	}
+
 	return (
 		<div className="flex max-w-2xl flex-col gap-10">
 			{/* GENERAL */}
 			<div className="flex flex-col gap-4">
 				<SectionLabel>GENERAL</SectionLabel>
 				<div className="border border-[#2f2f2f] bg-[#0A0A0A] p-6">
-					<div className="flex flex-col gap-5">
-						<div className="flex flex-col gap-2">
-							<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
-								Workspace Name
-							</span>
-							<span className="font-mono text-[11px] leading-relaxed text-[#6a6a6a]">
-								This is your workspace display name visible to all members.
-							</span>
-						</div>
+					<div className="flex flex-col gap-6">
 						{workspace.isPersonal && (
 							<p className="font-mono text-[12px] leading-relaxed text-[#8a8a8a]">
 								This is your personal workspace. Using this workspace you can
 								search links across all workspaces you belong to.
 							</p>
 						)}
-						<div className="flex items-center gap-3">
+
+						{/* Name */}
+						<div className="flex flex-col gap-2">
+							<FieldLabel description="Displayed to all workspace members.">
+								Workspace Name
+							</FieldLabel>
 							<input
 								value={wsName}
 								disabled={workspace.isPersonal}
 								onChange={e => setWsName(e.target.value)}
-								className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary focus:border-primary disabled:hover:border-[#2f2f2f]"
+								placeholder="Workspace name..."
+								className="h-11 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary focus:border-primary disabled:hover:border-[#2f2f2f]"
 							/>
+						</div>
+
+						{/* Description */}
+						<div className="flex flex-col gap-2">
+							<FieldLabel description="A short description of what this workspace is for.">
+								Description
+							</FieldLabel>
+							<textarea
+								value={wsDescription}
+								disabled={workspace.isPersonal}
+								onChange={e => setWsDescription(e.target.value)}
+								placeholder="Optional description..."
+								rows={3}
+								className="resize-none border border-[#2f2f2f] bg-[#141414] px-3.5 py-3 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary focus:border-primary disabled:hover:border-[#2f2f2f]"
+							/>
+						</div>
+
+						{/* Visibility */}
+						<div className="flex items-center justify-between gap-4">
+							<div className="flex flex-col gap-1">
+								<FieldLabel>Visibility</FieldLabel>
+								<span className="font-mono text-[11px] leading-relaxed text-[#6a6a6a]">
+									{wsIsPublic
+										? 'Anyone with the workspace ID can find it.'
+										: 'Only members you invite can access this workspace.'}
+								</span>
+							</div>
 							<button
 								type="button"
-								disabled={
-									workspace.isPersonal ||
-									wsName.trim() === workspace.name ||
-									!wsName.trim()
-								}
-								className="flex h-11 items-center border border-[#00FF88] bg-[#00FF88] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[#00E07A]"
+								disabled={workspace.isPersonal}
+								onClick={() => setWsIsPublic(v => !v)}
+								className={`flex h-10 shrink-0 items-center gap-2 border px-4 font-mono text-[11px] font-bold tracking-[0.5px] transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+									wsIsPublic
+										? 'border-primary bg-primary/[0.06] text-primary hover:bg-primary/[0.12]'
+										: 'border-[#2f2f2f] bg-[#141414] text-[#8a8a8a] hover:border-primary hover:text-foreground'
+								}`}
 							>
-								SAVE
+								{wsIsPublic ? (
+									<Globe className="size-3.5" />
+								) : (
+									<Lock className="size-3.5" />
+								)}
+								{wsIsPublic ? 'PUBLIC' : 'PRIVATE'}
 							</button>
 						</div>
+
+						{/* Save */}
+						{!workspace.isPersonal && (
+							<div className="flex justify-end">
+								<button
+									type="button"
+									onClick={handleSave}
+									disabled={!hasChanges || isSaving}
+									className="flex h-11 items-center border border-[#00FF88] bg-[#00FF88] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[#00E07A]"
+								>
+									{isSaving ? 'SAVING...' : 'SAVE CHANGES'}
+								</button>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -184,7 +304,7 @@ function WorkspaceDetails({ member }: { member: GetMembersMe200Member | null }) 
 					<SectionLabel>MEMBERS</SectionLabel>
 					<div className="border border-[#2f2f2f] bg-[#0A0A0A]">
 						{member ? (
-							<MemberRow member={member} role="Owner" />
+							<MemberRow member={member} memberRole="Owner" />
 						) : (
 							<div className="h-16 animate-pulse" />
 						)}
@@ -271,9 +391,7 @@ function SettingsPage() {
 	const { workspace } = useWorkspace()
 	const { data: membersMeRaw } = useGetMembersMe()
 
-	const member =
-		(membersMeRaw as unknown as { member: GetMembersMe200Member } | undefined)
-			?.member ?? null
+	const member = membersMeRaw?.status === 200 ? membersMeRaw.data.member : null
 
 	return (
 		<div className="flex h-full flex-col gap-10 p-8 md:px-10">

@@ -15,11 +15,7 @@ const WorkspaceContext = createContext<WorkspaceContextValue | null>(null)
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 	const { data, isLoading } = useGetWorkspacesMe()
 	const workspaces =
-		(
-			data as unknown as
-				| { workspaces: GetWorkspacesMe200WorkspacesItem[] }
-				| undefined
-		)?.workspaces ?? []
+		(data?.status === 200 ? data.data.workspaces : undefined) ?? []
 
 	const [workspace, setWorkspace] =
 		useState<GetWorkspacesMe200WorkspacesItem | null>(null)
@@ -48,7 +44,13 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 
 	return (
 		<WorkspaceContext.Provider
-			value={{ workspaces, workspace, setWorkspace, selectAfterRefresh, isLoading }}
+			value={{
+				workspaces,
+				workspace,
+				setWorkspace,
+				selectAfterRefresh,
+				isLoading,
+			}}
 		>
 			{children}
 		</WorkspaceContext.Provider>
@@ -57,6 +59,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 
 export function useWorkspace(): WorkspaceContextValue {
 	const ctx = useContext(WorkspaceContext)
-	if (!ctx) throw new Error('useWorkspace must be used within WorkspaceProvider')
+	if (!ctx)
+		throw new Error('useWorkspace must be used within WorkspaceProvider')
 	return ctx
 }
