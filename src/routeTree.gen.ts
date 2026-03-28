@@ -12,9 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as AppRouteImport } from './routes/_app'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
-import { Route as ApiResumeChatRouteImport } from './routes/api.resume-chat'
 import { Route as ApiOgRouteImport } from './routes/api.og'
 import { Route as LandingTermsRouteImport } from './routes/_landing/terms'
 import { Route as LandingPrivacyRouteImport } from './routes/_landing/privacy'
@@ -30,11 +28,6 @@ import { Route as DashboardAccountRouteImport } from './routes/_dashboard/accoun
 import { Route as AuthWorkspaceRouteImport } from './routes/_auth/workspace'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthCallbackRouteImport } from './routes/_auth/callback'
-import { Route as AppMcpRouteImport } from './routes/_app/mcp'
-import { Route as AppDemoTanstackQueryRouteImport } from './routes/_app/demo/tanstack-query'
-import { Route as AppDemoMcpTodosRouteImport } from './routes/_app/demo/mcp-todos'
-import { Route as AppDemoBetterAuthRouteImport } from './routes/_app/demo/better-auth'
-import { Route as AppDemoApiMcpTodosRouteImport } from './routes/_app/demo/api.mcp-todos'
 
 const LandingRoute = LandingRouteImport.update({
   id: '/_landing',
@@ -48,19 +41,10 @@ const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LandingIndexRoute = LandingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LandingRoute,
-} as any)
-const ApiResumeChatRoute = ApiResumeChatRouteImport.update({
-  id: '/api/resume-chat',
-  path: '/api/resume-chat',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiOgRoute = ApiOgRouteImport.update({
   id: '/api/og',
@@ -137,35 +121,9 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/callback',
   getParentRoute: () => AuthRoute,
 } as any)
-const AppMcpRoute = AppMcpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDemoTanstackQueryRoute = AppDemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDemoMcpTodosRoute = AppDemoMcpTodosRouteImport.update({
-  id: '/demo/mcp-todos',
-  path: '/demo/mcp-todos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDemoBetterAuthRoute = AppDemoBetterAuthRouteImport.update({
-  id: '/demo/better-auth',
-  path: '/demo/better-auth',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDemoApiMcpTodosRoute = AppDemoApiMcpTodosRouteImport.update({
-  id: '/demo/api/mcp-todos',
-  path: '/demo/api/mcp-todos',
-  getParentRoute: () => AppRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof LandingIndexRoute
-  '/mcp': typeof AppMcpRoute
   '/callback': typeof AuthCallbackRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
@@ -181,15 +139,9 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof LandingPrivacyRoute
   '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
-  '/api/resume-chat': typeof ApiResumeChatRoute
-  '/demo/better-auth': typeof AppDemoBetterAuthRoute
-  '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
-  '/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
-  '/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof LandingIndexRoute
-  '/mcp': typeof AppMcpRoute
   '/callback': typeof AuthCallbackRoute
   '/sign-in': typeof AuthSignInRoute
   '/workspace': typeof AuthWorkspaceRoute
@@ -205,19 +157,12 @@ export interface FileRoutesByTo {
   '/privacy': typeof LandingPrivacyRoute
   '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
-  '/api/resume-chat': typeof ApiResumeChatRoute
-  '/demo/better-auth': typeof AppDemoBetterAuthRoute
-  '/demo/mcp-todos': typeof AppDemoMcpTodosRoute
-  '/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
-  '/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
   '/_landing': typeof LandingRouteWithChildren
-  '/_app/mcp': typeof AppMcpRoute
   '/_auth/callback': typeof AuthCallbackRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/workspace': typeof AuthWorkspaceRoute
@@ -233,18 +178,12 @@ export interface FileRoutesById {
   '/_landing/privacy': typeof LandingPrivacyRoute
   '/_landing/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
-  '/api/resume-chat': typeof ApiResumeChatRoute
   '/_landing/': typeof LandingIndexRoute
-  '/_app/demo/better-auth': typeof AppDemoBetterAuthRoute
-  '/_app/demo/mcp-todos': typeof AppDemoMcpTodosRoute
-  '/_app/demo/tanstack-query': typeof AppDemoTanstackQueryRoute
-  '/_app/demo/api/mcp-todos': typeof AppDemoApiMcpTodosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/mcp'
     | '/callback'
     | '/sign-in'
     | '/workspace'
@@ -260,15 +199,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/api/og'
-    | '/api/resume-chat'
-    | '/demo/better-auth'
-    | '/demo/mcp-todos'
-    | '/demo/tanstack-query'
-    | '/demo/api/mcp-todos'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/mcp'
     | '/callback'
     | '/sign-in'
     | '/workspace'
@@ -284,18 +217,11 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/api/og'
-    | '/api/resume-chat'
-    | '/demo/better-auth'
-    | '/demo/mcp-todos'
-    | '/demo/tanstack-query'
-    | '/demo/api/mcp-todos'
   id:
     | '__root__'
-    | '/_app'
     | '/_auth'
     | '/_dashboard'
     | '/_landing'
-    | '/_app/mcp'
     | '/_auth/callback'
     | '/_auth/sign-in'
     | '/_auth/workspace'
@@ -311,21 +237,14 @@ export interface FileRouteTypes {
     | '/_landing/privacy'
     | '/_landing/terms'
     | '/api/og'
-    | '/api/resume-chat'
     | '/_landing/'
-    | '/_app/demo/better-auth'
-    | '/_app/demo/mcp-todos'
-    | '/_app/demo/tanstack-query'
-    | '/_app/demo/api/mcp-todos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
   LandingRoute: typeof LandingRouteWithChildren
   ApiOgRoute: typeof ApiOgRoute
-  ApiResumeChatRoute: typeof ApiResumeChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -351,26 +270,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_landing/': {
       id: '/_landing/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof LandingIndexRouteImport
       parentRoute: typeof LandingRoute
-    }
-    '/api/resume-chat': {
-      id: '/api/resume-chat'
-      path: '/api/resume-chat'
-      fullPath: '/api/resume-chat'
-      preLoaderRoute: typeof ApiResumeChatRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/api/og': {
       id: '/api/og'
@@ -477,61 +382,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_app/mcp': {
-      id: '/_app/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof AppMcpRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/demo/tanstack-query': {
-      id: '/_app/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof AppDemoTanstackQueryRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/demo/mcp-todos': {
-      id: '/_app/demo/mcp-todos'
-      path: '/demo/mcp-todos'
-      fullPath: '/demo/mcp-todos'
-      preLoaderRoute: typeof AppDemoMcpTodosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/demo/better-auth': {
-      id: '/_app/demo/better-auth'
-      path: '/demo/better-auth'
-      fullPath: '/demo/better-auth'
-      preLoaderRoute: typeof AppDemoBetterAuthRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/demo/api/mcp-todos': {
-      id: '/_app/demo/api/mcp-todos'
-      path: '/demo/api/mcp-todos'
-      fullPath: '/demo/api/mcp-todos'
-      preLoaderRoute: typeof AppDemoApiMcpTodosRouteImport
-      parentRoute: typeof AppRoute
-    }
   }
 }
-
-interface AppRouteChildren {
-  AppMcpRoute: typeof AppMcpRoute
-  AppDemoBetterAuthRoute: typeof AppDemoBetterAuthRoute
-  AppDemoMcpTodosRoute: typeof AppDemoMcpTodosRoute
-  AppDemoTanstackQueryRoute: typeof AppDemoTanstackQueryRoute
-  AppDemoApiMcpTodosRoute: typeof AppDemoApiMcpTodosRoute
-}
-
-const AppRouteChildren: AppRouteChildren = {
-  AppMcpRoute: AppMcpRoute,
-  AppDemoBetterAuthRoute: AppDemoBetterAuthRoute,
-  AppDemoMcpTodosRoute: AppDemoMcpTodosRoute,
-  AppDemoTanstackQueryRoute: AppDemoTanstackQueryRoute,
-  AppDemoApiMcpTodosRoute: AppDemoApiMcpTodosRoute,
-}
-
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AuthRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -591,12 +443,10 @@ const LandingRouteWithChildren =
   LandingRoute._addFileChildren(LandingRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
   LandingRoute: LandingRouteWithChildren,
   ApiOgRoute: ApiOgRoute,
-  ApiResumeChatRoute: ApiResumeChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
