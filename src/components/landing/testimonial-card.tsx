@@ -1,9 +1,9 @@
 interface TestimonialCardProps {
-	avatar: string;
-	quote: string;
-	name: string;
-	jobTitle: string;
-	transparent?: boolean;
+	avatar: string
+	quote: string
+	name: string
+	jobTitle: string
+	transparent?: boolean
 }
 
 export function TestimonialCard({
@@ -16,7 +16,7 @@ export function TestimonialCard({
 	return (
 		<div
 			className={`flex w-full gap-3 ${
-				transparent ? "" : "rounded-[12px] bg-[#1A1A1A] px-5 py-4"
+				transparent ? '' : 'rounded-[12px] bg-[#1A1A1A] px-5 py-4'
 			}`}
 		>
 			<img
@@ -33,5 +33,5 @@ export function TestimonialCard({
 				</p>
 			</div>
 		</div>
-	);
+	)
 }

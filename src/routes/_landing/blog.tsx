@@ -1,32 +1,32 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/_landing/blog")({
+export const Route = createFileRoute('/_landing/blog')({
 	head: () => ({
 		meta: [
-			{ title: "Blog — Cervo" },
+			{ title: 'Blog — Cervo' },
 			{
-				name: "description",
-				content: "Updates, tips, and insights from the Cervo team",
+				name: 'description',
+				content: 'Updates, tips, and insights from the Cervo team',
 			},
 		],
 	}),
 	component: BlogPage,
-});
+})
 
 interface BlogEntry {
-	date: string;
-	title: string;
-	description: string;
+	date: string
+	title: string
+	description: string
 }
 
 const posts: BlogEntry[] = [
 	{
-		date: "March 25, 2026",
-		title: "Introducing Cervo",
+		date: 'March 25, 2026',
+		title: 'Introducing Cervo',
 		description:
 			"We built Cervo because saving a bookmark should be the beginning of finding it again, not the end. Here's our vision for AI-powered bookmark management.",
 	},
-];
+]
 
 function BlogPage() {
 	return (
@@ -38,7 +38,7 @@ function BlogPage() {
 				Updates, tips, and insights from the Cervo team.
 			</p>
 			<div className="flex flex-col gap-8">
-				{posts.map((post) => (
+				{posts.map(post => (
 					<article
 						key={post.title}
 						className="border-b border-[#2f2f2f] pb-8 last:border-b-0"
@@ -56,5 +56,5 @@ function BlogPage() {
 				))}
 			</div>
 		</div>
-	);
+	)
 }

@@ -1,16 +1,16 @@
-import { Play } from "lucide-react";
-import { LandingButton } from "./landing-button";
-import { LandingLink } from "./landing-link";
-import { TestimonialCard } from "./testimonial-card";
-import { useScrollAnimation } from "./use-scroll-animation";
+import { Play } from 'lucide-react'
+import { LandingButton } from './landing-button'
+import { LandingLink } from './landing-link'
+import { TestimonialCard } from './testimonial-card'
+import { useScrollAnimation } from './use-scroll-animation'
 
 export function HeroSection() {
-	const { ref, isVisible } = useScrollAnimation();
+	const { ref, isVisible } = useScrollAnimation()
 
 	return (
 		<section
 			ref={ref}
-			className={`flex flex-col justify-center gap-8 bg-[#0C0C0C] py-12 transition-all duration-700 lg:flex-row lg:items-start lg:justify-start lg:gap-[60px] lg:py-20 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+			className={`flex flex-col justify-center gap-8 bg-[#0C0C0C] py-12 transition-all duration-700 lg:flex-row lg:items-start lg:justify-start lg:gap-[60px] lg:py-20 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
 		>
 			<div className="flex min-w-0 flex-col items-center gap-8 lg:items-start lg:gap-7">
 				<div className="flex items-center gap-1.5 rounded-[20px] bg-[#052E1C] px-3.5 py-1.5">
@@ -20,7 +20,7 @@ export function HeroSection() {
 				</div>
 
 				<h1 className="whitespace-pre-line text-center font-sans text-[32px] font-bold leading-[1.1] text-white lg:text-left lg:text-5xl">
-					{"Save any link.\nFind it by meaning."}
+					{'Save any link.\nFind it by meaning.'}
 				</h1>
 
 				<div className="flex w-full flex-col items-center gap-4 lg:w-auto lg:flex-row lg:justify-start">
@@ -58,5 +58,5 @@ export function HeroSection() {
 				</button>
 			</div>
 		</section>
-	);
+	)
 }

@@ -1,37 +1,37 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Check } from "lucide-react";
+import { createFileRoute } from '@tanstack/react-router'
+import { Check } from 'lucide-react'
 
-export const Route = createFileRoute("/_landing/pricing")({
+export const Route = createFileRoute('/_landing/pricing')({
 	head: () => ({
 		meta: [
-			{ title: "Pricing — Cervo" },
+			{ title: 'Pricing — Cervo' },
 			{
-				name: "description",
+				name: 'description',
 				content:
 					"Simple, transparent pricing for Cervo. Start free and upgrade when you're ready.",
 			},
 		],
 	}),
 	component: PricingPage,
-});
+})
 
 const FREE_FEATURES = [
-	"Save up to 100 links",
-	"1 workspace",
-	"Semantic search",
-	"AI enrichment",
-	"Basic tags",
-];
+	'Save up to 100 links',
+	'1 workspace',
+	'Semantic search',
+	'AI enrichment',
+	'Basic tags',
+]
 
 const PRO_FEATURES = [
-	"Unlimited links",
-	"Unlimited workspaces",
-	"Discord integration",
-	"Smart tags",
-	"Public workspaces",
-	"Team management",
-	"Priority support",
-];
+	'Unlimited links',
+	'Unlimited workspaces',
+	'Discord integration',
+	'Smart tags',
+	'Public workspaces',
+	'Team management',
+	'Priority support',
+]
 
 function PricingPage() {
 	return (
@@ -59,7 +59,7 @@ function PricingPage() {
 					</div>
 
 					<ul className="mb-8 flex flex-col gap-3 font-sans text-sm text-[#A3A3A3]">
-						{FREE_FEATURES.map((feature) => (
+						{FREE_FEATURES.map(feature => (
 							<li key={feature} className="flex items-center gap-3">
 								<Check className="h-4 w-4 shrink-0 text-white" />
 								{feature}
@@ -97,7 +97,7 @@ function PricingPage() {
 					</div>
 
 					<ul className="mb-8 flex flex-col gap-3 font-sans text-sm text-[#A3A3A3]">
-						{PRO_FEATURES.map((feature) => (
+						{PRO_FEATURES.map(feature => (
 							<li key={feature} className="flex items-center gap-3">
 								<Check className="h-4 w-4 shrink-0 text-primary" />
 								{feature}
@@ -116,5 +116,5 @@ function PricingPage() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

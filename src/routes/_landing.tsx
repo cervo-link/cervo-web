@@ -1,10 +1,10 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { LandingFooter } from "#/components/landing/landing-footer";
-import { LandingNavbar } from "#/components/landing/landing-navbar";
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { LandingFooter } from '#/components/landing/landing-footer'
+import { LandingNavbar } from '#/components/landing/landing-navbar'
 
-export const Route = createFileRoute("/_landing")({
+export const Route = createFileRoute('/_landing')({
 	component: LandingLayout,
-});
+})
 
 function LandingLayout() {
 	return (
@@ -15,5 +15,5 @@ function LandingLayout() {
 			</div>
 			<LandingFooter />
 		</div>
-	);
+	)
 }

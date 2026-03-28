@@ -1,17 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/_dashboard/help")({
+export const Route = createFileRoute('/_dashboard/help')({
 	head: () => ({
 		meta: [
-			{ title: "Help — Cervo" },
+			{ title: 'Help — Cervo' },
 			{
-				name: "description",
-				content: "Get help with Cervo",
+				name: 'description',
+				content: 'Get help with Cervo',
 			},
 		],
 	}),
 	component: HelpPage,
-});
+})
 
 function HelpPage() {
 	return (
@@ -20,5 +20,5 @@ function HelpPage() {
 				Help
 			</h1>
 		</div>
-	);
+	)
 }

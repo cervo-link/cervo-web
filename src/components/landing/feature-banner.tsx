@@ -7,19 +7,19 @@ import {
 	PenTool,
 	RotateCw,
 	Video,
-} from "lucide-react";
-import type { ReactNode } from "react";
-import { LandingLink } from "./landing-link";
-import { useScrollAnimation } from "./use-scroll-animation";
+} from 'lucide-react'
+import type { ReactNode } from 'react'
+import { LandingLink } from './landing-link'
+import { useScrollAnimation } from './use-scroll-animation'
 
 export function FeatureBanner() {
-	const { ref, isVisible } = useScrollAnimation();
+	const { ref, isVisible } = useScrollAnimation()
 
 	return (
 		<section
 			id="features"
 			ref={ref}
-			className={`transition-all duration-700 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+			className={`transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
 		>
 			<div className="relative overflow-hidden rounded-[16px] border border-[#2f2f2f] bg-[#1A1A1A] px-8 py-[60px] lg:h-[375px] lg:px-16 lg:py-12">
 				<div className="relative z-10 flex h-full flex-col items-center justify-center gap-8 lg:items-start">
@@ -55,12 +55,12 @@ export function FeatureBanner() {
 				</div>
 			</div>
 		</section>
-	);
+	)
 }
 
 interface IconCellProps {
-	icon?: ReactNode;
-	bg: string;
+	icon?: ReactNode
+	bg: string
 }
 
 function IconCell({ icon, bg }: IconCellProps) {
@@ -70,10 +70,10 @@ function IconCell({ icon, bg }: IconCellProps) {
 		>
 			{icon}
 		</div>
-	);
+	)
 }
 
-const ico = "h-5 w-5 text-[#555555]";
+const ico = 'h-5 w-5 text-[#555555]'
 
 function IconGrid() {
 	return (
@@ -131,5 +131,5 @@ function IconGrid() {
 				<IconCell bg="bg-[#2f2f2f]" />
 			</div>
 		</div>
-	);
+	)
 }

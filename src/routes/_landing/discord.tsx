@@ -1,14 +1,14 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 // TODO: Replace with actual Discord invite URL before shipping
-const DISCORD_INVITE_URL = "https://discord.gg/YOUR_INVITE_CODE";
+const DISCORD_INVITE_URL = 'https://discord.gg/YOUR_INVITE_CODE'
 
-export const Route = createFileRoute("/_landing/discord")({
+export const Route = createFileRoute('/_landing/discord')({
 	beforeLoad: () => {
-		throw redirect({ href: DISCORD_INVITE_URL });
+		throw redirect({ href: DISCORD_INVITE_URL })
 	},
 	component: DiscordRedirect,
-});
+})
 
 function DiscordRedirect() {
 	return (
@@ -17,5 +17,5 @@ function DiscordRedirect() {
 				Redirecting to Discord...
 			</p>
 		</div>
-	);
+	)
 }

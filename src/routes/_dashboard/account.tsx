@@ -1,17 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/_dashboard/account")({
+export const Route = createFileRoute('/_dashboard/account')({
 	head: () => ({
 		meta: [
-			{ title: "Account — Cervo" },
+			{ title: 'Account — Cervo' },
 			{
-				name: "description",
-				content: "Manage your Cervo account",
+				name: 'description',
+				content: 'Manage your Cervo account',
 			},
 		],
 	}),
 	component: AccountPage,
-});
+})
 
 function AccountPage() {
 	return (
@@ -20,5 +20,5 @@ function AccountPage() {
 				Account
 			</h1>
 		</div>
-	);
+	)
 }

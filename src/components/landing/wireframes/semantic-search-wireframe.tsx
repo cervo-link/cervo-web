@@ -102,5 +102,5 @@ export function SemanticSearchWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

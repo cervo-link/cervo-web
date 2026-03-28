@@ -1,6 +1,8 @@
-import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-export default {
-  name: 'Tanstack Query',
-  render: <ReactQueryDevtoolsPanel />,
+const TanStackQueryDevtools = {
+	name: 'TanStack Query',
+	render: <ReactQueryDevtools />,
 }
+
+export default TanStackQueryDevtools

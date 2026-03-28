@@ -1,4 +1,4 @@
-import { Globe } from "lucide-react";
+import { Globe } from 'lucide-react'
 
 export function PublicWorkspacesWireframe() {
 	return (
@@ -42,7 +42,7 @@ export function PublicWorkspacesWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }
 
 function WorkspaceCard({ color }: { color: string }) {
@@ -55,5 +55,5 @@ function WorkspaceCard({ color }: { color: string }) {
 				<div className="h-[5px] w-[70px] rounded bg-[#6a6a6a]" />
 			</div>
 		</div>
-	);
+	)
 }

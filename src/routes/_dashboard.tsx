@@ -1,20 +1,20 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { AppSidebar } from "#/components/AppSidebar";
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { AppSidebar } from '#/components/AppSidebar'
 import {
 	SidebarInset,
 	SidebarProvider,
 	SidebarTrigger,
-} from "#/components/ui/sidebar";
+} from '#/components/ui/sidebar'
 // Toaster moved to LinkDetailView for SSR module singleton compatibility
-import { authClient } from "#/lib/auth-client";
+import { authClient } from '#/lib/auth-client'
+import { WorkspaceProvider } from '#/lib/workspace-context'
 
-export const Route = createFileRoute("/_dashboard")({
+export const Route = createFileRoute('/_dashboard')({
 	component: DashboardLayout,
-});
+})
 
 function DashboardLayout() {
-	const { data: session, isPending } = authClient.useSession();
-	const navigate = useNavigate();
+	const { isPending } = authClient.useSession()
 
 	if (isPending) {
 		return (
@@ -23,7 +23,7 @@ function DashboardLayout() {
 					Loading...
 				</span>
 			</div>
-		);
+		)
 	}
 
 	// TODO: restore auth guard
@@ -33,14 +33,16 @@ function DashboardLayout() {
 	// }
 
 	return (
-		<SidebarProvider>
-			<AppSidebar />
-			<SidebarInset>
-				<header className="flex h-12 items-center px-4 md:hidden">
-					<SidebarTrigger />
-				</header>
-				<Outlet />
-			</SidebarInset>
-		</SidebarProvider>
-	);
+		<WorkspaceProvider>
+			<SidebarProvider>
+				<AppSidebar />
+				<SidebarInset>
+					<header className="flex h-12 items-center px-4 md:hidden">
+						<SidebarTrigger />
+					</header>
+					<Outlet />
+				</SidebarInset>
+			</SidebarProvider>
+		</WorkspaceProvider>
+	)
 }

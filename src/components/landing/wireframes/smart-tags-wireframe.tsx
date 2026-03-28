@@ -1,4 +1,4 @@
-import { Bookmark, Tags } from "lucide-react";
+import { Bookmark, Tags } from 'lucide-react'
 
 export function SmartTagsWireframe() {
 	return (
@@ -72,5 +72,5 @@ export function SmartTagsWireframe() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

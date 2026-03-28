@@ -25,9 +25,13 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  DeleteBookmarksId200,
+  DeleteBookmarksId404,
   GetBookmarks200Item,
   GetBookmarks400,
   GetBookmarks500,
+  GetBookmarksId200,
+  GetBookmarksId404,
   GetBookmarksParams,
   PostBookmarks201,
   PostBookmarks400,
@@ -358,3 +362,202 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getPostBookmarksIdRetryMutationOptions(options), queryClient);
     }
+    /**
+ * Delete a bookmark
+ */
+export type deleteBookmarksIdResponse200 = {
+  data: DeleteBookmarksId200
+  status: 200
+}
+
+export type deleteBookmarksIdResponse404 = {
+  data: DeleteBookmarksId404
+  status: 404
+}
+
+export type deleteBookmarksIdResponseSuccess = (deleteBookmarksIdResponse200) & {
+  headers: Headers;
+};
+export type deleteBookmarksIdResponseError = (deleteBookmarksIdResponse404) & {
+  headers: Headers;
+};
+
+export type deleteBookmarksIdResponse = (deleteBookmarksIdResponseSuccess | deleteBookmarksIdResponseError)
+
+export const getDeleteBookmarksIdUrl = (id: string,) => {
+
+
+
+
+  return `/bookmarks/${id}`
+}
+
+export const deleteBookmarksId = async (id: string, options?: RequestInit): Promise<deleteBookmarksIdResponse> => {
+
+  return apiClient<deleteBookmarksIdResponse>(getDeleteBookmarksIdUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteBookmarksIdMutationOptions = <TError = DeleteBookmarksId404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteBookmarksId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteBookmarksId>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteBookmarksId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteBookmarksId>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteBookmarksId(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteBookmarksIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteBookmarksId>>>
+
+    export type DeleteBookmarksIdMutationError = DeleteBookmarksId404
+
+    export const useDeleteBookmarksId = <TError = DeleteBookmarksId404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteBookmarksId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteBookmarksId>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteBookmarksIdMutationOptions(options), queryClient);
+    }
+    /**
+ * Get a bookmark by ID
+ */
+export type getBookmarksIdResponse200 = {
+  data: GetBookmarksId200
+  status: 200
+}
+
+export type getBookmarksIdResponse404 = {
+  data: GetBookmarksId404
+  status: 404
+}
+
+export type getBookmarksIdResponseSuccess = (getBookmarksIdResponse200) & {
+  headers: Headers;
+};
+export type getBookmarksIdResponseError = (getBookmarksIdResponse404) & {
+  headers: Headers;
+};
+
+export type getBookmarksIdResponse = (getBookmarksIdResponseSuccess | getBookmarksIdResponseError)
+
+export const getGetBookmarksIdUrl = (id: string,) => {
+
+
+
+
+  return `/bookmarks/${id}`
+}
+
+export const getBookmarksId = async (id: string, options?: RequestInit): Promise<getBookmarksIdResponse> => {
+
+  return apiClient<getBookmarksIdResponse>(getGetBookmarksIdUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetBookmarksIdQueryKey = (id: string,) => {
+    return [
+    `/bookmarks/${id}`
+    ] as const;
+    }
+
+
+export const getGetBookmarksIdQueryOptions = <TData = Awaited<ReturnType<typeof getBookmarksId>>, TError = GetBookmarksId404>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBookmarksId>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetBookmarksIdQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBookmarksId>>> = ({ signal }) => getBookmarksId(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBookmarksId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetBookmarksIdQueryResult = NonNullable<Awaited<ReturnType<typeof getBookmarksId>>>
+export type GetBookmarksIdQueryError = GetBookmarksId404
+
+
+export function useGetBookmarksId<TData = Awaited<ReturnType<typeof getBookmarksId>>, TError = GetBookmarksId404>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBookmarksId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getBookmarksId>>,
+          TError,
+          Awaited<ReturnType<typeof getBookmarksId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetBookmarksId<TData = Awaited<ReturnType<typeof getBookmarksId>>, TError = GetBookmarksId404>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBookmarksId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getBookmarksId>>,
+          TError,
+          Awaited<ReturnType<typeof getBookmarksId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetBookmarksId<TData = Awaited<ReturnType<typeof getBookmarksId>>, TError = GetBookmarksId404>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBookmarksId>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetBookmarksId<TData = Awaited<ReturnType<typeof getBookmarksId>>, TError = GetBookmarksId404>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBookmarksId>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetBookmarksIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+

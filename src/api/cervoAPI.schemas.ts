@@ -148,6 +148,52 @@ export type PostBookmarksIdRetry409 = {
   message: string;
 };
 
+export type DeleteBookmarksId200 = {
+  message: string;
+};
+
+export type DeleteBookmarksId404 = {
+  message: string;
+};
+
+/**
+ * Bookmark retrieved successfully
+ */
+export type GetBookmarksId200 = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  workspaceId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  memberId: string;
+  url: string;
+  /**
+     * @minLength 64
+     * @maxLength 64
+     */
+  urlHashId: string;
+  status: string;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  tags: string[] | null;
+  /** @nullable */
+  failureReason: string | null;
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+  visible: boolean;
+};
+
+/**
+ * Bookmark not found
+ */
+export type GetBookmarksId404 = {
+  message: string;
+};
+
 export type PostWorkspacesCreateBody = {
   /** @minLength 1 */
   name: string;
@@ -196,6 +242,124 @@ export type PostWorkspacesCreate500 = {
   message: string;
 };
 
+export type PatchWorkspacesWorkspaceIdBody = {
+  /** @minLength 1 */
+  name?: string;
+  /** @nullable */
+  description?: string | null;
+  isPublic?: boolean;
+};
+
+export type PatchWorkspacesWorkspaceId200Workspace = {
+  id: string;
+  /** @nullable */
+  ownerId: string | null;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  isPersonal: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Workspace updated
+ */
+export type PatchWorkspacesWorkspaceId200 = {
+  workspace: PatchWorkspacesWorkspaceId200Workspace;
+};
+
+/**
+ * Bad request
+ */
+export type PatchWorkspacesWorkspaceId400 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type PatchWorkspacesWorkspaceId403 = {
+  message: string;
+};
+
+/**
+ * Workspace not found
+ */
+export type PatchWorkspacesWorkspaceId404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type PatchWorkspacesWorkspaceId500 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type DeleteWorkspacesWorkspaceId403 = {
+  message: string;
+};
+
+/**
+ * Workspace not found
+ */
+export type DeleteWorkspacesWorkspaceId404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type DeleteWorkspacesWorkspaceId500 = {
+  message: string;
+};
+
+export type PostWorkspacesWorkspaceIdMembersBody = {
+  /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
+  email: string;
+};
+
+/**
+ * Member invited
+ */
+export type PostWorkspacesWorkspaceIdMembers201 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type PostWorkspacesWorkspaceIdMembers403 = {
+  message: string;
+};
+
+/**
+ * Workspace or member not found
+ */
+export type PostWorkspacesWorkspaceIdMembers404 = {
+  message: string;
+};
+
+/**
+ * Member already in workspace
+ */
+export type PostWorkspacesWorkspaceIdMembers422 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type PostWorkspacesWorkspaceIdMembers500 = {
+  message: string;
+};
+
 export type GetWorkspacesMe200WorkspacesItem = {
   id: string;
   /** @nullable */
@@ -204,6 +368,7 @@ export type GetWorkspacesMe200WorkspacesItem = {
   /** @nullable */
   description: string | null;
   isPublic: boolean;
+  isPersonal: boolean;
   createdAt: string;
   updatedAt: string;
   active: boolean;

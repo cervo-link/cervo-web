@@ -1,98 +1,85 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link2, Search, SearchX, X } from "lucide-react";
-import { formatDistanceToNowStrict } from "date-fns";
-import { parseAsString, useQueryState } from "nuqs";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import {
-	useGetBookmarks,
-	usePostBookmarks,
-} from "#/api/bookmarks/bookmarks";
+import { createFileRoute } from '@tanstack/react-router'
+import { formatDistanceToNowStrict } from 'date-fns'
+import { Link2, Search, SearchX, X } from 'lucide-react'
+import { parseAsString, useQueryState } from 'nuqs'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { useGetBookmarks, usePostBookmarks } from '#/api/bookmarks/bookmarks'
 import type {
 	GetBookmarks200Item,
 	GetMembersMe200Member,
-} from "#/api/cervoAPI.schemas";
-import { useGetMembersMe } from "#/api/members/members";
-import { useGetWorkspacesMe } from "#/api/workspaces/workspaces";
-import { LinkDetailView } from "#/components/LinkDetailView";
-import { LinkListItem } from "#/components/LinkListItem";
-import { Badge } from "#/components/ui/badge";
-import { Input } from "#/components/ui/input";
-import { Separator } from "#/components/ui/separator";
+} from '#/api/cervoAPI.schemas'
+import { useGetMembersMe } from '#/api/members/members'
+import { LinkDetailView } from '#/components/LinkDetailView'
+import { LinkListItem } from '#/components/LinkListItem'
+import { Badge } from '#/components/ui/badge'
+import { Input } from '#/components/ui/input'
+import { Separator } from '#/components/ui/separator'
+import { useWorkspace } from '#/lib/workspace-context'
 
-export const Route = createFileRoute("/_dashboard/links")({
+export const Route = createFileRoute('/_dashboard/links')({
 	head: () => ({
 		meta: [
-			{ title: "Links — Cervo" },
+			{ title: 'Links — Cervo' },
 			{
-				name: "description",
-				content: "Your bookmarks, organized",
+				name: 'description',
+				content: 'Your bookmarks, organized',
 			},
 		],
 	}),
 	component: LinksPage,
-});
+})
 
 function timeAgo(dateStr: string): string {
-	return formatDistanceToNowStrict(new Date(dateStr), { addSuffix: true });
+	return formatDistanceToNowStrict(new Date(dateStr), { addSuffix: true })
 }
 
 const RECENT_SEARCHES = [
-	"recruiting mistakes",
-	"react server components",
-	"design tokens",
-];
+	'recruiting mistakes',
+	'react server components',
+	'design tokens',
+]
 
 function toDetailLink(
 	bookmark: GetBookmarks200Item,
-	member: GetMembersMe200Member | null,
+	member: GetMembersMe200Member | null
 ) {
 	return {
 		id: bookmark.id,
 		title: bookmark.title ?? bookmark.url,
-		description: bookmark.matchedBecause ?? bookmark.description ?? "",
+		description: bookmark.matchedBecause ?? bookmark.description ?? '',
 		url: bookmark.url,
-		tag: bookmark.tags?.[0] ?? "bookmark",
+		tag: bookmark.tags?.[0] ?? 'bookmark',
 		timeAgo: timeAgo(bookmark.createdAt),
-		savedBy: member?.name ?? member?.username ?? member?.email ?? "Unknown",
-		savedAt: new Date(bookmark.createdAt).toLocaleDateString("en-CA"),
-		source: bookmark.source ?? "web",
-	};
+		savedBy: member?.name ?? member?.username ?? member?.email ?? 'Unknown',
+		savedAt: new Date(bookmark.createdAt).toLocaleDateString('en-CA'),
+		source: bookmark.source ?? 'web',
+	}
 }
 
 function LinksPage() {
 	const [searchValue, setSearchValue] = useQueryState(
-		"q",
-		parseAsString.withDefault(""),
-	);
-	const [linkId, setLinkId] = useQueryState("id", parseAsString);
-	const [selectedIndex, setSelectedIndex] = useState(0);
-	const [saveUrl, setSaveUrl] = useState("");
-	const inputRef = useRef<HTMLInputElement>(null);
-	const saveInputRef = useRef<HTMLInputElement>(null);
-	const listRef = useRef<HTMLDivElement>(null);
+		'q',
+		parseAsString.withDefault('')
+	)
+	const [linkId, setLinkId] = useQueryState('id', parseAsString)
+	const [selectedIndex, setSelectedIndex] = useState(0)
+	const [saveUrl, setSaveUrl] = useState('')
+	const inputRef = useRef<HTMLInputElement>(null)
+	const saveInputRef = useRef<HTMLInputElement>(null)
+	const listRef = useRef<HTMLDivElement>(null)
 
-	const { data: membersData } = useGetMembersMe();
-	const { data: workspacesData } = useGetWorkspacesMe();
+	const { data: membersData } = useGetMembersMe()
+	const { workspace } = useWorkspace()
 	const member =
-		(
-			membersData as unknown as
-				| { member: GetMembersMe200Member }
-				| undefined
-		)?.member ?? null;
-	const workspace =
-		(
-			workspacesData as unknown as
-				| { workspaces: { id: string; name: string }[] }
-				| undefined
-		)?.workspaces?.[0] ?? null;
+		membersData?.status === 200 ? (membersData.data.member ?? null) : null
 
-	const isSearching = searchValue.trim().length > 0;
+	const isSearching = searchValue.trim().length > 0
 
 	const { data: bookmarksRaw, isFetching } = useGetBookmarks(
 		{
-			workspaceId: workspace?.id ?? "",
-			memberId: member?.id ?? "",
+			workspaceId: workspace?.id ?? '',
+			memberId: member?.id ?? '',
 			text: searchValue.trim(),
 			limit: 20,
 		},
@@ -100,96 +87,91 @@ function LinksPage() {
 			query: {
 				enabled: isSearching && !!member && !!workspace,
 			},
-		},
-	);
+		}
+	)
 
-	const bookmarks =
-		(bookmarksRaw as unknown as GetBookmarks200Item[] | undefined) ?? [];
+	const bookmarks = bookmarksRaw?.status === 200 ? bookmarksRaw.data : []
 
-	const { mutate: saveBookmark, isPending: isSaving } = usePostBookmarks();
+	const { mutate: saveBookmark, isPending: isSaving } = usePostBookmarks()
 
 	function handleSave() {
-		const url = saveUrl.trim();
-		if (!url || !member || !workspace) return;
+		const url = saveUrl.trim()
+		if (!url || !member || !workspace) return
 		saveBookmark(
 			{ data: { url, memberId: member.id, workspaceId: workspace.id } },
 			{
 				onSuccess: () => {
-					setSaveUrl("");
-					saveInputRef.current?.focus();
-					toast.success("Link saved!");
+					setSaveUrl('')
+					saveInputRef.current?.focus()
+					toast.success('Link saved!')
 				},
 				onError: () => {
-					toast.error("Failed to save link. Please try again.");
+					toast.error('Failed to save link. Please try again.')
 				},
-			},
-		);
+			}
+		)
 	}
 
 	function handleClear() {
-		void setSearchValue(null);
-		inputRef.current?.focus();
+		void setSearchValue(null)
+		inputRef.current?.focus()
 	}
 
 	const handleItemClick = useCallback(
 		(id: string) => {
-			void setLinkId(id);
+			void setLinkId(id)
 		},
-		[setLinkId],
-	);
+		[setLinkId]
+	)
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
-			if (bookmarks.length === 0) return;
+			if (bookmarks.length === 0) return
 
 			const hasOpenPopover = document.querySelector(
-				"[data-state='open'][data-radix-popper-content-wrapper], [data-state='open'][role='menu']",
-			);
-			if (hasOpenPopover) return;
+				"[data-state='open'][data-radix-popper-content-wrapper], [data-state='open'][role='menu']"
+			)
+			if (hasOpenPopover) return
 
-			if (e.key === "ArrowDown") {
-				e.preventDefault();
-				setSelectedIndex((prev) =>
-					prev >= bookmarks.length - 1 ? 0 : prev + 1,
-				);
-				return;
+			if (e.key === 'ArrowDown') {
+				e.preventDefault()
+				setSelectedIndex(prev => (prev >= bookmarks.length - 1 ? 0 : prev + 1))
+				return
 			}
 
-			if (e.key === "ArrowUp") {
-				e.preventDefault();
-				setSelectedIndex((prev) =>
-					prev <= 0 ? bookmarks.length - 1 : prev - 1,
-				);
-				return;
+			if (e.key === 'ArrowUp') {
+				e.preventDefault()
+				setSelectedIndex(prev => (prev <= 0 ? bookmarks.length - 1 : prev - 1))
+				return
 			}
 
-			if (e.key === "Enter") {
-				const active = document.activeElement;
-				const isOnInput = active === inputRef.current;
+			if (e.key === 'Enter') {
+				const active = document.activeElement
+				const isOnInput = active === inputRef.current
 				const isOnInteractive =
 					active instanceof HTMLButtonElement ||
-					active instanceof HTMLAnchorElement;
-				const isOnListItem = active?.closest("[data-link-list-item]");
+					active instanceof HTMLAnchorElement
+				const isOnListItem = active?.closest('[data-link-list-item]')
 
-				if (isOnInput) return;
-				if (isOnInteractive && !isOnListItem) return;
+				if (isOnInput) return
+				if (isOnInteractive && !isOnListItem) return
 
-				e.preventDefault();
-				const bookmark = bookmarks[selectedIndex];
-				if (bookmark) handleItemClick(bookmark.id);
+				e.preventDefault()
+				const bookmark = bookmarks[selectedIndex]
+				if (bookmark) handleItemClick(bookmark.id)
 			}
 		},
-		[selectedIndex, handleItemClick, bookmarks],
-	);
+		[selectedIndex, handleItemClick, bookmarks]
+	)
 
 	useEffect(() => {
-		document.addEventListener("keydown", handleKeyDown);
-		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, [handleKeyDown]);
+		document.addEventListener('keydown', handleKeyDown)
+		return () => document.removeEventListener('keydown', handleKeyDown)
+	}, [handleKeyDown])
 
 	const selectedBookmark = linkId
-		? bookmarks.find((b) => b.id === linkId)
-		: undefined;
+		? bookmarks.find(b => b.id === linkId)
+		: undefined
 
 	if (selectedBookmark) {
 		return (
@@ -197,14 +179,14 @@ function LinksPage() {
 				link={toDetailLink(selectedBookmark, member)}
 				onBack={() => void setLinkId(null)}
 			/>
-		);
+		)
 	}
 
 	const headerText = isSearching
 		? isFetching
-			? "Searching..."
+			? 'Searching...'
 			: `${bookmarks.length} results found`
-		: "Recently added";
+		: 'Recently added'
 
 	return (
 		<div className="flex h-full flex-col gap-8 p-8 md:px-10">
@@ -220,9 +202,9 @@ function LinksPage() {
 							<Input
 								ref={saveInputRef}
 								value={saveUrl}
-								onChange={(e) => setSaveUrl(e.target.value)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") handleSave();
+								onChange={e => setSaveUrl(e.target.value)}
+								onKeyDown={e => {
+									if (e.key === 'Enter') handleSave()
 								}}
 								placeholder="Paste a URL to save..."
 								className="h-11 border-sidebar-border bg-[#0A0A0A] pl-10 font-mono text-[13px] font-medium text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary focus-visible:border-primary focus-visible:ring-0"
@@ -234,7 +216,7 @@ function LinksPage() {
 							disabled={!saveUrl.trim() || isSaving || !member || !workspace}
 							className="h-11 border border-sidebar-border bg-[#141414] px-5 font-mono text-[13px] font-medium text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
 						>
-							{isSaving ? "Saving..." : "Save"}
+							{isSaving ? 'Saving...' : 'Save'}
 						</button>
 					</div>
 					<div className="group/search relative">
@@ -242,11 +224,11 @@ function LinksPage() {
 						<Input
 							ref={inputRef}
 							value={searchValue}
-							onChange={(e) => setSearchValue(e.target.value)}
-							onKeyDown={(e) => {
-								if (e.key !== "Escape") return;
-								if (!searchValue) return;
-								void setSearchValue(null);
+							onChange={e => setSearchValue(e.target.value)}
+							onKeyDown={e => {
+								if (e.key !== 'Escape') return
+								if (!searchValue) return
+								void setSearchValue(null)
 							}}
 							placeholder="Paste URL or Search..."
 							className="h-11 border-sidebar-border bg-[#0A0A0A] pl-10 pr-12 font-mono text-[13px] font-medium text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary focus-visible:border-primary focus-visible:ring-0"
@@ -263,13 +245,13 @@ function LinksPage() {
 					</div>
 					{!isSearching && (
 						<div className="flex gap-2">
-							{RECENT_SEARCHES.map((search) => (
+							{RECENT_SEARCHES.map(search => (
 								<Badge key={search} variant="outline" asChild>
 									<button
 										type="button"
 										onClick={() => {
-											void setSearchValue(search);
-											inputRef.current?.focus();
+											void setSearchValue(search)
+											inputRef.current?.focus()
 										}}
 										className="cursor-pointer border-sidebar-border font-mono text-[11px] font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:border-primary focus-visible:ring-0!"
 									>
@@ -293,9 +275,11 @@ function LinksPage() {
 									{index > 0 && <Separator className="bg-[#2f2f2f]" />}
 									<LinkListItem
 										title={bookmark.title ?? bookmark.url}
-										description={bookmark.matchedBecause ?? bookmark.description ?? ""}
+										description={
+											bookmark.matchedBecause ?? bookmark.description ?? ''
+										}
 										url={bookmark.url}
-										tag={bookmark.tags?.[0] ?? "bookmark"}
+										tag={bookmark.tags?.[0] ?? 'bookmark'}
 										badge={timeAgo(bookmark.createdAt)}
 										isSelected={index === selectedIndex}
 										onMouseEnter={() => setSelectedIndex(index)}
@@ -337,5 +321,5 @@ function LinksPage() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

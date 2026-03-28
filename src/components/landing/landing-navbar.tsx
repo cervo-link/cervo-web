@@ -1,17 +1,17 @@
-import { Link } from "@tanstack/react-router";
-import { X } from "lucide-react";
-import { useState } from "react";
-import { LandingButton } from "./landing-button";
+import { Link } from '@tanstack/react-router'
+import { X } from 'lucide-react'
+import { useState } from 'react'
+import { LandingButton } from './landing-button'
 
 const NAV_LINKS = [
-	{ label: "Features", href: "/#features" },
-	{ label: "Pricing", href: "/pricing" },
-	{ label: "FAQ", href: "/faq" },
-	{ label: "Discord", href: "/discord" },
-] as const;
+	{ label: 'Features', href: '/#features' },
+	{ label: 'Pricing', href: '/pricing' },
+	{ label: 'FAQ', href: '/faq' },
+	{ label: 'Discord', href: '/discord' },
+] as const
 
 export function LandingNavbar() {
-	const [menuOpen, setMenuOpen] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false)
 
 	return (
 		<>
@@ -22,7 +22,7 @@ export function LandingNavbar() {
 					</a>
 
 					<div className="hidden items-center gap-7 lg:flex">
-						{NAV_LINKS.map((link) => (
+						{NAV_LINKS.map(link => (
 							<a
 								key={link.label}
 								href={link.href}
@@ -61,7 +61,7 @@ export function LandingNavbar() {
 			{menuOpen && (
 				<div className="fixed inset-x-0 top-16 z-40 border-b border-[#2f2f2f] bg-[#0C0C0C] px-6 py-6 lg:hidden">
 					<div className="flex flex-col gap-4">
-						{NAV_LINKS.map((link) => (
+						{NAV_LINKS.map(link => (
 							<a
 								key={link.label}
 								href={link.href}
@@ -82,5 +82,5 @@ export function LandingNavbar() {
 				</div>
 			)}
 		</>
-	);
+	)
 }

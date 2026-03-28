@@ -12,7 +12,6 @@ dist-ssr
 __unconfig*
 todos.json
 mcp-todos.json
-.content-collections
 .superpowers
 .agents
 .cta.json

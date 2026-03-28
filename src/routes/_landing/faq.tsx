@@ -1,56 +1,56 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/_landing/faq")({
+export const Route = createFileRoute('/_landing/faq')({
 	head: () => ({
 		meta: [
-			{ title: "FAQ — Cervo" },
+			{ title: 'FAQ — Cervo' },
 			{
-				name: "description",
+				name: 'description',
 				content:
-					"Frequently asked questions about Cervo, the AI-powered bookmark manager.",
+					'Frequently asked questions about Cervo, the AI-powered bookmark manager.',
 			},
 		],
 	}),
 	component: FaqPage,
-});
+})
 
 interface FaqItem {
-	question: string;
-	answer: string;
+	question: string
+	answer: string
 }
 
 const FAQ_ITEMS: FaqItem[] = [
 	{
-		question: "What is Cervo?",
+		question: 'What is Cervo?',
 		answer:
-			"Cervo is an AI-powered bookmark manager that helps you save, organize, and search links using semantic search. Instead of manually tagging everything, Cervo understands your links and surfaces them when you need them.",
+			'Cervo is an AI-powered bookmark manager that helps you save, organize, and search links using semantic search. Instead of manually tagging everything, Cervo understands your links and surfaces them when you need them.',
 	},
 	{
-		question: "How does semantic search work?",
+		question: 'How does semantic search work?',
 		answer:
-			"Cervo uses AI embeddings to understand the meaning of your saved links, so you can search by concept rather than exact keywords. For example, searching for \u201cproductivity tips\u201d will surface articles about focus, deep work, and time management \u2014 even if they never use those exact words.",
+			'Cervo uses AI embeddings to understand the meaning of your saved links, so you can search by concept rather than exact keywords. For example, searching for \u201cproductivity tips\u201d will surface articles about focus, deep work, and time management \u2014 even if they never use those exact words.',
 	},
 	{
-		question: "Is Cervo free?",
+		question: 'Is Cervo free?',
 		answer:
-			"Yes, the free plan includes up to 100 links, 1 workspace, and full semantic search. The Pro plan ($9/mo) unlocks unlimited links, unlimited workspaces, and advanced features like Discord integration and team management.",
+			'Yes, the free plan includes up to 100 links, 1 workspace, and full semantic search. The Pro plan ($9/mo) unlocks unlimited links, unlimited workspaces, and advanced features like Discord integration and team management.',
 	},
 	{
-		question: "Can I use Cervo with my team?",
+		question: 'Can I use Cervo with my team?',
 		answer:
 			"Yes, create a shared workspace and invite team members. Everyone can save, search, and browse links together. Shared workspaces keep your team's knowledge organized in one place.",
 	},
 	{
-		question: "How does the Discord integration work?",
+		question: 'How does the Discord integration work?',
 		answer:
-			"Add the Cervo bot to your server, then use /cervo save <url> to save links directly from Discord. You can also set a channel to auto-watch — every URL posted there will be saved automatically to your workspace.",
+			'Add the Cervo bot to your server, then use /cervo save <url> to save links directly from Discord. You can also set a channel to auto-watch — every URL posted there will be saved automatically to your workspace.',
 	},
 	{
-		question: "Is my data private?",
+		question: 'Is my data private?',
 		answer:
-			"Yes, workspaces are private by default. Only you control who can access your links and workspace settings. Public workspaces are an opt-in Pro feature — nothing is ever shared without your explicit action.",
+			'Yes, workspaces are private by default. Only you control who can access your links and workspace settings. Public workspaces are an opt-in Pro feature — nothing is ever shared without your explicit action.',
 	},
-];
+]
 
 function FaqPage() {
 	return (
@@ -60,7 +60,7 @@ function FaqPage() {
 			</h1>
 
 			<div className="flex flex-col">
-				{FAQ_ITEMS.map((item) => (
+				{FAQ_ITEMS.map(item => (
 					<div
 						key={item.question}
 						className="border-b border-[#2f2f2f] py-8 first:border-t"
@@ -75,5 +75,5 @@ function FaqPage() {
 				))}
 			</div>
 		</div>
-	);
+	)
 }

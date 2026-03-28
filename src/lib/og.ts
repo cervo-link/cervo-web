@@ -1,9 +1,9 @@
-const SITE_URL = "https://cervo-web.vercel.app";
+const SITE_URL = 'https://cervo-web.vercel.app'
 
 export function ogImageUrl(title: string, subtitle?: string): string {
-	const params = new URLSearchParams({ title });
+	const params = new URLSearchParams({ title })
 	if (subtitle) {
-		params.set("subtitle", subtitle);
+		params.set('subtitle', subtitle)
 	}
-	return `${SITE_URL}/api/og?${params.toString()}`;
+	return `${SITE_URL}/api/og?${params.toString()}`
 }
