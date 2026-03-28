@@ -3,11 +3,18 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Globe, Lock, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import type { GetMembersMe200Member } from '#/api/cervoAPI.schemas'
+import type {
+	GetMembersMe200Member,
+	PatchWorkspacesWorkspaceIdBody,
+	PostWorkspacesWorkspaceIdIntegrationsBody,
+} from '#/api/cervoAPI.schemas'
 import { useGetMembersMe } from '#/api/members/members'
-import { usePostWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
-import { getGetWorkspacesMeQueryKey } from '#/api/workspaces/workspaces'
-import { clientEnv } from '#/lib/env'
+import { postWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
+import {
+	deleteWorkspacesWorkspaceId,
+	getGetWorkspacesMeQueryKey,
+	patchWorkspacesWorkspaceId,
+} from '#/api/workspaces/workspaces'
 import { useWorkspace } from '#/lib/workspace-context'
 
 export const Route = createFileRoute('/_dashboard/settings')({
@@ -101,12 +108,6 @@ function MemberRow({
 	)
 }
 
-interface UpdateWorkspacePayload {
-	name?: string
-	description?: string | null
-	isPublic?: boolean
-}
-
 function WorkspaceDetails({
 	member,
 }: {
@@ -122,26 +123,17 @@ function WorkspaceDetails({
 	const queryClient = useQueryClient()
 
 	const { mutate: addIntegration, isPending: isAddingIntegration } =
-		usePostWorkspacesWorkspaceIdIntegrations()
+		useMutation({
+			mutationFn: (data: PostWorkspacesWorkspaceIdIntegrationsBody) =>
+				postWorkspacesWorkspaceIdIntegrations(workspace?.id ?? '', data),
+		})
 
 	const { mutate: updateWorkspace, isPending: isSaving } = useMutation({
-		mutationFn: async (payload: UpdateWorkspacePayload) => {
-			const res = await fetch(
-				`${clientEnv.VITE_API_URL}/workspaces/${workspace?.id}`,
-				{
-					method: 'PATCH',
-					credentials: 'include',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(payload),
-				}
-			)
-			if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-			return res.json() as Promise<{
-				workspace: NonNullable<typeof workspace>
-			}>
-		},
-		onSuccess: async ({ workspace: updated }) => {
-			setWorkspace(updated)
+		mutationFn: (data: PatchWorkspacesWorkspaceIdBody) =>
+			patchWorkspacesWorkspaceId(workspace?.id ?? '', data),
+		onSuccess: async result => {
+			if (result.status !== 200) return
+			setWorkspace(result.data.workspace)
 			await queryClient.invalidateQueries({
 				queryKey: getGetWorkspacesMeQueryKey(),
 			})
@@ -151,13 +143,7 @@ function WorkspaceDetails({
 	})
 
 	const { mutate: deleteWorkspace, isPending: isDeleting } = useMutation({
-		mutationFn: async (workspaceId: string) => {
-			const res = await fetch(
-				`${clientEnv.VITE_API_URL}/workspaces/${workspaceId}`,
-				{ method: 'DELETE', credentials: 'include' }
-			)
-			if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-		},
+		mutationFn: () => deleteWorkspacesWorkspaceId(workspace?.id ?? ''),
 		onSuccess: async () => {
 			await queryClient.invalidateQueries({
 				queryKey: getGetWorkspacesMeQueryKey(),
@@ -178,7 +164,7 @@ function WorkspaceDetails({
 	const hasChanges = nameChanged || descriptionChanged || visibilityChanged
 
 	function handleSave() {
-		const payload: UpdateWorkspacePayload = {}
+		const payload: PatchWorkspacesWorkspaceIdBody = {}
 		if (nameChanged) payload.name = wsName.trim()
 		if (descriptionChanged) payload.description = wsDescription.trim() || null
 		if (visibilityChanged) payload.isPublic = wsIsPublic
@@ -188,10 +174,7 @@ function WorkspaceDetails({
 	function handleAddIntegration() {
 		if (!providerId.trim()) return
 		addIntegration(
-			{
-				workspaceId: workspace.id,
-				data: { provider: 'discord', providerId: providerId.trim() },
-			},
+			{ provider: 'discord', providerId: providerId.trim() },
 			{
 				onSuccess: () => {
 					setProviderId('')
@@ -205,8 +188,8 @@ function WorkspaceDetails({
 	}
 
 	function handleDeleteWorkspace() {
-		if (!confirm(`Delete "${workspace.name}"? This cannot be undone.`)) return
-		deleteWorkspace(workspace.id)
+		if (!confirm(`Delete "${workspace?.name}"? This cannot be undone.`)) return
+		deleteWorkspace()
 	}
 
 	return (
@@ -391,7 +374,8 @@ function SettingsPage() {
 	const { workspace } = useWorkspace()
 	const { data: membersMeRaw } = useGetMembersMe()
 
-	const member = membersMeRaw?.status === 200 ? membersMeRaw.data.member : null
+	const member =
+		membersMeRaw?.status === 200 ? (membersMeRaw.data.member ?? null) : null
 
 	return (
 		<div className="flex h-full flex-col gap-10 p-8 md:px-10">

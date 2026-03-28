@@ -5,652 +5,731 @@
  * API for managing bookmarks, workspaces, and members with API key authentication
  * OpenAPI spec version: 1.0.0
  */
-export type Healthcheck200Message =
-	(typeof Healthcheck200Message)[keyof typeof Healthcheck200Message];
+export type Healthcheck200Message = typeof Healthcheck200Message[keyof typeof Healthcheck200Message];
+
 
 export const Healthcheck200Message = {
-	ok: "ok",
+  ok: 'ok',
 } as const;
 
 export type Healthcheck200 = {
-	message: Healthcheck200Message;
+  message: Healthcheck200Message;
 };
 
-export type PostBookmarksBodySource =
-	(typeof PostBookmarksBodySource)[keyof typeof PostBookmarksBodySource];
+export type PostBookmarksBodySource = typeof PostBookmarksBodySource[keyof typeof PostBookmarksBodySource];
+
 
 export const PostBookmarksBodySource = {
-	web: "web",
-	discord: "discord",
-	raycast: "raycast",
-	api: "api",
+  web: 'web',
+  discord: 'discord',
+  raycast: 'raycast',
+  api: 'api',
 } as const;
 
 export type PostBookmarksBody = {
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	workspaceId: string;
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	memberId: string;
-	url: string;
-	source?: PostBookmarksBodySource;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  workspaceId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  memberId: string;
+  url: string;
+  source?: PostBookmarksBodySource;
 };
 
 /**
  * Bookmark submitted for processing
  */
 export type PostBookmarks201 = {
-	id: string;
-	status: string;
+  id: string;
+  status: string;
 };
 
 /**
  * Failed to create bookmark
  */
 export type PostBookmarks400 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Workspace or member not found
  */
 export type PostBookmarks404 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to create bookmark
  */
 export type PostBookmarks500 = {
-	message: string;
+  message: string;
 };
 
 export type GetBookmarksParams = {
-	/**
-	 * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-	 */
-	workspaceId: string;
-	/**
-	 * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-	 */
-	memberId: string;
-	/**
-	 * @minLength 1
-	 */
-	text: string;
-	/**
-	 * @minimum 1
-	 * @maximum 50
-	 */
-	limit?: number;
+/**
+ * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+ */
+workspaceId: string;
+/**
+ * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+ */
+memberId: string;
+/**
+ * @minLength 1
+ */
+text: string;
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
 };
 
 export type GetBookmarks200Item = {
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	id: string;
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	workspaceId: string;
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	memberId: string;
-	url: string;
-	/**
-	 * @minLength 64
-	 * @maxLength 64
-	 */
-	urlHashId: string;
-	status: string;
-	/** @nullable */
-	title: string | null;
-	/** @nullable */
-	description: string | null;
-	/** @nullable */
-	tags: string[] | null;
-	/** @nullable */
-	failureReason: string | null;
-	source: string;
-	createdAt: string;
-	updatedAt: string;
-	visible: boolean;
-	matchedBecause?: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  workspaceId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  memberId: string;
+  url: string;
+  /**
+     * @minLength 64
+     * @maxLength 64
+     */
+  urlHashId: string;
+  status: string;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  tags: string[] | null;
+  /** @nullable */
+  failureReason: string | null;
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+  visible: boolean;
+  matchedBecause?: string;
 };
 
 /**
  * Failed to get bookmarks
  */
 export type GetBookmarks400 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to get bookmarks
  */
 export type GetBookmarks500 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Retry triggered
  */
 export type PostBookmarksIdRetry200 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Bookmark not found
  */
 export type PostBookmarksIdRetry404 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Bookmark not in failed state
  */
 export type PostBookmarksIdRetry409 = {
-	message: string;
+  message: string;
 };
 
 export type DeleteBookmarksId200 = {
-	message: string;
+  message: string;
 };
 
 export type DeleteBookmarksId404 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Bookmark retrieved successfully
  */
 export type GetBookmarksId200 = {
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	id: string;
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	workspaceId: string;
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	memberId: string;
-	url: string;
-	/**
-	 * @minLength 64
-	 * @maxLength 64
-	 */
-	urlHashId: string;
-	status: string;
-	/** @nullable */
-	title: string | null;
-	/** @nullable */
-	description: string | null;
-	/** @nullable */
-	tags: string[] | null;
-	/** @nullable */
-	failureReason: string | null;
-	source: string;
-	createdAt: string;
-	updatedAt: string;
-	visible: boolean;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  id: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  workspaceId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  memberId: string;
+  url: string;
+  /**
+     * @minLength 64
+     * @maxLength 64
+     */
+  urlHashId: string;
+  status: string;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
+  /** @nullable */
+  tags: string[] | null;
+  /** @nullable */
+  failureReason: string | null;
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+  visible: boolean;
 };
 
 /**
  * Bookmark not found
  */
 export type GetBookmarksId404 = {
-	message: string;
+  message: string;
 };
 
 export type PostWorkspacesCreateBody = {
-	/** @minLength 1 */
-	name: string;
-	description?: string;
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	ownerId: string;
+  /** @minLength 1 */
+  name: string;
+  description?: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  ownerId: string;
 };
 
 export type PostWorkspacesCreate201Workspace = {
-	id: string;
-	ownerId: string;
-	name: string;
-	/** @nullable */
-	description: string | null;
-	isPublic: boolean;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  ownerId: string;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Workspace created.
  */
 export type PostWorkspacesCreate201 = {
-	workspace: PostWorkspacesCreate201Workspace;
+  workspace: PostWorkspacesCreate201Workspace;
 };
 
 /**
  * Failed to create workspace
  */
 export type PostWorkspacesCreate400 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Cannot create workspace due constraint
  */
 export type PostWorkspacesCreate422 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to create workspace
  */
 export type PostWorkspacesCreate500 = {
-	message: string;
+  message: string;
+};
+
+export type PatchWorkspacesWorkspaceIdBody = {
+  /** @minLength 1 */
+  name?: string;
+  /** @nullable */
+  description?: string | null;
+  isPublic?: boolean;
+};
+
+export type PatchWorkspacesWorkspaceId200Workspace = {
+  id: string;
+  /** @nullable */
+  ownerId: string | null;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  isPersonal: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Workspace updated
+ */
+export type PatchWorkspacesWorkspaceId200 = {
+  workspace: PatchWorkspacesWorkspaceId200Workspace;
+};
+
+/**
+ * Bad request
+ */
+export type PatchWorkspacesWorkspaceId400 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type PatchWorkspacesWorkspaceId403 = {
+  message: string;
+};
+
+/**
+ * Workspace not found
+ */
+export type PatchWorkspacesWorkspaceId404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type PatchWorkspacesWorkspaceId500 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type DeleteWorkspacesWorkspaceId403 = {
+  message: string;
+};
+
+/**
+ * Workspace not found
+ */
+export type DeleteWorkspacesWorkspaceId404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type DeleteWorkspacesWorkspaceId500 = {
+  message: string;
 };
 
 export type GetWorkspacesMe200WorkspacesItem = {
-	id: string;
-	/** @nullable */
-	ownerId: string | null;
-	name: string;
-	/** @nullable */
-	description: string | null;
-	isPublic: boolean;
-	isPersonal: boolean;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  /** @nullable */
+  ownerId: string | null;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  isPersonal: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * List of workspaces the member belongs to
  */
 export type GetWorkspacesMe200 = {
-	workspaces: GetWorkspacesMe200WorkspacesItem[];
+  workspaces: GetWorkspacesMe200WorkspacesItem[];
 };
 
 /**
  * Failed to get workspaces
  */
 export type GetWorkspacesMe500 = {
-	message: string;
+  message: string;
 };
 
 export type GetWorkspacesParams = {
-	/**
-	 * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-	 */
-	id: string;
+/**
+ * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+ */
+id: string;
 };
 
 export type GetWorkspaces200Workspace = {
-	id: string;
-	ownerId: string;
-	name: string;
-	/** @nullable */
-	description: string | null;
-	isPublic: boolean;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  ownerId: string;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Workspace found.
  */
 export type GetWorkspaces200 = {
-	workspace: GetWorkspaces200Workspace;
+  workspace: GetWorkspaces200Workspace;
 };
 
 /**
  * Workspace not found
  */
 export type GetWorkspaces404 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to get workspace
  */
 export type GetWorkspaces500 = {
-	message: string;
+  message: string;
 };
 
 export type PostWorkspacesWorkspaceIdIntegrationsBody = {
-	/** @minLength 1 */
-	provider: string;
-	/** @minLength 1 */
-	providerId: string;
+  /** @minLength 1 */
+  provider: string;
+  /** @minLength 1 */
+  providerId: string;
 };
 
 export type PostWorkspacesWorkspaceIdIntegrations201Integration = {
-	id: string;
-	workspaceId: string;
-	provider: string;
-	providerId: string;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  workspaceId: string;
+  provider: string;
+  providerId: string;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Integration added
  */
 export type PostWorkspacesWorkspaceIdIntegrations201 = {
-	integration: PostWorkspacesWorkspaceIdIntegrations201Integration;
+  integration: PostWorkspacesWorkspaceIdIntegrations201Integration;
 };
 
 /**
  * Workspace not found
  */
 export type PostWorkspacesWorkspaceIdIntegrations404 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Integration already exists
  */
 export type PostWorkspacesWorkspaceIdIntegrations422 = {
-	message: string;
+  message: string;
 };
 
 export type GetWorkspacesByIntegrationParams = {
-	/**
-	 * @minLength 1
-	 */
-	provider: string;
-	/**
-	 * @minLength 1
-	 */
-	providerId: string;
+/**
+ * @minLength 1
+ */
+provider: string;
+/**
+ * @minLength 1
+ */
+providerId: string;
 };
 
 export type GetWorkspacesByIntegration200Workspace = {
-	id: string;
-	ownerId: string;
-	name: string;
-	/** @nullable */
-	description: string | null;
-	isPublic: boolean;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  ownerId: string;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Workspace found
  */
 export type GetWorkspacesByIntegration200 = {
-	workspace: GetWorkspacesByIntegration200Workspace;
+  workspace: GetWorkspacesByIntegration200Workspace;
 };
 
 /**
  * Workspace not found
  */
 export type GetWorkspacesByIntegration404 = {
-	message: string;
+  message: string;
 };
 
 export type GetMembersMe200Member = {
-	id: string;
-	/** @nullable */
-	name: string | null;
-	/** @nullable */
-	username: string | null;
-	/** @nullable */
-	email: string | null;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * @nullable
  */
 export type GetMembersMe200Workspace = {
-	id: string;
-	name: string;
-	/** @nullable */
-	description: string | null;
-	isPublic: boolean;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 } | null;
 
 /**
  * Current member
  */
 export type GetMembersMe200 = {
-	member: GetMembersMe200Member;
-	/** @nullable */
-	workspace: GetMembersMe200Workspace;
+  member: GetMembersMe200Member;
+  /** @nullable */
+  workspace: GetMembersMe200Workspace;
 };
 
 /**
  * Unauthorized
  */
 export type GetMembersMe401 = {
-	message: string;
+  message: string;
 };
 
 export type PostMembersSync200Member = {
-	id: string;
-	/** @nullable */
-	name: string | null;
-	/** @nullable */
-	username: string | null;
-	/** @nullable */
-	email: string | null;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Member already exists
  */
 export type PostMembersSync200 = {
-	member: PostMembersSync200Member;
+  member: PostMembersSync200Member;
 };
 
 export type PostMembersSync201Member = {
-	id: string;
-	/** @nullable */
-	name: string | null;
-	/** @nullable */
-	username: string | null;
-	/** @nullable */
-	email: string | null;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Member created
  */
 export type PostMembersSync201 = {
-	member: PostMembersSync201Member;
+  member: PostMembersSync201Member;
 };
 
 /**
  * Unauthorized
  */
 export type PostMembersSync401 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Member already exists with different userId
  */
 export type PostMembersSync422 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to sync member
  */
 export type PostMembersSync500 = {
-	message: string;
+  message: string;
 };
 
 export type PostMembersCreateBody = {
-	/** @minLength 1 */
-	name: string;
-	/** @minLength 1 */
-	username: string;
-	/** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
-	email: string;
+  /** @minLength 1 */
+  name: string;
+  /** @minLength 1 */
+  username: string;
+  /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
+  email: string;
 };
 
 export type PostMembersCreate201Member = {
-	id: string;
-	/** @nullable */
-	name: string | null;
-	/** @nullable */
-	username: string | null;
-	/** @nullable */
-	email: string | null;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Member created.
  */
 export type PostMembersCreate201 = {
-	member: PostMembersCreate201Member;
+  member: PostMembersCreate201Member;
 };
 
 /**
  * Failed to create member
  */
 export type PostMembersCreate400 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Member already exists
  */
 export type PostMembersCreate422 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to create member
  */
 export type PostMembersCreate500 = {
-	message: string;
+  message: string;
 };
 
 export type PutMembersAddBody = {
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	workspaceId: string;
-	/** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-	memberId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  workspaceId: string;
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  memberId: string;
 };
 
 /**
  * Member invited to workspace.
  */
 export type PutMembersAdd201 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to add member to workspace
  */
 export type PutMembersAdd400 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Workspace or member not found
  */
 export type PutMembersAdd404 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Membership already exists
  */
 export type PutMembersAdd422 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Failed to add member to workspace
  */
 export type PutMembersAdd500 = {
-	message: string;
+  message: string;
 };
 
 export type PostMembersMemberIdIdentitiesBody = {
-	/** @minLength 1 */
-	provider: string;
-	/** @minLength 1 */
-	providerUserId: string;
+  /** @minLength 1 */
+  provider: string;
+  /** @minLength 1 */
+  providerUserId: string;
 };
 
 export type PostMembersMemberIdIdentities201Identity = {
-	id: string;
-	memberId: string;
-	provider: string;
-	providerUserId: string;
-	createdAt: string;
+  id: string;
+  memberId: string;
+  provider: string;
+  providerUserId: string;
+  createdAt: string;
 };
 
 /**
  * Identity linked
  */
 export type PostMembersMemberIdIdentities201 = {
-	identity: PostMembersMemberIdIdentities201Identity;
+  identity: PostMembersMemberIdIdentities201Identity;
 };
 
 /**
  * Member not found
  */
 export type PostMembersMemberIdIdentities404 = {
-	message: string;
+  message: string;
 };
 
 /**
  * Identity already exists
  */
 export type PostMembersMemberIdIdentities422 = {
-	message: string;
+  message: string;
 };
 
 export type GetMembersByIdentityParams = {
-	/**
-	 * @minLength 1
-	 */
-	provider: string;
-	/**
-	 * @minLength 1
-	 */
-	providerUserId: string;
+/**
+ * @minLength 1
+ */
+provider: string;
+/**
+ * @minLength 1
+ */
+providerUserId: string;
 };
 
 export type GetMembersByIdentity200Member = {
-	id: string;
-	/** @nullable */
-	name: string | null;
-	/** @nullable */
-	username: string | null;
-	/** @nullable */
-	email: string | null;
-	createdAt: string;
-	updatedAt: string;
-	active: boolean;
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
 };
 
 /**
  * Member found
  */
 export type GetMembersByIdentity200 = {
-	member: GetMembersByIdentity200Member;
+  member: GetMembersByIdentity200Member;
 };
 
 /**
  * Member not found
  */
 export type GetMembersByIdentity404 = {
-	message: string;
+  message: string;
 };
+

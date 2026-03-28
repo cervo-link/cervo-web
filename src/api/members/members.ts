@@ -5,918 +5,681 @@
  * API for managing bookmarks, workspaces, and members with API key authentication
  * OpenAPI spec version: 1.0.0
  */
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
+import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult,
-} from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiClient } from "../../lib/api-client";
-import type {
-	GetMembersByIdentity200,
-	GetMembersByIdentity404,
-	GetMembersByIdentityParams,
-	GetMembersMe200,
-	GetMembersMe401,
-	PostMembersCreate201,
-	PostMembersCreate400,
-	PostMembersCreate422,
-	PostMembersCreate500,
-	PostMembersCreateBody,
-	PostMembersMemberIdIdentities201,
-	PostMembersMemberIdIdentities404,
-	PostMembersMemberIdIdentities422,
-	PostMembersMemberIdIdentitiesBody,
-	PostMembersSync200,
-	PostMembersSync201,
-	PostMembersSync401,
-	PostMembersSync422,
-	PostMembersSync500,
-	PutMembersAdd201,
-	PutMembersAdd400,
-	PutMembersAdd404,
-	PutMembersAdd422,
-	PutMembersAdd500,
-	PutMembersAddBody,
-} from "../cervoAPI.schemas";
+  GetMembersByIdentity200,
+  GetMembersByIdentity404,
+  GetMembersByIdentityParams,
+  GetMembersMe200,
+  GetMembersMe401,
+  PostMembersCreate201,
+  PostMembersCreate400,
+  PostMembersCreate422,
+  PostMembersCreate500,
+  PostMembersCreateBody,
+  PostMembersMemberIdIdentities201,
+  PostMembersMemberIdIdentities404,
+  PostMembersMemberIdIdentities422,
+  PostMembersMemberIdIdentitiesBody,
+  PostMembersSync200,
+  PostMembersSync201,
+  PostMembersSync401,
+  PostMembersSync422,
+  PostMembersSync500,
+  PutMembersAdd201,
+  PutMembersAdd400,
+  PutMembersAdd404,
+  PutMembersAdd422,
+  PutMembersAdd500,
+  PutMembersAddBody
+} from '../cervoAPI.schemas';
+
+import { apiClient } from '../../lib/api-client';
+
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
 
 /**
  * Get the currently authenticated member
  */
 export type getMembersMeResponse200 = {
-	data: GetMembersMe200;
-	status: 200;
-};
+  data: GetMembersMe200
+  status: 200
+}
 
 export type getMembersMeResponse401 = {
-	data: GetMembersMe401;
-	status: 401;
+  data: GetMembersMe401
+  status: 401
+}
+
+export type getMembersMeResponseSuccess = (getMembersMeResponse200) & {
+  headers: Headers;
+};
+export type getMembersMeResponseError = (getMembersMeResponse401) & {
+  headers: Headers;
 };
 
-export type getMembersMeResponseSuccess = getMembersMeResponse200 & {
-	headers: Headers;
-};
-export type getMembersMeResponseError = getMembersMeResponse401 & {
-	headers: Headers;
-};
-
-export type getMembersMeResponse =
-	| getMembersMeResponseSuccess
-	| getMembersMeResponseError;
+export type getMembersMeResponse = (getMembersMeResponseSuccess | getMembersMeResponseError)
 
 export const getGetMembersMeUrl = () => {
-	return `/members/me`;
-};
 
-export const getMembersMe = async (
-	options?: RequestInit,
-): Promise<getMembersMeResponse> => {
-	return apiClient<getMembersMeResponse>(getGetMembersMeUrl(), {
-		...options,
-		method: "GET",
-	});
-};
+
+
+
+  return `/members/me`
+}
+
+export const getMembersMe = async ( options?: RequestInit): Promise<getMembersMeResponse> => {
+
+  return apiClient<getMembersMeResponse>(getGetMembersMeUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
 
 export const getGetMembersMeQueryKey = () => {
-	return [`/members/me`] as const;
-};
+    return [
+    `/members/me`
+    ] as const;
+    }
 
-export const getGetMembersMeQueryOptions = <
-	TData = Awaited<ReturnType<typeof getMembersMe>>,
-	TError = GetMembersMe401,
->(options?: {
-	query?: Partial<
-		UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>
-	>;
-	request?: SecondParameter<typeof apiClient>;
-}) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetMembersMeQueryKey();
+export const getGetMembersMeQueryOptions = <TData = Awaited<ReturnType<typeof getMembersMe>>, TError = GetMembersMe401>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getMembersMe>>> = ({
-		signal,
-	}) => getMembersMe({ signal, ...requestOptions });
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getMembersMe>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getGetMembersMeQueryKey();
 
-export type GetMembersMeQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getMembersMe>>
->;
-export type GetMembersMeQueryError = GetMembersMe401;
 
-export function useGetMembersMe<
-	TData = Awaited<ReturnType<typeof getMembersMe>>,
-	TError = GetMembersMe401,
->(
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMembersMe>>,
-					TError,
-					Awaited<ReturnType<typeof getMembersMe>>
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetMembersMe<
-	TData = Awaited<ReturnType<typeof getMembersMe>>,
-	TError = GetMembersMe401,
->(
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMembersMe>>,
-					TError,
-					Awaited<ReturnType<typeof getMembersMe>>
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetMembersMe<
-	TData = Awaited<ReturnType<typeof getMembersMe>>,
-	TError = GetMembersMe401,
->(
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
 
-export function useGetMembersMe<
-	TData = Awaited<ReturnType<typeof getMembersMe>>,
-	TError = GetMembersMe401,
->(
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getGetMembersMeQueryOptions(options);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMembersMe>>> = ({ signal }) => getMembersMe({ signal, ...requestOptions });
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return { ...query, queryKey: queryOptions.queryKey };
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
+
+export type GetMembersMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMembersMe>>>
+export type GetMembersMeQueryError = GetMembersMe401
+
+
+export function useGetMembersMe<TData = Awaited<ReturnType<typeof getMembersMe>>, TError = GetMembersMe401>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMembersMe>>,
+          TError,
+          Awaited<ReturnType<typeof getMembersMe>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMembersMe<TData = Awaited<ReturnType<typeof getMembersMe>>, TError = GetMembersMe401>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMembersMe>>,
+          TError,
+          Awaited<ReturnType<typeof getMembersMe>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMembersMe<TData = Awaited<ReturnType<typeof getMembersMe>>, TError = GetMembersMe401>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetMembersMe<TData = Awaited<ReturnType<typeof getMembersMe>>, TError = GetMembersMe401>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersMe>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetMembersMeQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
 
 /**
  * Create member from active session if not exists (idempotent)
  */
 export type postMembersSyncResponse200 = {
-	data: PostMembersSync200;
-	status: 200;
-};
+  data: PostMembersSync200
+  status: 200
+}
 
 export type postMembersSyncResponse201 = {
-	data: PostMembersSync201;
-	status: 201;
-};
+  data: PostMembersSync201
+  status: 201
+}
 
 export type postMembersSyncResponse401 = {
-	data: PostMembersSync401;
-	status: 401;
-};
+  data: PostMembersSync401
+  status: 401
+}
 
 export type postMembersSyncResponse422 = {
-	data: PostMembersSync422;
-	status: 422;
-};
+  data: PostMembersSync422
+  status: 422
+}
 
 export type postMembersSyncResponse500 = {
-	data: PostMembersSync500;
-	status: 500;
+  data: PostMembersSync500
+  status: 500
+}
+
+export type postMembersSyncResponseSuccess = (postMembersSyncResponse200 | postMembersSyncResponse201) & {
+  headers: Headers;
+};
+export type postMembersSyncResponseError = (postMembersSyncResponse401 | postMembersSyncResponse422 | postMembersSyncResponse500) & {
+  headers: Headers;
 };
 
-export type postMembersSyncResponseSuccess = (
-	| postMembersSyncResponse200
-	| postMembersSyncResponse201
-) & {
-	headers: Headers;
-};
-export type postMembersSyncResponseError = (
-	| postMembersSyncResponse401
-	| postMembersSyncResponse422
-	| postMembersSyncResponse500
-) & {
-	headers: Headers;
-};
-
-export type postMembersSyncResponse =
-	| postMembersSyncResponseSuccess
-	| postMembersSyncResponseError;
+export type postMembersSyncResponse = (postMembersSyncResponseSuccess | postMembersSyncResponseError)
 
 export const getPostMembersSyncUrl = () => {
-	return `/members/sync`;
-};
 
-export const postMembersSync = async (
-	options?: RequestInit,
-): Promise<postMembersSyncResponse> => {
-	return apiClient<postMembersSyncResponse>(getPostMembersSyncUrl(), {
-		...options,
-		method: "POST",
-	});
-};
 
-export const getPostMembersSyncMutationOptions = <
-	TError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postMembersSync>>,
-		TError,
-		void,
-		TContext
-	>;
-	request?: SecondParameter<typeof apiClient>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postMembersSync>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationKey = ["postMembersSync"];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postMembersSync>>,
-		void
-	> = () => {
-		return postMembersSync(requestOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
+  return `/members/sync`
+}
 
-export type PostMembersSyncMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postMembersSync>>
->;
+export const postMembersSync = async ( options?: RequestInit): Promise<postMembersSyncResponse> => {
 
-export type PostMembersSyncMutationError =
-	| PostMembersSync401
-	| PostMembersSync422
-	| PostMembersSync500;
+  return apiClient<postMembersSyncResponse>(getPostMembersSyncUrl(),
+  {
+    ...options,
+    method: 'POST'
 
-export const usePostMembersSync = <
-	TError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postMembersSync>>,
-			TError,
-			void,
-			TContext
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof postMembersSync>>,
-	TError,
-	void,
-	TContext
-> => {
-	return useMutation(getPostMembersSyncMutationOptions(options), queryClient);
-};
-/**
+
+  }
+);}
+
+
+
+
+export const getPostMembersSyncMutationOptions = <TError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersSync>>, TError,void, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postMembersSync>>, TError,void, TContext> => {
+
+const mutationKey = ['postMembersSync'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMembersSync>>, void> = () => {
+
+
+          return  postMembersSync(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostMembersSyncMutationResult = NonNullable<Awaited<ReturnType<typeof postMembersSync>>>
+
+    export type PostMembersSyncMutationError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500
+
+    export const usePostMembersSync = <TError = PostMembersSync401 | PostMembersSync422 | PostMembersSync500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersSync>>, TError,void, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postMembersSync>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getPostMembersSyncMutationOptions(options), queryClient);
+    }
+    /**
  * Create a member
  */
 export type postMembersCreateResponse201 = {
-	data: PostMembersCreate201;
-	status: 201;
-};
+  data: PostMembersCreate201
+  status: 201
+}
 
 export type postMembersCreateResponse400 = {
-	data: PostMembersCreate400;
-	status: 400;
-};
+  data: PostMembersCreate400
+  status: 400
+}
 
 export type postMembersCreateResponse422 = {
-	data: PostMembersCreate422;
-	status: 422;
-};
+  data: PostMembersCreate422
+  status: 422
+}
 
 export type postMembersCreateResponse500 = {
-	data: PostMembersCreate500;
-	status: 500;
+  data: PostMembersCreate500
+  status: 500
+}
+
+export type postMembersCreateResponseSuccess = (postMembersCreateResponse201) & {
+  headers: Headers;
+};
+export type postMembersCreateResponseError = (postMembersCreateResponse400 | postMembersCreateResponse422 | postMembersCreateResponse500) & {
+  headers: Headers;
 };
 
-export type postMembersCreateResponseSuccess = postMembersCreateResponse201 & {
-	headers: Headers;
-};
-export type postMembersCreateResponseError = (
-	| postMembersCreateResponse400
-	| postMembersCreateResponse422
-	| postMembersCreateResponse500
-) & {
-	headers: Headers;
-};
-
-export type postMembersCreateResponse =
-	| postMembersCreateResponseSuccess
-	| postMembersCreateResponseError;
+export type postMembersCreateResponse = (postMembersCreateResponseSuccess | postMembersCreateResponseError)
 
 export const getPostMembersCreateUrl = () => {
-	return `/members/create`;
-};
 
-export const postMembersCreate = async (
-	postMembersCreateBody: PostMembersCreateBody,
-	options?: RequestInit,
-): Promise<postMembersCreateResponse> => {
-	return apiClient<postMembersCreateResponse>(getPostMembersCreateUrl(), {
-		...options,
-		method: "POST",
-		headers: { "Content-Type": "application/json", ...options?.headers },
-		body: JSON.stringify(postMembersCreateBody),
-	});
-};
 
-export const getPostMembersCreateMutationOptions = <
-	TError = PostMembersCreate400 | PostMembersCreate422 | PostMembersCreate500,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postMembersCreate>>,
-		TError,
-		{ data: PostMembersCreateBody },
-		TContext
-	>;
-	request?: SecondParameter<typeof apiClient>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postMembersCreate>>,
-	TError,
-	{ data: PostMembersCreateBody },
-	TContext
-> => {
-	const mutationKey = ["postMembersCreate"];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postMembersCreate>>,
-		{ data: PostMembersCreateBody }
-	> = (props) => {
-		const { data } = props ?? {};
 
-		return postMembersCreate(data, requestOptions);
-	};
+  return `/members/create`
+}
 
-	return { mutationFn, ...mutationOptions };
-};
+export const postMembersCreate = async (postMembersCreateBody: PostMembersCreateBody, options?: RequestInit): Promise<postMembersCreateResponse> => {
 
-export type PostMembersCreateMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postMembersCreate>>
->;
-export type PostMembersCreateMutationBody = PostMembersCreateBody;
-export type PostMembersCreateMutationError =
-	| PostMembersCreate400
-	| PostMembersCreate422
-	| PostMembersCreate500;
+  return apiClient<postMembersCreateResponse>(getPostMembersCreateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postMembersCreateBody,)
+  }
+);}
 
-export const usePostMembersCreate = <
-	TError = PostMembersCreate400 | PostMembersCreate422 | PostMembersCreate500,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postMembersCreate>>,
-			TError,
-			{ data: PostMembersCreateBody },
-			TContext
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof postMembersCreate>>,
-	TError,
-	{ data: PostMembersCreateBody },
-	TContext
-> => {
-	return useMutation(getPostMembersCreateMutationOptions(options), queryClient);
-};
-/**
+
+
+
+export const getPostMembersCreateMutationOptions = <TError = PostMembersCreate400 | PostMembersCreate422 | PostMembersCreate500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersCreate>>, TError,{data: PostMembersCreateBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postMembersCreate>>, TError,{data: PostMembersCreateBody}, TContext> => {
+
+const mutationKey = ['postMembersCreate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMembersCreate>>, {data: PostMembersCreateBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postMembersCreate(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostMembersCreateMutationResult = NonNullable<Awaited<ReturnType<typeof postMembersCreate>>>
+    export type PostMembersCreateMutationBody = PostMembersCreateBody
+    export type PostMembersCreateMutationError = PostMembersCreate400 | PostMembersCreate422 | PostMembersCreate500
+
+    export const usePostMembersCreate = <TError = PostMembersCreate400 | PostMembersCreate422 | PostMembersCreate500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersCreate>>, TError,{data: PostMembersCreateBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postMembersCreate>>,
+        TError,
+        {data: PostMembersCreateBody},
+        TContext
+      > => {
+      return useMutation(getPostMembersCreateMutationOptions(options), queryClient);
+    }
+    /**
  * Add a member to a workspace
  */
 export type putMembersAddResponse201 = {
-	data: PutMembersAdd201;
-	status: 201;
-};
+  data: PutMembersAdd201
+  status: 201
+}
 
 export type putMembersAddResponse400 = {
-	data: PutMembersAdd400;
-	status: 400;
-};
+  data: PutMembersAdd400
+  status: 400
+}
 
 export type putMembersAddResponse404 = {
-	data: PutMembersAdd404;
-	status: 404;
-};
+  data: PutMembersAdd404
+  status: 404
+}
 
 export type putMembersAddResponse422 = {
-	data: PutMembersAdd422;
-	status: 422;
-};
+  data: PutMembersAdd422
+  status: 422
+}
 
 export type putMembersAddResponse500 = {
-	data: PutMembersAdd500;
-	status: 500;
+  data: PutMembersAdd500
+  status: 500
+}
+
+export type putMembersAddResponseSuccess = (putMembersAddResponse201) & {
+  headers: Headers;
+};
+export type putMembersAddResponseError = (putMembersAddResponse400 | putMembersAddResponse404 | putMembersAddResponse422 | putMembersAddResponse500) & {
+  headers: Headers;
 };
 
-export type putMembersAddResponseSuccess = putMembersAddResponse201 & {
-	headers: Headers;
-};
-export type putMembersAddResponseError = (
-	| putMembersAddResponse400
-	| putMembersAddResponse404
-	| putMembersAddResponse422
-	| putMembersAddResponse500
-) & {
-	headers: Headers;
-};
-
-export type putMembersAddResponse =
-	| putMembersAddResponseSuccess
-	| putMembersAddResponseError;
+export type putMembersAddResponse = (putMembersAddResponseSuccess | putMembersAddResponseError)
 
 export const getPutMembersAddUrl = () => {
-	return `/members/add`;
-};
 
-export const putMembersAdd = async (
-	putMembersAddBody: PutMembersAddBody,
-	options?: RequestInit,
-): Promise<putMembersAddResponse> => {
-	return apiClient<putMembersAddResponse>(getPutMembersAddUrl(), {
-		...options,
-		method: "PUT",
-		headers: { "Content-Type": "application/json", ...options?.headers },
-		body: JSON.stringify(putMembersAddBody),
-	});
-};
 
-export const getPutMembersAddMutationOptions = <
-	TError =
-		| PutMembersAdd400
-		| PutMembersAdd404
-		| PutMembersAdd422
-		| PutMembersAdd500,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof putMembersAdd>>,
-		TError,
-		{ data: PutMembersAddBody },
-		TContext
-	>;
-	request?: SecondParameter<typeof apiClient>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof putMembersAdd>>,
-	TError,
-	{ data: PutMembersAddBody },
-	TContext
-> => {
-	const mutationKey = ["putMembersAdd"];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof putMembersAdd>>,
-		{ data: PutMembersAddBody }
-	> = (props) => {
-		const { data } = props ?? {};
 
-		return putMembersAdd(data, requestOptions);
-	};
+  return `/members/add`
+}
 
-	return { mutationFn, ...mutationOptions };
-};
+export const putMembersAdd = async (putMembersAddBody: PutMembersAddBody, options?: RequestInit): Promise<putMembersAddResponse> => {
 
-export type PutMembersAddMutationResult = NonNullable<
-	Awaited<ReturnType<typeof putMembersAdd>>
->;
-export type PutMembersAddMutationBody = PutMembersAddBody;
-export type PutMembersAddMutationError =
-	| PutMembersAdd400
-	| PutMembersAdd404
-	| PutMembersAdd422
-	| PutMembersAdd500;
+  return apiClient<putMembersAddResponse>(getPutMembersAddUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putMembersAddBody,)
+  }
+);}
 
-export const usePutMembersAdd = <
-	TError =
-		| PutMembersAdd400
-		| PutMembersAdd404
-		| PutMembersAdd422
-		| PutMembersAdd500,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof putMembersAdd>>,
-			TError,
-			{ data: PutMembersAddBody },
-			TContext
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof putMembersAdd>>,
-	TError,
-	{ data: PutMembersAddBody },
-	TContext
-> => {
-	return useMutation(getPutMembersAddMutationOptions(options), queryClient);
-};
-/**
+
+
+
+export const getPutMembersAddMutationOptions = <TError = PutMembersAdd400 | PutMembersAdd404 | PutMembersAdd422 | PutMembersAdd500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMembersAdd>>, TError,{data: PutMembersAddBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof putMembersAdd>>, TError,{data: PutMembersAddBody}, TContext> => {
+
+const mutationKey = ['putMembersAdd'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putMembersAdd>>, {data: PutMembersAddBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putMembersAdd(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutMembersAddMutationResult = NonNullable<Awaited<ReturnType<typeof putMembersAdd>>>
+    export type PutMembersAddMutationBody = PutMembersAddBody
+    export type PutMembersAddMutationError = PutMembersAdd400 | PutMembersAdd404 | PutMembersAdd422 | PutMembersAdd500
+
+    export const usePutMembersAdd = <TError = PutMembersAdd400 | PutMembersAdd404 | PutMembersAdd422 | PutMembersAdd500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMembersAdd>>, TError,{data: PutMembersAddBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putMembersAdd>>,
+        TError,
+        {data: PutMembersAddBody},
+        TContext
+      > => {
+      return useMutation(getPutMembersAddMutationOptions(options), queryClient);
+    }
+    /**
  * Link a platform identity to a member
  */
 export type postMembersMemberIdIdentitiesResponse201 = {
-	data: PostMembersMemberIdIdentities201;
-	status: 201;
-};
+  data: PostMembersMemberIdIdentities201
+  status: 201
+}
 
 export type postMembersMemberIdIdentitiesResponse404 = {
-	data: PostMembersMemberIdIdentities404;
-	status: 404;
-};
+  data: PostMembersMemberIdIdentities404
+  status: 404
+}
 
 export type postMembersMemberIdIdentitiesResponse422 = {
-	data: PostMembersMemberIdIdentities422;
-	status: 422;
+  data: PostMembersMemberIdIdentities422
+  status: 422
+}
+
+export type postMembersMemberIdIdentitiesResponseSuccess = (postMembersMemberIdIdentitiesResponse201) & {
+  headers: Headers;
+};
+export type postMembersMemberIdIdentitiesResponseError = (postMembersMemberIdIdentitiesResponse404 | postMembersMemberIdIdentitiesResponse422) & {
+  headers: Headers;
 };
 
-export type postMembersMemberIdIdentitiesResponseSuccess =
-	postMembersMemberIdIdentitiesResponse201 & {
-		headers: Headers;
-	};
-export type postMembersMemberIdIdentitiesResponseError = (
-	| postMembersMemberIdIdentitiesResponse404
-	| postMembersMemberIdIdentitiesResponse422
-) & {
-	headers: Headers;
-};
+export type postMembersMemberIdIdentitiesResponse = (postMembersMemberIdIdentitiesResponseSuccess | postMembersMemberIdIdentitiesResponseError)
 
-export type postMembersMemberIdIdentitiesResponse =
-	| postMembersMemberIdIdentitiesResponseSuccess
-	| postMembersMemberIdIdentitiesResponseError;
+export const getPostMembersMemberIdIdentitiesUrl = (memberId: string,) => {
 
-export const getPostMembersMemberIdIdentitiesUrl = (memberId: string) => {
-	return `/members/${memberId}/identities`;
-};
 
-export const postMembersMemberIdIdentities = async (
-	memberId: string,
-	postMembersMemberIdIdentitiesBody: PostMembersMemberIdIdentitiesBody,
-	options?: RequestInit,
-): Promise<postMembersMemberIdIdentitiesResponse> => {
-	return apiClient<postMembersMemberIdIdentitiesResponse>(
-		getPostMembersMemberIdIdentitiesUrl(memberId),
-		{
-			...options,
-			method: "POST",
-			headers: { "Content-Type": "application/json", ...options?.headers },
-			body: JSON.stringify(postMembersMemberIdIdentitiesBody),
-		},
-	);
-};
 
-export const getPostMembersMemberIdIdentitiesMutationOptions = <
-	TError = PostMembersMemberIdIdentities404 | PostMembersMemberIdIdentities422,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postMembersMemberIdIdentities>>,
-		TError,
-		{ memberId: string; data: PostMembersMemberIdIdentitiesBody },
-		TContext
-	>;
-	request?: SecondParameter<typeof apiClient>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postMembersMemberIdIdentities>>,
-	TError,
-	{ memberId: string; data: PostMembersMemberIdIdentitiesBody },
-	TContext
-> => {
-	const mutationKey = ["postMembersMemberIdIdentities"];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postMembersMemberIdIdentities>>,
-		{ memberId: string; data: PostMembersMemberIdIdentitiesBody }
-	> = (props) => {
-		const { memberId, data } = props ?? {};
+  return `/members/${memberId}/identities`
+}
 
-		return postMembersMemberIdIdentities(memberId, data, requestOptions);
-	};
+export const postMembersMemberIdIdentities = async (memberId: string,
+    postMembersMemberIdIdentitiesBody: PostMembersMemberIdIdentitiesBody, options?: RequestInit): Promise<postMembersMemberIdIdentitiesResponse> => {
 
-	return { mutationFn, ...mutationOptions };
-};
+  return apiClient<postMembersMemberIdIdentitiesResponse>(getPostMembersMemberIdIdentitiesUrl(memberId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postMembersMemberIdIdentitiesBody,)
+  }
+);}
 
-export type PostMembersMemberIdIdentitiesMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postMembersMemberIdIdentities>>
->;
-export type PostMembersMemberIdIdentitiesMutationBody =
-	PostMembersMemberIdIdentitiesBody;
-export type PostMembersMemberIdIdentitiesMutationError =
-	| PostMembersMemberIdIdentities404
-	| PostMembersMemberIdIdentities422;
 
-export const usePostMembersMemberIdIdentities = <
-	TError = PostMembersMemberIdIdentities404 | PostMembersMemberIdIdentities422,
-	TContext = unknown,
->(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postMembersMemberIdIdentities>>,
-			TError,
-			{ memberId: string; data: PostMembersMemberIdIdentitiesBody },
-			TContext
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof postMembersMemberIdIdentities>>,
-	TError,
-	{ memberId: string; data: PostMembersMemberIdIdentitiesBody },
-	TContext
-> => {
-	return useMutation(
-		getPostMembersMemberIdIdentitiesMutationOptions(options),
-		queryClient,
-	);
-};
-/**
+
+
+export const getPostMembersMemberIdIdentitiesMutationOptions = <TError = PostMembersMemberIdIdentities404 | PostMembersMemberIdIdentities422,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersMemberIdIdentities>>, TError,{memberId: string;data: PostMembersMemberIdIdentitiesBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postMembersMemberIdIdentities>>, TError,{memberId: string;data: PostMembersMemberIdIdentitiesBody}, TContext> => {
+
+const mutationKey = ['postMembersMemberIdIdentities'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMembersMemberIdIdentities>>, {memberId: string;data: PostMembersMemberIdIdentitiesBody}> = (props) => {
+          const {memberId,data} = props ?? {};
+
+          return  postMembersMemberIdIdentities(memberId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostMembersMemberIdIdentitiesMutationResult = NonNullable<Awaited<ReturnType<typeof postMembersMemberIdIdentities>>>
+    export type PostMembersMemberIdIdentitiesMutationBody = PostMembersMemberIdIdentitiesBody
+    export type PostMembersMemberIdIdentitiesMutationError = PostMembersMemberIdIdentities404 | PostMembersMemberIdIdentities422
+
+    export const usePostMembersMemberIdIdentities = <TError = PostMembersMemberIdIdentities404 | PostMembersMemberIdIdentities422,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMembersMemberIdIdentities>>, TError,{memberId: string;data: PostMembersMemberIdIdentitiesBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postMembersMemberIdIdentities>>,
+        TError,
+        {memberId: string;data: PostMembersMemberIdIdentitiesBody},
+        TContext
+      > => {
+      return useMutation(getPostMembersMemberIdIdentitiesMutationOptions(options), queryClient);
+    }
+    /**
  * Find a member by platform identity (bot-facing)
  */
 export type getMembersByIdentityResponse200 = {
-	data: GetMembersByIdentity200;
-	status: 200;
-};
+  data: GetMembersByIdentity200
+  status: 200
+}
 
 export type getMembersByIdentityResponse404 = {
-	data: GetMembersByIdentity404;
-	status: 404;
-};
-
-export type getMembersByIdentityResponseSuccess =
-	getMembersByIdentityResponse200 & {
-		headers: Headers;
-	};
-export type getMembersByIdentityResponseError =
-	getMembersByIdentityResponse404 & {
-		headers: Headers;
-	};
-
-export type getMembersByIdentityResponse =
-	| getMembersByIdentityResponseSuccess
-	| getMembersByIdentityResponseError;
-
-export const getGetMembersByIdentityUrl = (
-	params: GetMembersByIdentityParams,
-) => {
-	const normalizedParams = new URLSearchParams();
-
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? "null" : value.toString());
-		}
-	});
-
-	const stringifiedParams = normalizedParams.toString();
-
-	return stringifiedParams.length > 0
-		? `/members/by-identity?${stringifiedParams}`
-		: `/members/by-identity`;
-};
-
-export const getMembersByIdentity = async (
-	params: GetMembersByIdentityParams,
-	options?: RequestInit,
-): Promise<getMembersByIdentityResponse> => {
-	return apiClient<getMembersByIdentityResponse>(
-		getGetMembersByIdentityUrl(params),
-		{
-			...options,
-			method: "GET",
-		},
-	);
-};
-
-export const getGetMembersByIdentityQueryKey = (
-	params?: GetMembersByIdentityParams,
-) => {
-	return [`/members/by-identity`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetMembersByIdentityQueryOptions = <
-	TData = Awaited<ReturnType<typeof getMembersByIdentity>>,
-	TError = GetMembersByIdentity404,
->(
-	params: GetMembersByIdentityParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMembersByIdentity>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
-
-	const queryKey =
-		queryOptions?.queryKey ?? getGetMembersByIdentityQueryKey(params);
-
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getMembersByIdentity>>
-	> = ({ signal }) =>
-		getMembersByIdentity(params, { signal, ...requestOptions });
-
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getMembersByIdentity>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetMembersByIdentityQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getMembersByIdentity>>
->;
-export type GetMembersByIdentityQueryError = GetMembersByIdentity404;
-
-export function useGetMembersByIdentity<
-	TData = Awaited<ReturnType<typeof getMembersByIdentity>>,
-	TError = GetMembersByIdentity404,
->(
-	params: GetMembersByIdentityParams,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMembersByIdentity>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMembersByIdentity>>,
-					TError,
-					Awaited<ReturnType<typeof getMembersByIdentity>>
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetMembersByIdentity<
-	TData = Awaited<ReturnType<typeof getMembersByIdentity>>,
-	TError = GetMembersByIdentity404,
->(
-	params: GetMembersByIdentityParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMembersByIdentity>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMembersByIdentity>>,
-					TError,
-					Awaited<ReturnType<typeof getMembersByIdentity>>
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetMembersByIdentity<
-	TData = Awaited<ReturnType<typeof getMembersByIdentity>>,
-	TError = GetMembersByIdentity404,
->(
-	params: GetMembersByIdentityParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMembersByIdentity>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-
-export function useGetMembersByIdentity<
-	TData = Awaited<ReturnType<typeof getMembersByIdentity>>,
-	TError = GetMembersByIdentity404,
->(
-	params: GetMembersByIdentityParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMembersByIdentity>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof apiClient>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getGetMembersByIdentityQueryOptions(params, options);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-	return { ...query, queryKey: queryOptions.queryKey };
+  data: GetMembersByIdentity404
+  status: 404
 }
+
+export type getMembersByIdentityResponseSuccess = (getMembersByIdentityResponse200) & {
+  headers: Headers;
+};
+export type getMembersByIdentityResponseError = (getMembersByIdentityResponse404) & {
+  headers: Headers;
+};
+
+export type getMembersByIdentityResponse = (getMembersByIdentityResponseSuccess | getMembersByIdentityResponseError)
+
+export const getGetMembersByIdentityUrl = (params: GetMembersByIdentityParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/members/by-identity?${stringifiedParams}` : `/members/by-identity`
+}
+
+export const getMembersByIdentity = async (params: GetMembersByIdentityParams, options?: RequestInit): Promise<getMembersByIdentityResponse> => {
+
+  return apiClient<getMembersByIdentityResponse>(getGetMembersByIdentityUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMembersByIdentityQueryKey = (params?: GetMembersByIdentityParams,) => {
+    return [
+    `/members/by-identity`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetMembersByIdentityQueryOptions = <TData = Awaited<ReturnType<typeof getMembersByIdentity>>, TError = GetMembersByIdentity404>(params: GetMembersByIdentityParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersByIdentity>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMembersByIdentityQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMembersByIdentity>>> = ({ signal }) => getMembersByIdentity(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMembersByIdentity>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMembersByIdentityQueryResult = NonNullable<Awaited<ReturnType<typeof getMembersByIdentity>>>
+export type GetMembersByIdentityQueryError = GetMembersByIdentity404
+
+
+export function useGetMembersByIdentity<TData = Awaited<ReturnType<typeof getMembersByIdentity>>, TError = GetMembersByIdentity404>(
+ params: GetMembersByIdentityParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersByIdentity>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMembersByIdentity>>,
+          TError,
+          Awaited<ReturnType<typeof getMembersByIdentity>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMembersByIdentity<TData = Awaited<ReturnType<typeof getMembersByIdentity>>, TError = GetMembersByIdentity404>(
+ params: GetMembersByIdentityParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersByIdentity>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMembersByIdentity>>,
+          TError,
+          Awaited<ReturnType<typeof getMembersByIdentity>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMembersByIdentity<TData = Awaited<ReturnType<typeof getMembersByIdentity>>, TError = GetMembersByIdentity404>(
+ params: GetMembersByIdentityParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersByIdentity>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetMembersByIdentity<TData = Awaited<ReturnType<typeof getMembersByIdentity>>, TError = GetMembersByIdentity404>(
+ params: GetMembersByIdentityParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMembersByIdentity>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetMembersByIdentityQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+

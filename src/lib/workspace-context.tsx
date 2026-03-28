@@ -14,8 +14,7 @@ const WorkspaceContext = createContext<WorkspaceContextValue | null>(null)
 
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 	const { data, isLoading } = useGetWorkspacesMe()
-	const workspaces =
-		(data?.status === 200 ? data.data.workspaces : undefined) ?? []
+	const workspaces = data?.status === 200 ? data.data.workspaces : []
 
 	const [workspace, setWorkspace] =
 		useState<GetWorkspacesMe200WorkspacesItem | null>(null)

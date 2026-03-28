@@ -34,13 +34,6 @@ export default function Header() {
 					>
 						Home
 					</Link>
-					<Link
-						to="/components"
-						className="text-muted-foreground no-underline transition-colors hover:text-foreground"
-						activeProps={{ className: 'text-foreground no-underline' }}
-					>
-						Components
-					</Link>
 				</div>
 
 				<div className="ml-auto">

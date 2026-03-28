@@ -72,14 +72,11 @@ function LinksPage() {
 	const { data: membersData } = useGetMembersMe()
 	const { data: workspacesData } = useGetWorkspacesMe()
 	const member =
-		(membersData as unknown as { member: GetMembersMe200Member } | undefined)
-			?.member ?? null
+		membersData?.status === 200 ? (membersData.data.member ?? null) : null
 	const workspace =
-		(
-			workspacesData as unknown as
-				| { workspaces: { id: string; name: string }[] }
-				| undefined
-		)?.workspaces?.[0] ?? null
+		workspacesData?.status === 200
+			? (workspacesData.data.workspaces[0] ?? null)
+			: null
 
 	const isSearching = searchValue.trim().length > 0
 
@@ -97,8 +94,7 @@ function LinksPage() {
 		}
 	)
 
-	const bookmarks =
-		(bookmarksRaw as unknown as GetBookmarks200Item[] | undefined) ?? []
+	const bookmarks = bookmarksRaw?.status === 200 ? bookmarksRaw.data : []
 
 	const { mutate: saveBookmark, isPending: isSaving } = usePostBookmarks()
 

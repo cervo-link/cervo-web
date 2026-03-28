@@ -55,7 +55,7 @@ function WorkspaceDropdown() {
 	const queryClient = useQueryClient()
 	const { data: membersMeRaw } = useGetMembersMe()
 	const memberId =
-		membersMeRaw?.status === 200 ? membersMeRaw.data.member.id : undefined
+		membersMeRaw?.status === 200 ? membersMeRaw.data.member?.id : undefined
 
 	const { mutate: createWorkspace, isPending: isCreating } =
 		usePostWorkspacesCreate()
@@ -65,8 +65,9 @@ function WorkspaceDropdown() {
 		createWorkspace(
 			{ data: { name: 'New Workspace', ownerId: memberId } },
 			{
-				onSuccess: ({ workspace: created }) => {
-					selectAfterRefresh(created.id)
+				onSuccess: result => {
+					if (result.status !== 201) return
+					selectAfterRefresh(result.data.workspace.id)
 					void queryClient.invalidateQueries({
 						queryKey: getGetWorkspacesMeQueryKey(),
 					})

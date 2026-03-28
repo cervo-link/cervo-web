@@ -17,9 +17,11 @@ export async function apiClient<T>(
 		},
 	})
 
+	const data = response.status === 204 ? undefined : await response.json()
+
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
 
-	return response.json() as Promise<T>
+	return { data, status: response.status, headers: response.headers } as T
 }
