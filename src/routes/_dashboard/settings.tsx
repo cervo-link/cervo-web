@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Globe, Lock, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { z } from 'zod'
 import type {
 	GetMembersMe200Member,
 	PatchWorkspacesWorkspaceIdBody,
@@ -39,7 +40,13 @@ function buildDiscordAuthUrl(workspaceId: string): string {
 	return `https://discord.com/oauth2/authorize?${params.toString()}`
 }
 
+const searchSchema = z.object({
+	discord_connected: z.boolean().optional(),
+	discord_error: z.string().optional(),
+})
+
 export const Route = createFileRoute('/_dashboard/settings')({
+	validateSearch: searchSchema,
 	head: () => ({
 		meta: [
 			{ title: 'Workspace Settings — Cervo' },
@@ -475,9 +482,28 @@ function WorkspaceDetails({
 function SettingsPage() {
 	const { workspace } = useWorkspace()
 	const { data: membersMeRaw } = useGetMembersMe()
+	const { discord_connected, discord_error } = Route.useSearch()
+	const navigate = useNavigate()
 
 	const member =
 		membersMeRaw?.status === 200 ? (membersMeRaw.data.member ?? null) : null
+
+	useEffect(() => {
+		if (discord_connected) {
+			toast.success('Discord server connected.')
+			void navigate({ to: '/settings', replace: true })
+		}
+		if (discord_error) {
+			const messages: Record<string, string> = {
+				cancelled: 'Discord authorization was cancelled.',
+				missing_data: 'Missing Discord authorization data.',
+				already_connected: 'This Discord server is already connected.',
+				failed: 'Failed to connect Discord server.',
+			}
+			toast.error(messages[discord_error] ?? 'Something went wrong.')
+			void navigate({ to: '/settings', replace: true })
+		}
+	}, [discord_connected, discord_error, navigate])
 
 	return (
 		<div className="flex h-full flex-col gap-10 p-8 md:px-10">

@@ -1,61 +1,64 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect, useRef } from 'react'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { postWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
-
-const searchSchema = z.object({
-	guild_id: z.coerce.string().optional(),
-	state: z.string().optional(),
-	code: z.string().optional(),
-	error: z.string().optional(),
-})
+import { createFileRoute } from '@tanstack/react-router'
+import { serverEnv } from '#/lib/env.server'
 
 export const Route = createFileRoute('/discord/callback')({
-	validateSearch: searchSchema,
+	server: {
+		handlers: {
+			GET: async ({ request }) => {
+				const url = new URL(request.url)
+				// Read guild_id as a raw string — URLSearchParams preserves the full
+				// Discord snowflake without the precision loss that JSON.parse causes.
+				const guildId = url.searchParams.get('guild_id')
+				const workspaceId = url.searchParams.get('state')
+				const error = url.searchParams.get('error')
+				const settingsUrl = new URL('/settings', request.url).href
+
+				if (error) {
+					return Response.redirect(
+						`${settingsUrl}?discord_error=cancelled`,
+						302
+					)
+				}
+
+				if (!guildId || !workspaceId) {
+					return Response.redirect(
+						`${settingsUrl}?discord_error=missing_data`,
+						302
+					)
+				}
+
+				const cookie = request.headers.get('cookie') ?? ''
+				const res = await fetch(
+					`${serverEnv.API_URL}/workspaces/${workspaceId}/integrations`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							Cookie: cookie,
+						},
+						body: JSON.stringify({ provider: 'discord', providerId: guildId }),
+					}
+				)
+
+				if (res.status === 201) {
+					return Response.redirect(`${settingsUrl}?discord_connected=true`, 302)
+				}
+
+				if (res.status === 422) {
+					return Response.redirect(
+						`${settingsUrl}?discord_error=already_connected`,
+						302
+					)
+				}
+
+				return Response.redirect(`${settingsUrl}?discord_error=failed`, 302)
+			},
+		},
+	},
 	component: DiscordCallbackPage,
 })
 
 function DiscordCallbackPage() {
-	const { guild_id, state: workspaceId, error } = Route.useSearch()
-	const navigate = useNavigate()
-	const called = useRef(false)
-
-	useEffect(() => {
-		if (called.current) return
-		called.current = true
-
-		if (error) {
-			toast.error('Discord authorization was cancelled.')
-			void navigate({ to: '/settings', replace: true })
-			return
-		}
-
-		if (!guild_id || !workspaceId) {
-			toast.error('Missing Discord authorization data.')
-			void navigate({ to: '/settings', replace: true })
-			return
-		}
-
-		postWorkspacesWorkspaceIdIntegrations(workspaceId, {
-			provider: 'discord',
-			providerId: guild_id,
-		})
-			.then(result => {
-				if (result.status === 201) {
-					toast.success('Discord server connected.')
-				} else {
-					toast.error('Failed to connect Discord server.')
-				}
-			})
-			.catch(() => {
-				toast.error('Failed to connect Discord server.')
-			})
-			.finally(() => {
-				void navigate({ to: '/settings', replace: true })
-			})
-	}, [guild_id, workspaceId, error, navigate])
-
 	return (
 		<div className="flex h-screen items-center justify-center bg-background">
 			<span className="font-mono text-[13px] text-[#6a6a6a]">
