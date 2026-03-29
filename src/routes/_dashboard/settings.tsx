@@ -24,6 +24,7 @@ type WorkspaceIntegration = {
 	workspaceId: string
 	provider: string
 	providerId: string
+	providerName: string | null
 	createdAt: string
 	active: boolean
 }
@@ -389,7 +390,9 @@ function WorkspaceDetails({
 							</span>
 							<span className="font-mono text-[11px] text-[#6a6a6a]">
 								{hasDiscord
-									? 'Your Discord server is linked to this workspace'
+									? (discordIntegration?.providerName
+										? `Connected to ${discordIntegration.providerName}`
+										: 'Your Discord server is linked to this workspace')
 									: 'Save links shared in your Discord server channels'}
 							</span>
 						</div>
