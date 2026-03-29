@@ -31,6 +31,9 @@ import type {
   GetWorkspaces200,
   GetWorkspaces404,
   GetWorkspaces500,
+  GetWorkspacesByMemberMemberId200,
+  GetWorkspacesByMemberMemberId404,
+  GetWorkspacesByMemberMemberId500,
   GetWorkspacesMe200,
   GetWorkspacesMe500,
   GetWorkspacesParams,
@@ -560,6 +563,125 @@ export function useGetWorkspacesMe<TData = Awaited<ReturnType<typeof getWorkspac
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetWorkspacesMeQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * List all workspaces a given member belongs to
+ */
+export type getWorkspacesByMemberMemberIdResponse200 = {
+  data: GetWorkspacesByMemberMemberId200
+  status: 200
+}
+
+export type getWorkspacesByMemberMemberIdResponse404 = {
+  data: GetWorkspacesByMemberMemberId404
+  status: 404
+}
+
+export type getWorkspacesByMemberMemberIdResponse500 = {
+  data: GetWorkspacesByMemberMemberId500
+  status: 500
+}
+
+export type getWorkspacesByMemberMemberIdResponseSuccess = (getWorkspacesByMemberMemberIdResponse200) & {
+  headers: Headers;
+};
+export type getWorkspacesByMemberMemberIdResponseError = (getWorkspacesByMemberMemberIdResponse404 | getWorkspacesByMemberMemberIdResponse500) & {
+  headers: Headers;
+};
+
+export type getWorkspacesByMemberMemberIdResponse = (getWorkspacesByMemberMemberIdResponseSuccess | getWorkspacesByMemberMemberIdResponseError)
+
+export const getGetWorkspacesByMemberMemberIdUrl = (memberId: string,) => {
+
+
+
+
+  return `/workspaces/by-member/${memberId}`
+}
+
+export const getWorkspacesByMemberMemberId = async (memberId: string, options?: RequestInit): Promise<getWorkspacesByMemberMemberIdResponse> => {
+
+  return apiClient<getWorkspacesByMemberMemberIdResponse>(getGetWorkspacesByMemberMemberIdUrl(memberId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetWorkspacesByMemberMemberIdQueryKey = (memberId: string,) => {
+    return [
+    `/workspaces/by-member/${memberId}`
+    ] as const;
+    }
+
+
+export const getGetWorkspacesByMemberMemberIdQueryOptions = <TData = Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError = GetWorkspacesByMemberMemberId404 | GetWorkspacesByMemberMemberId500>(memberId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetWorkspacesByMemberMemberIdQueryKey(memberId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>> = ({ signal }) => getWorkspacesByMemberMemberId(memberId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(memberId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetWorkspacesByMemberMemberIdQueryResult = NonNullable<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>>
+export type GetWorkspacesByMemberMemberIdQueryError = GetWorkspacesByMemberMemberId404 | GetWorkspacesByMemberMemberId500
+
+
+export function useGetWorkspacesByMemberMemberId<TData = Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError = GetWorkspacesByMemberMemberId404 | GetWorkspacesByMemberMemberId500>(
+ memberId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>,
+          TError,
+          Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWorkspacesByMemberMemberId<TData = Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError = GetWorkspacesByMemberMemberId404 | GetWorkspacesByMemberMemberId500>(
+ memberId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>,
+          TError,
+          Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWorkspacesByMemberMemberId<TData = Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError = GetWorkspacesByMemberMemberId404 | GetWorkspacesByMemberMemberId500>(
+ memberId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetWorkspacesByMemberMemberId<TData = Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError = GetWorkspacesByMemberMemberId404 | GetWorkspacesByMemberMemberId500>(
+ memberId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByMemberMemberId>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetWorkspacesByMemberMemberIdQueryOptions(memberId,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

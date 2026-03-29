@@ -1,24 +1,52 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Globe, Lock, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { z } from 'zod'
 import type {
 	GetMembersMe200Member,
 	PatchWorkspacesWorkspaceIdBody,
-	PostWorkspacesWorkspaceIdIntegrationsBody,
 } from '#/api/cervoAPI.schemas'
 import { useGetMembersMe } from '#/api/members/members'
-import { postWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
 import {
 	deleteWorkspacesWorkspaceId,
 	getGetWorkspacesMeQueryKey,
 	patchWorkspacesWorkspaceId,
-	postWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
+import { apiClient } from '#/lib/api-client'
+import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
 
+type WorkspaceIntegration = {
+	id: string
+	workspaceId: string
+	provider: string
+	providerId: string
+	providerName: string | null
+	createdAt: string
+	active: boolean
+}
+
+function buildDiscordAuthUrl(workspaceId: string): string {
+	const params = new URLSearchParams({
+		client_id: clientEnv.VITE_CLIENT_ID,
+		scope: 'bot applications.commands',
+		permissions: '68608',
+		redirect_uri: `${window.location.origin}/discord/callback`,
+		response_type: 'code',
+		state: workspaceId,
+	})
+	return `https://discord.com/oauth2/authorize?${params.toString()}`
+}
+
+const searchSchema = z.object({
+	discord_connected: z.boolean().optional(),
+	discord_error: z.string().optional(),
+})
+
 export const Route = createFileRoute('/_dashboard/settings')({
+	validateSearch: searchSchema,
 	head: () => ({
 		meta: [
 			{ title: 'Workspace Settings — Cervo' },
@@ -120,26 +148,41 @@ function WorkspaceDetails({
 		workspace?.description ?? ''
 	)
 	const [wsIsPublic, setWsIsPublic] = useState(workspace?.isPublic ?? false)
-	const [providerId, setProviderId] = useState('')
-	const [inviteEmail, setInviteEmail] = useState('')
 	const queryClient = useQueryClient()
 
-	const { mutate: inviteMember, isPending: isInviting } = useMutation({
-		mutationFn: (email: string) =>
-			postWorkspacesWorkspaceIdMembers(workspace?.id ?? '', { email }),
-		onSuccess: result => {
-			if (result.status !== 201) return
-			setInviteEmail('')
-			toast.success('Member invited.')
-		},
-		onError: () => toast.error('Failed to invite member.'),
+	const { data: integrationsData } = useQuery({
+		queryKey: ['/workspaces/integrations', workspace?.id],
+		queryFn: () =>
+			apiClient<{
+				data: { integrations: WorkspaceIntegration[] }
+				status: number
+			}>(`/workspaces/${workspace?.id}/integrations`),
+		enabled: !!workspace?.id,
 	})
 
-	const { mutate: addIntegration, isPending: isAddingIntegration } =
-		useMutation({
-			mutationFn: (data: PostWorkspacesWorkspaceIdIntegrationsBody) =>
-				postWorkspacesWorkspaceIdIntegrations(workspace?.id ?? '', data),
-		})
+	const integrations =
+		integrationsData?.status === 200 ? integrationsData.data.integrations : []
+	const discordIntegration = integrations.find(i => i.provider === 'discord')
+	const hasDiscord = !!discordIntegration
+
+	const { mutate: disconnectDiscord, isPending: isDisconnecting } = useMutation(
+		{
+			mutationFn: (integrationId: string) =>
+				apiClient(
+					`/workspaces/${workspace?.id}/integrations/${integrationId}`,
+					{
+						method: 'DELETE',
+					}
+				),
+			onSuccess: () => {
+				toast.success('Discord server disconnected.')
+				void queryClient.invalidateQueries({
+					queryKey: ['/workspaces/integrations', workspace?.id],
+				})
+			},
+			onError: () => toast.error('Failed to disconnect Discord server.'),
+		}
+	)
 
 	const { mutate: updateWorkspace, isPending: isSaving } = useMutation({
 		mutationFn: (data: PatchWorkspacesWorkspaceIdBody) =>
@@ -182,27 +225,6 @@ function WorkspaceDetails({
 		if (descriptionChanged) payload.description = wsDescription.trim() || null
 		if (visibilityChanged) payload.isPublic = wsIsPublic
 		updateWorkspace(payload)
-	}
-
-	function handleInviteMember() {
-		if (!inviteEmail.trim()) return
-		inviteMember(inviteEmail.trim())
-	}
-
-	function handleAddIntegration() {
-		if (!providerId.trim()) return
-		addIntegration(
-			{ provider: 'discord', providerId: providerId.trim() },
-			{
-				onSuccess: () => {
-					setProviderId('')
-					toast.success('Integration connected.')
-				},
-				onError: () => {
-					toast.error('Failed to connect integration.')
-				},
-			}
-		)
 	}
 
 	function handleDeleteWorkspace() {
@@ -310,7 +332,8 @@ function WorkspaceDetails({
 							<div className="h-16 animate-pulse" />
 						)}
 					</div>
-					<div className="flex gap-2">
+					{/* We will add this back in when we have a way to invite members */}
+					{/* <div className="flex gap-2">
 						<input
 							value={inviteEmail}
 							onChange={e => setInviteEmail(e.target.value)}
@@ -328,51 +351,85 @@ function WorkspaceDetails({
 						>
 							{isInviting ? 'INVITING...' : 'INVITE'}
 						</button>
-					</div>
+					</div> */}
 				</div>
 			)}
 
 			{/* INTEGRATIONS */}
 			<div className="flex flex-col gap-4">
 				<SectionLabel>INTEGRATIONS</SectionLabel>
-				<div className="border border-[#2f2f2f] bg-[#0A0A0A] p-5">
-					<div className="flex flex-col gap-4">
-						<div className="flex items-center gap-3">
-							<div className="flex size-9 items-center justify-center bg-[#5865F2]">
-								<span className="font-mono text-base font-bold text-white">
-									D
-								</span>
+				<div className="border border-[#2f2f2f] bg-[#0A0A0A] divide-y divide-[#2f2f2f]">
+					{/* Discord */}
+					<div className="flex items-center gap-3 p-5">
+						<div className="flex size-9 items-center justify-center bg-[#5865F2]">
+							<span className="font-mono text-base font-bold text-white">
+								D
+							</span>
+						</div>
+						<div className="flex flex-1 flex-col gap-0.5">
+							<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
+								Discord
+							</span>
+							<span className="font-mono text-[11px] text-[#6a6a6a]">
+								{hasDiscord
+									? (discordIntegration?.providerName
+										? `Connected to ${discordIntegration.providerName}`
+										: 'Your Discord server is linked to this workspace')
+									: 'Save links shared in your Discord server channels'}
+							</span>
+						</div>
+						{hasDiscord ? (
+							<div className="flex items-center gap-2">
+								<div className="flex h-11 items-center border border-[#00FF8830] bg-[#00FF8808] px-4">
+									<span className="font-mono text-[11px] font-bold tracking-[0.5px] text-[#00FF88]">
+										CONNECTED
+									</span>
+								</div>
+								<button
+									type="button"
+									onClick={() =>
+										discordIntegration &&
+										disconnectDiscord(discordIntegration.id)
+									}
+									disabled={isDisconnecting}
+									className="flex h-11 items-center border border-[#3a1a1a] bg-[#0A0A0A] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-[#FF4444] transition-colors hover:border-[#FF4444] disabled:cursor-not-allowed disabled:opacity-40"
+								>
+									{isDisconnecting ? 'DISCONNECTING...' : 'DISCONNECT'}
+								</button>
 							</div>
-							<div className="flex flex-1 flex-col gap-0.5">
-								<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
-									Discord
-								</span>
-								<span className="font-mono text-[11px] text-[#6a6a6a]">
-									Discord server integration
-								</span>
-							</div>
+						) : (
 							<button
 								type="button"
-								onClick={handleAddIntegration}
-								disabled={!providerId.trim() || isAddingIntegration}
-								className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+								onClick={() => {
+									window.location.href = buildDiscordAuthUrl(workspace.id)
+								}}
+								className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary"
 							>
-								{isAddingIntegration ? 'CONNECTING...' : 'CONNECT DISCORD'}
+								CONNECT
 							</button>
+						)}
+					</div>
+
+					{/* Slack — coming soon */}
+					<div className="flex items-center gap-3 p-5 opacity-50">
+						<div className="flex size-9 items-center justify-center bg-[#4A154B]">
+							<span className="font-mono text-base font-bold text-white">
+								S
+							</span>
 						</div>
-						<p className="font-mono text-[12px] leading-relaxed text-[#6a6a6a]">
-							Connect your Discord server to automatically save links shared in
-							your channels.
-						</p>
-						<input
-							value={providerId}
-							onChange={e => setProviderId(e.target.value)}
-							onKeyDown={e => {
-								if (e.key === 'Enter') handleAddIntegration()
-							}}
-							placeholder="Guild or server ID..."
-							className="h-11 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] hover:border-primary focus:border-primary"
-						/>
+						<div className="flex flex-1 flex-col gap-0.5">
+							<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
+								Slack
+							</span>
+							<span className="font-mono text-[11px] text-[#6a6a6a]">
+								Save links from your Slack workspace channels
+							</span>
+						</div>
+						<div className="flex h-11 items-center border border-[#2f2f2f] bg-[#141414] px-4">
+							<span className="font-mono text-[11px] font-bold tracking-[0.5px] text-[#6a6a6a]">
+								COMING SOON
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -410,9 +467,28 @@ function WorkspaceDetails({
 function SettingsPage() {
 	const { workspace } = useWorkspace()
 	const { data: membersMeRaw } = useGetMembersMe()
+	const { discord_connected, discord_error } = Route.useSearch()
+	const navigate = useNavigate()
 
 	const member =
 		membersMeRaw?.status === 200 ? (membersMeRaw.data.member ?? null) : null
+
+	useEffect(() => {
+		if (discord_connected) {
+			toast.success('Discord server connected.')
+			void navigate({ to: '/settings', replace: true })
+		}
+		if (discord_error) {
+			const messages: Record<string, string> = {
+				cancelled: 'Discord authorization was cancelled.',
+				missing_data: 'Missing Discord authorization data.',
+				already_connected: 'This Discord server is already connected.',
+				failed: 'Failed to connect Discord server.',
+			}
+			toast.error(messages[discord_error] ?? 'Something went wrong.')
+			void navigate({ to: '/settings', replace: true })
+		}
+	}, [discord_connected, discord_error, navigate])
 
 	return (
 		<div className="flex h-full flex-col gap-10 p-8 md:px-10">

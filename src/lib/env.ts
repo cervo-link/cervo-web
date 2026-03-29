@@ -2,11 +2,13 @@ import { z } from 'zod'
 
 const clientEnvSchema = z.object({
 	VITE_API_URL: z.url().default('http://localhost:8080'),
+	VITE_CLIENT_ID: z.string(),
 })
 
 function parseClientEnv() {
 	const result = clientEnvSchema.safeParse({
 		VITE_API_URL: import.meta.env.VITE_API_URL,
+		VITE_CLIENT_ID: import.meta.env.VITE_CLIENT_ID,
 	})
 
 	if (!result.success) {

@@ -13,6 +13,8 @@ import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
+import { Route as DiscordIdentityCallbackRouteImport } from './routes/discord.identity-callback'
+import { Route as DiscordCallbackRouteImport } from './routes/discord.callback'
 import { Route as ApiOgRouteImport } from './routes/api.og'
 import { Route as LandingTermsRouteImport } from './routes/_landing/terms'
 import { Route as LandingPrivacyRouteImport } from './routes/_landing/privacy'
@@ -45,6 +47,16 @@ const LandingIndexRoute = LandingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LandingRoute,
+} as any)
+const DiscordIdentityCallbackRoute = DiscordIdentityCallbackRouteImport.update({
+  id: '/discord/identity-callback',
+  path: '/discord/identity-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscordCallbackRoute = DiscordCallbackRouteImport.update({
+  id: '/discord/callback',
+  path: '/discord/callback',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiOgRoute = ApiOgRouteImport.update({
   id: '/api/og',
@@ -139,6 +151,8 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof LandingPrivacyRoute
   '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
+  '/discord/callback': typeof DiscordCallbackRoute
+  '/discord/identity-callback': typeof DiscordIdentityCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof LandingIndexRoute
@@ -157,6 +171,8 @@ export interface FileRoutesByTo {
   '/privacy': typeof LandingPrivacyRoute
   '/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
+  '/discord/callback': typeof DiscordCallbackRoute
+  '/discord/identity-callback': typeof DiscordIdentityCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -178,6 +194,8 @@ export interface FileRoutesById {
   '/_landing/privacy': typeof LandingPrivacyRoute
   '/_landing/terms': typeof LandingTermsRoute
   '/api/og': typeof ApiOgRoute
+  '/discord/callback': typeof DiscordCallbackRoute
+  '/discord/identity-callback': typeof DiscordIdentityCallbackRoute
   '/_landing/': typeof LandingIndexRoute
 }
 export interface FileRouteTypes {
@@ -199,6 +217,8 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/api/og'
+    | '/discord/callback'
+    | '/discord/identity-callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -217,6 +237,8 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/api/og'
+    | '/discord/callback'
+    | '/discord/identity-callback'
   id:
     | '__root__'
     | '/_auth'
@@ -237,6 +259,8 @@ export interface FileRouteTypes {
     | '/_landing/privacy'
     | '/_landing/terms'
     | '/api/og'
+    | '/discord/callback'
+    | '/discord/identity-callback'
     | '/_landing/'
   fileRoutesById: FileRoutesById
 }
@@ -245,6 +269,8 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   LandingRoute: typeof LandingRouteWithChildren
   ApiOgRoute: typeof ApiOgRoute
+  DiscordCallbackRoute: typeof DiscordCallbackRoute
+  DiscordIdentityCallbackRoute: typeof DiscordIdentityCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -276,6 +302,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof LandingIndexRouteImport
       parentRoute: typeof LandingRoute
+    }
+    '/discord/identity-callback': {
+      id: '/discord/identity-callback'
+      path: '/discord/identity-callback'
+      fullPath: '/discord/identity-callback'
+      preLoaderRoute: typeof DiscordIdentityCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discord/callback': {
+      id: '/discord/callback'
+      path: '/discord/callback'
+      fullPath: '/discord/callback'
+      preLoaderRoute: typeof DiscordCallbackRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/og': {
       id: '/api/og'
@@ -447,6 +487,8 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   LandingRoute: LandingRouteWithChildren,
   ApiOgRoute: ApiOgRoute,
+  DiscordCallbackRoute: DiscordCallbackRoute,
+  DiscordIdentityCallbackRoute: DiscordIdentityCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -388,6 +388,41 @@ export type GetWorkspacesMe500 = {
   message: string;
 };
 
+export type GetWorkspacesByMemberMemberId200WorkspacesItem = {
+  id: string;
+  /** @nullable */
+  ownerId: string | null;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  isPersonal: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * List of workspaces
+ */
+export type GetWorkspacesByMemberMemberId200 = {
+  workspaces: GetWorkspacesByMemberMemberId200WorkspacesItem[];
+};
+
+/**
+ * Member not found
+ */
+export type GetWorkspacesByMemberMemberId404 = {
+  message: string;
+};
+
+/**
+ * Failed to get workspaces
+ */
+export type GetWorkspacesByMemberMemberId500 = {
+  message: string;
+};
+
 export type GetWorkspacesParams = {
 /**
  * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
@@ -433,6 +468,7 @@ export type PostWorkspacesWorkspaceIdIntegrationsBody = {
   provider: string;
   /** @minLength 1 */
   providerId: string;
+  providerName?: string;
 };
 
 export type PostWorkspacesWorkspaceIdIntegrations201Integration = {
@@ -440,6 +476,8 @@ export type PostWorkspacesWorkspaceIdIntegrations201Integration = {
   workspaceId: string;
   provider: string;
   providerId: string;
+  /** @nullable */
+  providerName: string | null;
   createdAt: string;
   updatedAt: string;
   active: boolean;
@@ -453,6 +491,13 @@ export type PostWorkspacesWorkspaceIdIntegrations201 = {
 };
 
 /**
+ * Forbidden
+ */
+export type PostWorkspacesWorkspaceIdIntegrations403 = {
+  message: string;
+};
+
+/**
  * Workspace not found
  */
 export type PostWorkspacesWorkspaceIdIntegrations404 = {
@@ -463,6 +508,53 @@ export type PostWorkspacesWorkspaceIdIntegrations404 = {
  * Integration already exists
  */
 export type PostWorkspacesWorkspaceIdIntegrations422 = {
+  message: string;
+};
+
+export type GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem = {
+  id: string;
+  workspaceId: string;
+  provider: string;
+  providerId: string;
+  /** @nullable */
+  providerName: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Integrations found
+ */
+export type GetWorkspacesWorkspaceIdIntegrations200 = {
+  integrations: GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem[];
+};
+
+/**
+ * Forbidden
+ */
+export type GetWorkspacesWorkspaceIdIntegrations403 = {
+  message: string;
+};
+
+/**
+ * Workspace not found
+ */
+export type GetWorkspacesWorkspaceIdIntegrations404 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403 = {
+  message: string;
+};
+
+/**
+ * Integration not found
+ */
+export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404 = {
   message: string;
 };
 
@@ -500,6 +592,66 @@ export type GetWorkspacesByIntegration200 = {
  * Workspace not found
  */
 export type GetWorkspacesByIntegration404 = {
+  message: string;
+};
+
+export type PatchWorkspacesByIntegrationParams = {
+/**
+ * @minLength 1
+ */
+provider: string;
+/**
+ * @minLength 1
+ */
+providerId: string;
+};
+
+export type PatchWorkspacesByIntegrationBody = {
+  /** @minLength 1 */
+  providerName: string;
+};
+
+export type PatchWorkspacesByIntegration200Integration = {
+  id: string;
+  workspaceId: string;
+  provider: string;
+  providerId: string;
+  /** @nullable */
+  providerName: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Integration updated
+ */
+export type PatchWorkspacesByIntegration200 = {
+  integration: PatchWorkspacesByIntegration200Integration;
+};
+
+/**
+ * Integration not found
+ */
+export type PatchWorkspacesByIntegration404 = {
+  message: string;
+};
+
+export type DeleteWorkspacesByIntegrationParams = {
+/**
+ * @minLength 1
+ */
+provider: string;
+/**
+ * @minLength 1
+ */
+providerId: string;
+};
+
+/**
+ * Integration not found
+ */
+export type DeleteWorkspacesByIntegration404 = {
   message: string;
 };
 
@@ -607,6 +759,49 @@ export type PostMembersSync500 = {
   message: string;
 };
 
+export type PostMembersResolveBody = {
+  /** @minLength 1 */
+  provider: string;
+  /** @minLength 1 */
+  providerUserId: string;
+  /** @minLength 1 */
+  displayName: string;
+};
+
+export type PostMembersResolve201Member = {
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Member resolved
+ */
+export type PostMembersResolve201 = {
+  member: PostMembersResolve201Member;
+};
+
+/**
+ * Invalid request
+ */
+export type PostMembersResolve400 = {
+  message: string;
+};
+
+/**
+ * Failed to resolve member
+ */
+export type PostMembersResolve500 = {
+  message: string;
+};
+
 export type PostMembersCreateBody = {
   /** @minLength 1 */
   name: string;
@@ -697,6 +892,64 @@ export type PutMembersAdd422 = {
  */
 export type PutMembersAdd500 = {
   message: string;
+};
+
+export type PostMembersMeIdentitiesBody = {
+  /** @minLength 1 */
+  provider: string;
+  /** @minLength 1 */
+  providerUserId: string;
+};
+
+export type PostMembersMeIdentities201Identity = {
+  id: string;
+  memberId: string;
+  provider: string;
+  providerUserId: string;
+  createdAt: string;
+};
+
+/**
+ * Identity linked
+ */
+export type PostMembersMeIdentities201 = {
+  identity: PostMembersMeIdentities201Identity;
+};
+
+/**
+ * Identity already linked to this account
+ */
+export type PostMembersMeIdentities409 = {
+  message: string;
+};
+
+/**
+ * Identity linked to a different account
+ */
+export type PostMembersMeIdentities422 = {
+  message: string;
+};
+
+/**
+ * Failed to link identity
+ */
+export type PostMembersMeIdentities500 = {
+  message: string;
+};
+
+export type GetMembersMeIdentities200IdentitiesItem = {
+  id: string;
+  memberId: string;
+  provider: string;
+  providerUserId: string;
+  createdAt: string;
+};
+
+/**
+ * Member identities
+ */
+export type GetMembersMeIdentities200 = {
+  identities: GetMembersMeIdentities200IdentitiesItem[];
 };
 
 export type PostMembersMemberIdIdentitiesBody = {
