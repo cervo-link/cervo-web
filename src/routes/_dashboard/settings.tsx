@@ -6,17 +6,28 @@ import { toast } from 'sonner'
 import type {
 	GetMembersMe200Member,
 	PatchWorkspacesWorkspaceIdBody,
-	PostWorkspacesWorkspaceIdIntegrationsBody,
 } from '#/api/cervoAPI.schemas'
 import { useGetMembersMe } from '#/api/members/members'
-import { postWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
 import {
 	deleteWorkspacesWorkspaceId,
 	getGetWorkspacesMeQueryKey,
 	patchWorkspacesWorkspaceId,
 	postWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
+import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
+
+function buildDiscordAuthUrl(workspaceId: string): string {
+	const params = new URLSearchParams({
+		client_id: clientEnv.VITE_CLIENT_ID,
+		scope: 'bot applications.commands',
+		permissions: '68608',
+		redirect_uri: `${window.location.origin}/discord/callback`,
+		response_type: 'code',
+		state: workspaceId,
+	})
+	return `https://discord.com/oauth2/authorize?${params.toString()}`
+}
 
 export const Route = createFileRoute('/_dashboard/settings')({
 	head: () => ({
@@ -120,7 +131,6 @@ function WorkspaceDetails({
 		workspace?.description ?? ''
 	)
 	const [wsIsPublic, setWsIsPublic] = useState(workspace?.isPublic ?? false)
-	const [providerId, setProviderId] = useState('')
 	const [inviteEmail, setInviteEmail] = useState('')
 	const queryClient = useQueryClient()
 
@@ -134,12 +144,6 @@ function WorkspaceDetails({
 		},
 		onError: () => toast.error('Failed to invite member.'),
 	})
-
-	const { mutate: addIntegration, isPending: isAddingIntegration } =
-		useMutation({
-			mutationFn: (data: PostWorkspacesWorkspaceIdIntegrationsBody) =>
-				postWorkspacesWorkspaceIdIntegrations(workspace?.id ?? '', data),
-		})
 
 	const { mutate: updateWorkspace, isPending: isSaving } = useMutation({
 		mutationFn: (data: PatchWorkspacesWorkspaceIdBody) =>
@@ -187,22 +191,6 @@ function WorkspaceDetails({
 	function handleInviteMember() {
 		if (!inviteEmail.trim()) return
 		inviteMember(inviteEmail.trim())
-	}
-
-	function handleAddIntegration() {
-		if (!providerId.trim()) return
-		addIntegration(
-			{ provider: 'discord', providerId: providerId.trim() },
-			{
-				onSuccess: () => {
-					setProviderId('')
-					toast.success('Integration connected.')
-				},
-				onError: () => {
-					toast.error('Failed to connect integration.')
-				},
-			}
-		)
 	}
 
 	function handleDeleteWorkspace() {
@@ -353,26 +341,18 @@ function WorkspaceDetails({
 							</div>
 							<button
 								type="button"
-								onClick={handleAddIntegration}
-								disabled={!providerId.trim() || isAddingIntegration}
-								className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+								onClick={() => {
+									window.location.href = buildDiscordAuthUrl(workspace.id)
+								}}
+								className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary"
 							>
-								{isAddingIntegration ? 'CONNECTING...' : 'CONNECT DISCORD'}
+								CONNECT DISCORD
 							</button>
 						</div>
 						<p className="font-mono text-[12px] leading-relaxed text-[#6a6a6a]">
 							Connect your Discord server to automatically save links shared in
 							your channels.
 						</p>
-						<input
-							value={providerId}
-							onChange={e => setProviderId(e.target.value)}
-							onKeyDown={e => {
-								if (e.key === 'Enter') handleAddIntegration()
-							}}
-							placeholder="Guild or server ID..."
-							className="h-11 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] hover:border-primary focus:border-primary"
-						/>
 					</div>
 				</div>
 			</div>
