@@ -8,7 +8,7 @@ import { apiClient } from '#/lib/api-client'
 import { clientEnv } from '#/lib/env'
 
 const searchSchema = z.object({
-	discord_success: z.string().optional(),
+	discord_success: z.boolean().optional(),
 	discord_error: z.string().optional(),
 })
 

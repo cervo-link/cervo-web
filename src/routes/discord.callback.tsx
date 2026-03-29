@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { postWorkspacesWorkspaceIdIntegrations } from '#/api/workspace-integrations/workspace-integrations'
 
 const searchSchema = z.object({
-	guild_id: z.string().optional(),
+	guild_id: z.coerce.string().optional(),
 	state: z.string().optional(),
 	code: z.string().optional(),
 	error: z.string().optional(),
