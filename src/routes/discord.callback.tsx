@@ -29,26 +29,6 @@ export const Route = createFileRoute('/discord/callback')({
 
 				const cookie = request.headers.get('cookie') ?? ''
 
-				let providerName: string | undefined
-				if (serverEnv.DISCORD_BOT_TOKEN) {
-					try {
-						const guildRes = await fetch(
-							`https://discord.com/api/v10/guilds/${guildId}`,
-							{
-								headers: {
-									Authorization: `Bot ${serverEnv.DISCORD_BOT_TOKEN}`,
-								},
-							}
-						)
-						if (guildRes.ok) {
-							const guild = await guildRes.json() as { name?: string }
-							providerName = guild.name
-						}
-					} catch {
-						// Non-fatal — proceed without the name
-					}
-				}
-
 				const res = await fetch(
 					`${serverEnv.API_URL}/workspaces/${workspaceId}/integrations`,
 					{
@@ -57,11 +37,7 @@ export const Route = createFileRoute('/discord/callback')({
 							'Content-Type': 'application/json',
 							Cookie: cookie,
 						},
-						body: JSON.stringify({
-							provider: 'discord',
-							providerId: guildId,
-							...(providerName ? { providerName } : {}),
-						}),
+						body: JSON.stringify({ provider: 'discord', providerId: guildId }),
 					}
 				)
 

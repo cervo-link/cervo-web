@@ -13,7 +13,6 @@ import {
 	deleteWorkspacesWorkspaceId,
 	getGetWorkspacesMeQueryKey,
 	patchWorkspacesWorkspaceId,
-	postWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
 import { apiClient } from '#/lib/api-client'
 import { clientEnv } from '#/lib/env'
@@ -149,7 +148,6 @@ function WorkspaceDetails({
 		workspace?.description ?? ''
 	)
 	const [wsIsPublic, setWsIsPublic] = useState(workspace?.isPublic ?? false)
-	const [inviteEmail, setInviteEmail] = useState('')
 	const queryClient = useQueryClient()
 
 	const { data: integrationsData } = useQuery({
@@ -185,17 +183,6 @@ function WorkspaceDetails({
 			onError: () => toast.error('Failed to disconnect Discord server.'),
 		}
 	)
-
-	const { mutate: inviteMember, isPending: isInviting } = useMutation({
-		mutationFn: (email: string) =>
-			postWorkspacesWorkspaceIdMembers(workspace?.id ?? '', { email }),
-		onSuccess: result => {
-			if (result.status !== 201) return
-			setInviteEmail('')
-			toast.success('Member invited.')
-		},
-		onError: () => toast.error('Failed to invite member.'),
-	})
 
 	const { mutate: updateWorkspace, isPending: isSaving } = useMutation({
 		mutationFn: (data: PatchWorkspacesWorkspaceIdBody) =>
@@ -238,11 +225,6 @@ function WorkspaceDetails({
 		if (descriptionChanged) payload.description = wsDescription.trim() || null
 		if (visibilityChanged) payload.isPublic = wsIsPublic
 		updateWorkspace(payload)
-	}
-
-	function handleInviteMember() {
-		if (!inviteEmail.trim()) return
-		inviteMember(inviteEmail.trim())
 	}
 
 	function handleDeleteWorkspace() {

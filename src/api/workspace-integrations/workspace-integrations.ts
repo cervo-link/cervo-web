@@ -25,12 +25,20 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  DeleteWorkspacesByIntegration404,
+  DeleteWorkspacesByIntegrationParams,
+  DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403,
+  DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404,
   GetWorkspacesByIntegration200,
   GetWorkspacesByIntegration404,
   GetWorkspacesByIntegrationParams,
   GetWorkspacesWorkspaceIdIntegrations200,
   GetWorkspacesWorkspaceIdIntegrations403,
   GetWorkspacesWorkspaceIdIntegrations404,
+  PatchWorkspacesByIntegration200,
+  PatchWorkspacesByIntegration404,
+  PatchWorkspacesByIntegrationBody,
+  PatchWorkspacesByIntegrationParams,
   PostWorkspacesWorkspaceIdIntegrations201,
   PostWorkspacesWorkspaceIdIntegrations403,
   PostWorkspacesWorkspaceIdIntegrations404,
@@ -262,6 +270,98 @@ export function useGetWorkspacesWorkspaceIdIntegrations<TData = Awaited<ReturnTy
 
 
 /**
+ * Remove a platform integration from a workspace
+ */
+export type deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse403 = {
+  data: DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403
+  status: 403
+}
+
+export type deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse404 = {
+  data: DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404
+  status: 404
+}
+
+export type deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponseSuccess = (deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse204) & {
+  headers: Headers;
+};
+export type deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponseError = (deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse403 | deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse404) & {
+  headers: Headers;
+};
+
+export type deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse = (deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponseSuccess | deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponseError)
+
+export const getDeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdUrl = (workspaceId: string,
+    integrationId: string,) => {
+
+
+
+
+  return `/workspaces/${workspaceId}/integrations/${integrationId}`
+}
+
+export const deleteWorkspacesWorkspaceIdIntegrationsIntegrationId = async (workspaceId: string,
+    integrationId: string, options?: RequestInit): Promise<deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse> => {
+
+  return apiClient<deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse>(getDeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdUrl(workspaceId,integrationId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdMutationOptions = <TError = DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403 | DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdIntegrationsIntegrationId>>, TError,{workspaceId: string;integrationId: string}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdIntegrationsIntegrationId>>, TError,{workspaceId: string;integrationId: string}, TContext> => {
+
+const mutationKey = ['deleteWorkspacesWorkspaceIdIntegrationsIntegrationId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdIntegrationsIntegrationId>>, {workspaceId: string;integrationId: string}> = (props) => {
+          const {workspaceId,integrationId} = props ?? {};
+
+          return  deleteWorkspacesWorkspaceIdIntegrationsIntegrationId(workspaceId,integrationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdIntegrationsIntegrationId>>>
+
+    export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdMutationError = DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403 | DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404
+
+    export const useDeleteWorkspacesWorkspaceIdIntegrationsIntegrationId = <TError = DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403 | DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdIntegrationsIntegrationId>>, TError,{workspaceId: string;integrationId: string}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdIntegrationsIntegrationId>>,
+        TError,
+        {workspaceId: string;integrationId: string},
+        TContext
+      > => {
+      return useMutation(getDeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdMutationOptions(options), queryClient);
+    }
+    /**
  * Find a workspace by its platform integration (bot-facing)
  */
 export type getWorkspacesByIntegrationResponse200 = {
@@ -382,3 +482,189 @@ export function useGetWorkspacesByIntegration<TData = Awaited<ReturnType<typeof 
 
 
 
+/**
+ * Update integration metadata by provider ID (bot-facing)
+ */
+export type patchWorkspacesByIntegrationResponse200 = {
+  data: PatchWorkspacesByIntegration200
+  status: 200
+}
+
+export type patchWorkspacesByIntegrationResponse404 = {
+  data: PatchWorkspacesByIntegration404
+  status: 404
+}
+
+export type patchWorkspacesByIntegrationResponseSuccess = (patchWorkspacesByIntegrationResponse200) & {
+  headers: Headers;
+};
+export type patchWorkspacesByIntegrationResponseError = (patchWorkspacesByIntegrationResponse404) & {
+  headers: Headers;
+};
+
+export type patchWorkspacesByIntegrationResponse = (patchWorkspacesByIntegrationResponseSuccess | patchWorkspacesByIntegrationResponseError)
+
+export const getPatchWorkspacesByIntegrationUrl = (params: PatchWorkspacesByIntegrationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/workspaces/by-integration?${stringifiedParams}` : `/workspaces/by-integration`
+}
+
+export const patchWorkspacesByIntegration = async (patchWorkspacesByIntegrationBody: PatchWorkspacesByIntegrationBody,
+    params: PatchWorkspacesByIntegrationParams, options?: RequestInit): Promise<patchWorkspacesByIntegrationResponse> => {
+
+  return apiClient<patchWorkspacesByIntegrationResponse>(getPatchWorkspacesByIntegrationUrl(params),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchWorkspacesByIntegrationBody,)
+  }
+);}
+
+
+
+
+export const getPatchWorkspacesByIntegrationMutationOptions = <TError = PatchWorkspacesByIntegration404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, TError,{data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, TError,{data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}, TContext> => {
+
+const mutationKey = ['patchWorkspacesByIntegration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, {data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}> = (props) => {
+          const {data,params} = props ?? {};
+
+          return  patchWorkspacesByIntegration(data,params,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchWorkspacesByIntegrationMutationResult = NonNullable<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>>
+    export type PatchWorkspacesByIntegrationMutationBody = PatchWorkspacesByIntegrationBody
+    export type PatchWorkspacesByIntegrationMutationError = PatchWorkspacesByIntegration404
+
+    export const usePatchWorkspacesByIntegration = <TError = PatchWorkspacesByIntegration404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, TError,{data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchWorkspacesByIntegration>>,
+        TError,
+        {data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams},
+        TContext
+      > => {
+      return useMutation(getPatchWorkspacesByIntegrationMutationOptions(options), queryClient);
+    }
+    /**
+ * Remove an integration by provider ID (bot-facing)
+ */
+export type deleteWorkspacesByIntegrationResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteWorkspacesByIntegrationResponse404 = {
+  data: DeleteWorkspacesByIntegration404
+  status: 404
+}
+
+export type deleteWorkspacesByIntegrationResponseSuccess = (deleteWorkspacesByIntegrationResponse204) & {
+  headers: Headers;
+};
+export type deleteWorkspacesByIntegrationResponseError = (deleteWorkspacesByIntegrationResponse404) & {
+  headers: Headers;
+};
+
+export type deleteWorkspacesByIntegrationResponse = (deleteWorkspacesByIntegrationResponseSuccess | deleteWorkspacesByIntegrationResponseError)
+
+export const getDeleteWorkspacesByIntegrationUrl = (params: DeleteWorkspacesByIntegrationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/workspaces/by-integration?${stringifiedParams}` : `/workspaces/by-integration`
+}
+
+export const deleteWorkspacesByIntegration = async (params: DeleteWorkspacesByIntegrationParams, options?: RequestInit): Promise<deleteWorkspacesByIntegrationResponse> => {
+
+  return apiClient<deleteWorkspacesByIntegrationResponse>(getDeleteWorkspacesByIntegrationUrl(params),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteWorkspacesByIntegrationMutationOptions = <TError = DeleteWorkspacesByIntegration404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, TError,{params: DeleteWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, TError,{params: DeleteWorkspacesByIntegrationParams}, TContext> => {
+
+const mutationKey = ['deleteWorkspacesByIntegration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, {params: DeleteWorkspacesByIntegrationParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  deleteWorkspacesByIntegration(params,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteWorkspacesByIntegrationMutationResult = NonNullable<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>>
+
+    export type DeleteWorkspacesByIntegrationMutationError = DeleteWorkspacesByIntegration404
+
+    export const useDeleteWorkspacesByIntegration = <TError = DeleteWorkspacesByIntegration404,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, TError,{params: DeleteWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>,
+        TError,
+        {params: DeleteWorkspacesByIntegrationParams},
+        TContext
+      > => {
+      return useMutation(getDeleteWorkspacesByIntegrationMutationOptions(options), queryClient);
+    }

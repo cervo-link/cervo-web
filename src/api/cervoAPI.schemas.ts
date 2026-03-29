@@ -468,6 +468,7 @@ export type PostWorkspacesWorkspaceIdIntegrationsBody = {
   provider: string;
   /** @minLength 1 */
   providerId: string;
+  providerName?: string;
 };
 
 export type PostWorkspacesWorkspaceIdIntegrations201Integration = {
@@ -475,6 +476,8 @@ export type PostWorkspacesWorkspaceIdIntegrations201Integration = {
   workspaceId: string;
   provider: string;
   providerId: string;
+  /** @nullable */
+  providerName: string | null;
   createdAt: string;
   updatedAt: string;
   active: boolean;
@@ -513,6 +516,8 @@ export type GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem = {
   workspaceId: string;
   provider: string;
   providerId: string;
+  /** @nullable */
+  providerName: string | null;
   createdAt: string;
   updatedAt: string;
   active: boolean;
@@ -536,6 +541,20 @@ export type GetWorkspacesWorkspaceIdIntegrations403 = {
  * Workspace not found
  */
 export type GetWorkspacesWorkspaceIdIntegrations404 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403 = {
+  message: string;
+};
+
+/**
+ * Integration not found
+ */
+export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404 = {
   message: string;
 };
 
@@ -573,6 +592,66 @@ export type GetWorkspacesByIntegration200 = {
  * Workspace not found
  */
 export type GetWorkspacesByIntegration404 = {
+  message: string;
+};
+
+export type PatchWorkspacesByIntegrationParams = {
+/**
+ * @minLength 1
+ */
+provider: string;
+/**
+ * @minLength 1
+ */
+providerId: string;
+};
+
+export type PatchWorkspacesByIntegrationBody = {
+  /** @minLength 1 */
+  providerName: string;
+};
+
+export type PatchWorkspacesByIntegration200Integration = {
+  id: string;
+  workspaceId: string;
+  provider: string;
+  providerId: string;
+  /** @nullable */
+  providerName: string | null;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Integration updated
+ */
+export type PatchWorkspacesByIntegration200 = {
+  integration: PatchWorkspacesByIntegration200Integration;
+};
+
+/**
+ * Integration not found
+ */
+export type PatchWorkspacesByIntegration404 = {
+  message: string;
+};
+
+export type DeleteWorkspacesByIntegrationParams = {
+/**
+ * @minLength 1
+ */
+provider: string;
+/**
+ * @minLength 1
+ */
+providerId: string;
+};
+
+/**
+ * Integration not found
+ */
+export type DeleteWorkspacesByIntegration404 = {
   message: string;
 };
 
