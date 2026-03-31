@@ -1,11 +1,25 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useEffect } from 'react'
+import { z } from 'zod'
+import { clientEnv } from '#/lib/env'
 import { serverEnv } from '#/lib/env.server'
 
+const searchSchema = z.object({
+	code: z.string().optional(),
+	error: z.string().optional(),
+	discord_user_id: z.string().optional(),
+})
+
 export const Route = createFileRoute('/discord/identity-callback')({
+	validateSearch: searchSchema,
 	server: {
 		handlers: {
 			GET: async ({ request }) => {
 				const url = new URL(request.url)
+
+				// Phase 2: discord_user_id already resolved, let client handle the API call
+				if (url.searchParams.get('discord_user_id')) return
+
 				const code = url.searchParams.get('code')
 				const error = url.searchParams.get('error')
 				const accountUrl = new URL('/account', request.url).href
@@ -19,11 +33,9 @@ export const Route = createFileRoute('/discord/identity-callback')({
 
 				const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 					body: new URLSearchParams({
-						client_id: serverEnv.CLIENT_ID,
+						client_id: clientEnv.VITE_CLIENT_ID,
 						client_secret: serverEnv.CLIENT_SECRET,
 						grant_type: 'authorization_code',
 						code,
@@ -53,48 +65,11 @@ export const Route = createFileRoute('/discord/identity-callback')({
 					)
 				}
 
-				const { id: discordUserId } = (await userRes.json()) as {
-					id: string
-				}
+				const { id: discordUserId } = (await userRes.json()) as { id: string }
 
-				const cookie = request.headers.get('cookie') ?? ''
-				const linkRes = await fetch(
-					`${serverEnv.API_URL}/members/me/identities`,
-					{
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							Cookie: cookie,
-						},
-						body: JSON.stringify({
-							provider: 'discord',
-							providerUserId: discordUserId,
-						}),
-					}
-				)
-
-				if (linkRes.status === 409) {
-					return Response.redirect(
-						`${accountUrl}?discord_error=already_linked`,
-						302
-					)
-				}
-
-				if (linkRes.status === 422) {
-					return Response.redirect(
-						`${accountUrl}?discord_error=different_account`,
-						302
-					)
-				}
-
-				if (!linkRes.ok) {
-					return Response.redirect(
-						`${accountUrl}?discord_error=link_failed`,
-						302
-					)
-				}
-
-				return Response.redirect(`${accountUrl}?discord_success=true`, 302)
+				const callbackUrl = new URL('/discord/identity-callback', request.url)
+				callbackUrl.searchParams.set('discord_user_id', discordUserId)
+				return Response.redirect(callbackUrl.href, 302)
 			},
 		},
 	},
@@ -102,6 +77,47 @@ export const Route = createFileRoute('/discord/identity-callback')({
 })
 
 function DiscordIdentityCallbackPage() {
+	const { discord_user_id } = Route.useSearch()
+
+	useEffect(() => {
+		if (!discord_user_id) return
+
+		async function link() {
+			const accountUrl = `${window.location.origin}/account`
+
+			try {
+				const res = await fetch(
+					`${clientEnv.VITE_API_URL}/members/me/identities`,
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						credentials: 'include',
+						body: JSON.stringify({
+							provider: 'discord',
+							providerUserId: discord_user_id,
+						}),
+					}
+				)
+
+				if (res.status === 409) {
+					window.location.replace(`${accountUrl}?discord_error=already_linked`)
+				} else if (res.status === 422) {
+					window.location.replace(
+						`${accountUrl}?discord_error=different_account`
+					)
+				} else if (!res.ok) {
+					window.location.replace(`${accountUrl}?discord_error=link_failed`)
+				} else {
+					window.location.replace(`${accountUrl}?discord_success=true`)
+				}
+			} catch {
+				window.location.replace(`${accountUrl}?discord_error=link_failed`)
+			}
+		}
+
+		link()
+	}, [discord_user_id])
+
 	return (
 		<div className="flex h-screen items-center justify-center bg-background">
 			<span className="font-mono text-[13px] text-[#6a6a6a]">
