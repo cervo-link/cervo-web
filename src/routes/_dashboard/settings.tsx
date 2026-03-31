@@ -41,7 +41,7 @@ function buildDiscordAuthUrl(workspaceId: string): string {
 }
 
 const searchSchema = z.object({
-	discord_connected: z.boolean().optional(),
+	discord_connected: z.coerce.boolean().optional(),
 	discord_error: z.string().optional(),
 })
 
