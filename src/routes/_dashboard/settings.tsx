@@ -372,9 +372,9 @@ function WorkspaceDetails({
 							</span>
 							<span className="font-mono text-[11px] text-[#6a6a6a]">
 								{hasDiscord
-									? (discordIntegration?.providerName
+									? discordIntegration?.providerName
 										? `Connected to ${discordIntegration.providerName}`
-										: 'Your Discord server is linked to this workspace')
+										: 'Your Discord server is linked to this workspace'
 									: 'Save links shared in your Discord server channels'}
 							</span>
 						</div>
