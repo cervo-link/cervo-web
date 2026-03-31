@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+<<<<<<< Updated upstream
 import { serverEnv } from '#/lib/env.server'
 
 export const Route = createFileRoute('/discord/callback')({
@@ -28,15 +29,44 @@ export const Route = createFileRoute('/discord/callback')({
 				}
 
 				const cookie = request.headers.get('cookie') ?? ''
+=======
+import { useEffect } from 'react'
+import { clientEnv } from '#/lib/env'
+
+export const Route = createFileRoute('/discord/callback')({
+	component: DiscordCallbackPage,
+})
+
+function DiscordCallbackPage() {
+	useEffect(() => {
+		async function connect() {
+			const params = new URLSearchParams(window.location.search)
+			const guildId = params.get('guild_id')
+			const workspaceId = params.get('state')
+			const error = params.get('error')
+			const settingsUrl = `${window.location.origin}/settings`
+
+			if (error || !guildId || !workspaceId) {
+				window.location.replace(
+					`${settingsUrl}?discord_error=${error === 'access_denied' ? 'cancelled' : 'missing_data'}`
+				)
+				return
+			}
+>>>>>>> Stashed changes
 
 				const res = await fetch(
 					`${serverEnv.API_URL}/workspaces/${workspaceId}/integrations`,
 					{
 						method: 'POST',
+<<<<<<< Updated upstream
 						headers: {
 							'Content-Type': 'application/json',
 							Cookie: cookie,
 						},
+=======
+						headers: { 'Content-Type': 'application/json' },
+						credentials: 'include',
+>>>>>>> Stashed changes
 						body: JSON.stringify({ provider: 'discord', providerId: guildId }),
 					}
 				)
@@ -45,12 +75,17 @@ export const Route = createFileRoute('/discord/callback')({
 					return Response.redirect(`${settingsUrl}?discord_connected=true`, 302)
 				}
 
+<<<<<<< Updated upstream
 				if (res.status === 422) {
 					return Response.redirect(
 						`${settingsUrl}?discord_error=already_connected`,
 						302
 					)
 				}
+=======
+		connect()
+	}, [])
+>>>>>>> Stashed changes
 
 				return Response.redirect(`${settingsUrl}?discord_error=failed`, 302)
 			},

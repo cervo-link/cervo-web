@@ -1,4 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
+<<<<<<< Updated upstream
+=======
+import { useEffect } from 'react'
+import { clientEnv } from '#/lib/env'
+>>>>>>> Stashed changes
 import { serverEnv } from '#/lib/env.server'
 
 export const Route = createFileRoute('/discord/identity-callback')({
@@ -102,6 +107,51 @@ export const Route = createFileRoute('/discord/identity-callback')({
 })
 
 function DiscordIdentityCallbackPage() {
+<<<<<<< Updated upstream
+=======
+	useEffect(() => {
+		const discordUserId = new URLSearchParams(window.location.search).get(
+			'discord_user_id'
+		)
+		if (!discordUserId) return
+
+		async function link() {
+			const accountUrl = `${window.location.origin}/account`
+
+			try {
+				const res = await fetch(
+					`${clientEnv.VITE_API_URL}/members/me/identities`,
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						credentials: 'include',
+						body: JSON.stringify({
+							provider: 'discord',
+							providerUserId: discordUserId,
+						}),
+					}
+				)
+
+				if (res.status === 409) {
+					window.location.replace(`${accountUrl}?discord_error=already_linked`)
+				} else if (res.status === 422) {
+					window.location.replace(
+						`${accountUrl}?discord_error=different_account`
+					)
+				} else if (!res.ok) {
+					window.location.replace(`${accountUrl}?discord_error=link_failed`)
+				} else {
+					window.location.replace(`${accountUrl}?discord_success=true`)
+				}
+			} catch {
+				window.location.replace(`${accountUrl}?discord_error=link_failed`)
+			}
+		}
+
+		link()
+	}, [])
+
+>>>>>>> Stashed changes
 	return (
 		<div className="flex h-screen items-center justify-center bg-background">
 			<span className="font-mono text-[13px] text-[#6a6a6a]">
