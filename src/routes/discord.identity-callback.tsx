@@ -1,9 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-<<<<<<< Updated upstream
-=======
 import { useEffect } from 'react'
 import { clientEnv } from '#/lib/env'
->>>>>>> Stashed changes
 import { serverEnv } from '#/lib/env.server'
 
 export const Route = createFileRoute('/discord/identity-callback')({
@@ -11,6 +8,10 @@ export const Route = createFileRoute('/discord/identity-callback')({
 		handlers: {
 			GET: async ({ request }) => {
 				const url = new URL(request.url)
+
+				// Phase 2: discord_user_id already resolved, let client handle the API call
+				if (url.searchParams.get('discord_user_id')) return
+
 				const code = url.searchParams.get('code')
 				const error = url.searchParams.get('error')
 				const accountUrl = new URL('/account', request.url).href
@@ -24,11 +25,9 @@ export const Route = createFileRoute('/discord/identity-callback')({
 
 				const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 					body: new URLSearchParams({
-						client_id: serverEnv.CLIENT_ID,
+						client_id: clientEnv.VITE_CLIENT_ID,
 						client_secret: serverEnv.CLIENT_SECRET,
 						grant_type: 'authorization_code',
 						code,
@@ -58,48 +57,11 @@ export const Route = createFileRoute('/discord/identity-callback')({
 					)
 				}
 
-				const { id: discordUserId } = (await userRes.json()) as {
-					id: string
-				}
+				const { id: discordUserId } = (await userRes.json()) as { id: string }
 
-				const cookie = request.headers.get('cookie') ?? ''
-				const linkRes = await fetch(
-					`${serverEnv.API_URL}/members/me/identities`,
-					{
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							Cookie: cookie,
-						},
-						body: JSON.stringify({
-							provider: 'discord',
-							providerUserId: discordUserId,
-						}),
-					}
-				)
-
-				if (linkRes.status === 409) {
-					return Response.redirect(
-						`${accountUrl}?discord_error=already_linked`,
-						302
-					)
-				}
-
-				if (linkRes.status === 422) {
-					return Response.redirect(
-						`${accountUrl}?discord_error=different_account`,
-						302
-					)
-				}
-
-				if (!linkRes.ok) {
-					return Response.redirect(
-						`${accountUrl}?discord_error=link_failed`,
-						302
-					)
-				}
-
-				return Response.redirect(`${accountUrl}?discord_success=true`, 302)
+				const callbackUrl = new URL('/discord/identity-callback', request.url)
+				callbackUrl.searchParams.set('discord_user_id', discordUserId)
+				return Response.redirect(callbackUrl.href, 302)
 			},
 		},
 	},
@@ -107,8 +69,6 @@ export const Route = createFileRoute('/discord/identity-callback')({
 })
 
 function DiscordIdentityCallbackPage() {
-<<<<<<< Updated upstream
-=======
 	useEffect(() => {
 		const discordUserId = new URLSearchParams(window.location.search).get(
 			'discord_user_id'
@@ -151,7 +111,6 @@ function DiscordIdentityCallbackPage() {
 		link()
 	}, [])
 
->>>>>>> Stashed changes
 	return (
 		<div className="flex h-screen items-center justify-center bg-background">
 			<span className="font-mono text-[13px] text-[#6a6a6a]">
