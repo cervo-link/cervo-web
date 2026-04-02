@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -57,6 +57,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function AccountPage() {
 	const { discord_success, discord_error } = Route.useSearch()
+	const navigate = useNavigate()
 	const { data: membersMeRaw } = useGetMembersMe()
 	const member =
 		membersMeRaw?.status === 200 ? (membersMeRaw.data.member ?? null) : null
@@ -78,6 +79,7 @@ function AccountPage() {
 		if (discord_success) {
 			toast.success('Discord account connected.')
 			void refetchIdentities()
+			void navigate({ to: '/account', replace: true })
 		}
 		if (discord_error) {
 			const messages: Record<string, string> = {
@@ -91,8 +93,9 @@ function AccountPage() {
 				link_failed: 'Failed to connect Discord account.',
 			}
 			toast.error(messages[discord_error] ?? 'Something went wrong.')
+			void navigate({ to: '/account', replace: true })
 		}
-	}, [discord_success, discord_error, refetchIdentities])
+	}, [discord_success, discord_error, refetchIdentities, navigate])
 
 	return (
 		<div className="flex h-full flex-col gap-10 p-8 md:px-10">
