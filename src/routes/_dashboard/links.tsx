@@ -15,6 +15,7 @@ import { LinkListItem } from '#/components/LinkListItem'
 import { Badge } from '#/components/ui/badge'
 import { Input } from '#/components/ui/input'
 import { Separator } from '#/components/ui/separator'
+import { Can } from '#/lib/ability-context'
 import { useWorkspace } from '#/lib/workspace-context'
 
 export const Route = createFileRoute('/_dashboard/links')({
@@ -196,29 +197,31 @@ function LinksPage() {
 				</h1>
 
 				<div className="flex flex-col gap-4">
-					<div className="flex gap-2">
-						<div className="group/save relative flex-1">
-							<Link2 className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within/save:text-primary" />
-							<Input
-								ref={saveInputRef}
-								value={saveUrl}
-								onChange={e => setSaveUrl(e.target.value)}
-								onKeyDown={e => {
-									if (e.key === 'Enter') handleSave()
-								}}
-								placeholder="Paste a URL to save..."
-								className="h-11 border-sidebar-border bg-[#0A0A0A] pl-10 font-mono text-[13px] font-medium text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary focus-visible:border-primary focus-visible:ring-0"
-							/>
+					<Can I="manage" a="Link">
+						<div className="flex gap-2">
+							<div className="group/save relative flex-1">
+								<Link2 className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within/save:text-primary" />
+								<Input
+									ref={saveInputRef}
+									value={saveUrl}
+									onChange={e => setSaveUrl(e.target.value)}
+									onKeyDown={e => {
+										if (e.key === 'Enter') handleSave()
+									}}
+									placeholder="Paste a URL to save..."
+									className="h-11 border-sidebar-border bg-[#0A0A0A] pl-10 font-mono text-[13px] font-medium text-foreground transition-colors placeholder:text-muted-foreground hover:border-primary focus-visible:border-primary focus-visible:ring-0"
+								/>
+							</div>
+							<button
+								type="button"
+								onClick={handleSave}
+								disabled={!saveUrl.trim() || isSaving || !member || !workspace}
+								className="h-11 border border-sidebar-border bg-[#141414] px-5 font-mono text-[13px] font-medium text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+							>
+								{isSaving ? 'Saving...' : 'Save'}
+							</button>
 						</div>
-						<button
-							type="button"
-							onClick={handleSave}
-							disabled={!saveUrl.trim() || isSaving || !member || !workspace}
-							className="h-11 border border-sidebar-border bg-[#141414] px-5 font-mono text-[13px] font-medium text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
-						>
-							{isSaving ? 'Saving...' : 'Save'}
-						</button>
-					</div>
+					</Can>
 					<div className="group/search relative">
 						<Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within/search:text-primary" />
 						<Input

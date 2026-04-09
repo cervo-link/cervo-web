@@ -1,3 +1,4 @@
+import { useAbility } from '@casl/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Globe, Lock, Trash2 } from 'lucide-react'
@@ -5,15 +6,18 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import type {
-	GetMembersMe200Member,
+	GetWorkspacesWorkspaceIdMembers200MembersItem,
 	PatchWorkspacesWorkspaceIdBody,
 } from '#/api/cervoAPI.schemas'
-import { useGetMembersMe } from '#/api/members/members'
 import {
 	deleteWorkspacesWorkspaceId,
 	getGetWorkspacesMeQueryKey,
 	patchWorkspacesWorkspaceId,
+	useDeleteWorkspacesWorkspaceIdMembersMemberId,
+	useGetWorkspacesWorkspaceIdMembers,
+	usePostWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
+import { AbilityContext, Can } from '#/lib/ability-context'
 import { apiClient } from '#/lib/api-client'
 import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
@@ -85,22 +89,41 @@ function FieldLabel({
 	)
 }
 
+const ROLE_STYLE = {
+	owner: {
+		text: 'text-[#00FF88]',
+		bg: 'bg-[#00FF8820]',
+		initial: 'text-[#00FF88]',
+	},
+	editor: {
+		text: 'text-[#60A5FA]',
+		bg: 'bg-[#60A5FA15]',
+		initial: 'text-[#60A5FA]',
+	},
+	viewer: {
+		text: 'text-[#8a8a8a]',
+		bg: 'bg-[#141414]',
+		initial: 'text-[#8a8a8a]',
+	},
+} as const
+
 function MemberRow({
 	member,
-	memberRole = 'Member',
+	onRemove,
 }: {
-	member: GetMembersMe200Member
-	memberRole?: 'Owner' | 'Member' | 'Guest'
+	member: GetWorkspacesWorkspaceIdMembers200MembersItem
+	onRemove?: (memberId: string) => void
 }) {
 	const initial = (member.name ?? member.email ?? '?')[0].toUpperCase()
-	const isOwner = memberRole === 'Owner'
+	const isOwner = member.role === 'owner'
+	const style = ROLE_STYLE[member.role]
 
 	return (
 		<div className="flex items-center justify-between px-5 py-4">
 			<div className="flex items-center gap-3">
 				<div className="flex size-8 items-center justify-center bg-[#1A1A1A]">
 					<span
-						className={`font-mono text-[12px] font-semibold ${isOwner ? 'text-[#00FF88]' : 'text-[#8a8a8a]'}`}
+						className={`font-mono text-[12px] font-semibold ${style.initial}`}
 					>
 						{initial}
 					</span>
@@ -115,40 +138,85 @@ function MemberRow({
 				</div>
 			</div>
 			<div className="flex items-center gap-3">
-				<div
-					className={`flex items-center px-2 py-1 ${isOwner ? 'bg-[#00FF8820]' : 'bg-[#141414]'}`}
-				>
+				<div className={`flex items-center px-2 py-1 ${style.bg}`}>
 					<span
-						className={`font-mono text-[9px] font-bold tracking-[0.5px] ${isOwner ? 'text-[#00FF88]' : 'text-[#8a8a8a]'}`}
+						className={`font-mono text-[9px] font-bold tracking-[0.5px] ${style.text}`}
 					>
-						{memberRole}
+						{member.role.toUpperCase()}
 					</span>
 				</div>
 				{!isOwner && (
-					<button
-						type="button"
-						className="flex size-7 items-center justify-center text-[#6a6a6a] transition-colors hover:text-[#FF4444]"
-					>
-						<Trash2 className="size-3.5" />
-					</button>
+					<Can I="manage" a="Member">
+						<button
+							type="button"
+							onClick={() => onRemove?.(member.id)}
+							className="flex size-7 items-center justify-center text-[#6a6a6a] transition-colors hover:text-[#FF4444]"
+						>
+							<Trash2 className="size-3.5" />
+						</button>
+					</Can>
 				)}
 			</div>
 		</div>
 	)
 }
 
-function WorkspaceDetails({
-	member,
-}: {
-	member: GetMembersMe200Member | null
-}) {
+function WorkspaceDetails() {
 	const { workspace, setWorkspace, workspaces } = useWorkspace()
+	const ability = useAbility(AbilityContext)
 	const [wsName, setWsName] = useState(workspace?.name ?? '')
 	const [wsDescription, setWsDescription] = useState(
 		workspace?.description ?? ''
 	)
 	const [wsIsPublic, setWsIsPublic] = useState(workspace?.isPublic ?? false)
+	const [inviteEmail, setInviteEmail] = useState('')
+	const [inviteRole, setInviteRole] = useState<'viewer' | 'editor'>('viewer')
 	const queryClient = useQueryClient()
+
+	const { data: membersData, refetch: refetchMembers } =
+		useGetWorkspacesWorkspaceIdMembers(workspace?.id ?? '', {
+			query: { enabled: !!workspace?.id && !workspace.isPersonal },
+		})
+	const members = membersData?.status === 200 ? membersData.data.members : []
+
+	const { mutate: removeMember } =
+		useDeleteWorkspacesWorkspaceIdMembersMemberId({
+			mutation: {
+				onSuccess: () => {
+					toast.success('Member removed.')
+					void refetchMembers()
+				},
+				onError: () => toast.error('Failed to remove member.'),
+			},
+		})
+
+	const { mutate: inviteMember, isPending: isInviting } =
+		usePostWorkspacesWorkspaceIdMembers({
+			mutation: {
+				onError: () => toast.error('Failed to send invitation.'),
+			},
+		})
+
+	function handleRemoveMember(memberId: string) {
+		if (!workspace) return
+		if (!confirm('Remove this member from the workspace?')) return
+		removeMember({ workspaceId: workspace.id, memberId })
+	}
+
+	function handleInviteMember() {
+		if (!workspace || !inviteEmail.trim()) return
+		const submittedEmail = inviteEmail.trim()
+		inviteMember(
+			{ workspaceId: workspace.id, data: { email: submittedEmail, role: inviteRole } },
+			{
+				onSuccess: () => {
+					toast.success(`Invitation sent to ${submittedEmail}.`)
+					setInviteEmail('')
+					void refetchMembers()
+				},
+			}
+		)
+	}
 
 	const { data: integrationsData } = useQuery({
 		queryKey: ['/workspaces/integrations', workspace?.id],
@@ -189,7 +257,10 @@ function WorkspaceDetails({
 			patchWorkspacesWorkspaceId(workspace?.id ?? '', data),
 		onSuccess: async result => {
 			if (result.status !== 200) return
-			setWorkspace(result.data.workspace)
+			setWorkspace({
+				...result.data.workspace,
+				role: workspace?.role ?? 'viewer',
+			})
 			await queryClient.invalidateQueries({
 				queryKey: getGetWorkspacesMeQueryKey(),
 			})
@@ -253,7 +324,9 @@ function WorkspaceDetails({
 							</FieldLabel>
 							<input
 								value={wsName}
-								disabled={workspace.isPersonal}
+								disabled={
+									workspace.isPersonal || !ability.can('update', 'Workspace')
+								}
 								onChange={e => setWsName(e.target.value)}
 								placeholder="Workspace name..."
 								className="h-11 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary focus:border-primary disabled:hover:border-[#2f2f2f]"
@@ -267,7 +340,9 @@ function WorkspaceDetails({
 							</FieldLabel>
 							<textarea
 								value={wsDescription}
-								disabled={workspace.isPersonal}
+								disabled={
+									workspace.isPersonal || !ability.can('update', 'Workspace')
+								}
 								onChange={e => setWsDescription(e.target.value)}
 								placeholder="Optional description..."
 								rows={3}
@@ -287,7 +362,9 @@ function WorkspaceDetails({
 							</div>
 							<button
 								type="button"
-								disabled={workspace.isPersonal}
+								disabled={
+									workspace.isPersonal || !ability.can('update', 'Workspace')
+								}
 								onClick={() => setWsIsPublic(v => !v)}
 								className={`flex h-10 shrink-0 items-center gap-2 border px-4 font-mono text-[11px] font-bold tracking-[0.5px] transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
 									wsIsPublic
@@ -306,16 +383,18 @@ function WorkspaceDetails({
 
 						{/* Save */}
 						{!workspace.isPersonal && (
-							<div className="flex justify-end">
-								<button
-									type="button"
-									onClick={handleSave}
-									disabled={!hasChanges || isSaving}
-									className="flex h-11 items-center border border-[#00FF88] bg-[#00FF88] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[#00E07A]"
-								>
-									{isSaving ? 'SAVING...' : 'SAVE CHANGES'}
-								</button>
-							</div>
+							<Can I="update" a="Workspace">
+								<div className="flex justify-end">
+									<button
+										type="button"
+										onClick={handleSave}
+										disabled={!hasChanges || isSaving}
+										className="flex h-11 items-center border border-[#00FF88] bg-[#00FF88] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[#00E07A]"
+									>
+										{isSaving ? 'SAVING...' : 'SAVE CHANGES'}
+									</button>
+								</div>
+							</Can>
 						)}
 					</div>
 				</div>
@@ -325,33 +404,50 @@ function WorkspaceDetails({
 			{!workspace.isPersonal && (
 				<div className="flex flex-col gap-4">
 					<SectionLabel>MEMBERS</SectionLabel>
-					<div className="border border-[#2f2f2f] bg-[#0A0A0A]">
-						{member ? (
-							<MemberRow member={member} memberRole="Owner" />
+					<div className="border border-[#2f2f2f] bg-[#0A0A0A] divide-y divide-[#2f2f2f]">
+						{members.length > 0 ? (
+							members.map(m => (
+								<MemberRow
+									key={m.id}
+									member={m}
+									onRemove={handleRemoveMember}
+								/>
+							))
 						) : (
 							<div className="h-16 animate-pulse" />
 						)}
 					</div>
-					{/* We will add this back in when we have a way to invite members */}
-					{/* <div className="flex gap-2">
-						<input
-							value={inviteEmail}
-							onChange={e => setInviteEmail(e.target.value)}
-							onKeyDown={e => {
-								if (e.key === 'Enter') handleInviteMember()
-							}}
-							placeholder="Invite by email..."
-							className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] hover:border-primary focus:border-primary"
-						/>
-						<button
-							type="button"
-							onClick={handleInviteMember}
-							disabled={!inviteEmail.trim() || isInviting}
-							className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
-						>
-							{isInviting ? 'INVITING...' : 'INVITE'}
-						</button>
-					</div> */}
+					<Can I="manage" a="Member">
+						<div className="flex gap-2">
+							<input
+								value={inviteEmail}
+								onChange={e => setInviteEmail(e.target.value)}
+								onKeyDown={e => {
+									if (e.key === 'Enter') handleInviteMember()
+								}}
+								placeholder="Invite by email..."
+								className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] hover:border-primary focus:border-primary"
+							/>
+							<select
+								value={inviteRole}
+								onChange={e =>
+									setInviteRole(e.target.value as 'viewer' | 'editor')
+								}
+								className="h-11 border border-[#2f2f2f] bg-[#141414] px-3 font-mono text-[11px] font-bold tracking-[0.5px] text-[#8a8a8a] outline-none transition-colors hover:border-primary focus:border-primary"
+							>
+								<option value="viewer">VIEWER</option>
+								<option value="editor">EDITOR</option>
+							</select>
+							<button
+								type="button"
+								onClick={handleInviteMember}
+								disabled={!inviteEmail.trim() || isInviting}
+								className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+							>
+								{isInviting ? 'INVITING...' : 'INVITE'}
+							</button>
+						</div>
+					</Can>
 				</div>
 			)}
 
@@ -378,36 +474,40 @@ function WorkspaceDetails({
 									: 'Save links shared in your Discord server channels'}
 							</span>
 						</div>
-						{hasDiscord ? (
-							<div className="flex items-center gap-2">
+						<div className="flex items-center gap-2">
+							{hasDiscord && (
 								<div className="flex h-11 items-center border border-[#00FF8830] bg-[#00FF8808] px-4">
 									<span className="font-mono text-[11px] font-bold tracking-[0.5px] text-[#00FF88]">
 										CONNECTED
 									</span>
 								</div>
-								<button
-									type="button"
-									onClick={() =>
-										discordIntegration &&
-										disconnectDiscord(discordIntegration.id)
-									}
-									disabled={isDisconnecting}
-									className="flex h-11 items-center border border-[#3a1a1a] bg-[#0A0A0A] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-[#FF4444] transition-colors hover:border-[#FF4444] disabled:cursor-not-allowed disabled:opacity-40"
-								>
-									{isDisconnecting ? 'DISCONNECTING...' : 'DISCONNECT'}
-								</button>
-							</div>
-						) : (
-							<button
-								type="button"
-								onClick={() => {
-									window.location.href = buildDiscordAuthUrl(workspace.id)
-								}}
-								className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary"
-							>
-								CONNECT
-							</button>
-						)}
+							)}
+							<Can I="manage" a="Workspace">
+								{hasDiscord ? (
+									<button
+										type="button"
+										onClick={() =>
+											discordIntegration &&
+											disconnectDiscord(discordIntegration.id)
+										}
+										disabled={isDisconnecting}
+										className="flex h-11 items-center border border-[#3a1a1a] bg-[#0A0A0A] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-[#FF4444] transition-colors hover:border-[#FF4444] disabled:cursor-not-allowed disabled:opacity-40"
+									>
+										{isDisconnecting ? 'DISCONNECTING...' : 'DISCONNECT'}
+									</button>
+								) : (
+									<button
+										type="button"
+										onClick={() => {
+											window.location.href = buildDiscordAuthUrl(workspace.id)
+										}}
+										className="flex h-11 items-center border border-sidebar-border bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-foreground transition-colors hover:border-primary"
+									>
+										CONNECT
+									</button>
+								)}
+							</Can>
+						</div>
 					</div>
 
 					{/* Slack — coming soon */}
@@ -436,29 +536,31 @@ function WorkspaceDetails({
 
 			{/* DANGER ZONE */}
 			{!workspace.isPersonal && (
-				<div className="flex flex-col gap-4">
-					<SectionLabel>DANGER ZONE</SectionLabel>
-					<div className="border border-[#3a1a1a] bg-[#0A0A0A] p-5">
-						<div className="flex flex-col gap-3">
-							<span className="font-mono text-[13px] font-semibold text-foreground">
-								Delete workspace
-							</span>
-							<p className="font-mono text-[12px] leading-relaxed text-[#6a6a6a]">
-								Permanently delete this workspace and all its data. This cannot
-								be undone.
-							</p>
-							<button
-								type="button"
-								onClick={handleDeleteWorkspace}
-								disabled={isDeleting}
-								className="flex h-10 w-fit cursor-pointer items-center gap-2 bg-[#FF4444] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-white transition-colors hover:bg-[#E63C3C] active:bg-[#CC3333] disabled:cursor-not-allowed disabled:opacity-40"
-							>
-								<Trash2 className="size-3.5" />
-								{isDeleting ? 'DELETING...' : 'DELETE WORKSPACE'}
-							</button>
+				<Can I="delete" a="Workspace">
+					<div className="flex flex-col gap-4">
+						<SectionLabel>DANGER ZONE</SectionLabel>
+						<div className="border border-[#3a1a1a] bg-[#0A0A0A] p-5">
+							<div className="flex flex-col gap-3">
+								<span className="font-mono text-[13px] font-semibold text-foreground">
+									Delete workspace
+								</span>
+								<p className="font-mono text-[12px] leading-relaxed text-[#6a6a6a]">
+									Permanently delete this workspace and all its data. This
+									cannot be undone.
+								</p>
+								<button
+									type="button"
+									onClick={handleDeleteWorkspace}
+									disabled={isDeleting}
+									className="flex h-10 w-fit cursor-pointer items-center gap-2 bg-[#FF4444] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-white transition-colors hover:bg-[#E63C3C] active:bg-[#CC3333] disabled:cursor-not-allowed disabled:opacity-40"
+								>
+									<Trash2 className="size-3.5" />
+									{isDeleting ? 'DELETING...' : 'DELETE WORKSPACE'}
+								</button>
+							</div>
 						</div>
 					</div>
-				</div>
+				</Can>
 			)}
 		</div>
 	)
@@ -466,12 +568,8 @@ function WorkspaceDetails({
 
 function SettingsPage() {
 	const { workspace } = useWorkspace()
-	const { data: membersMeRaw } = useGetMembersMe()
 	const { discord_connected, discord_error } = Route.useSearch()
 	const navigate = useNavigate()
-
-	const member =
-		membersMeRaw?.status === 200 ? (membersMeRaw.data.member ?? null) : null
 
 	useEffect(() => {
 		if (discord_connected) {
@@ -503,7 +601,7 @@ function SettingsPage() {
 			</div>
 
 			{workspace ? (
-				<WorkspaceDetails key={workspace.id} member={member} />
+				<WorkspaceDetails key={workspace.id} />
 			) : (
 				<div className="h-11 animate-pulse border border-sidebar-border bg-[#141414]" />
 			)}
