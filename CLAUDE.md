@@ -27,35 +27,38 @@ Frontend for the Cervo bookmark management app. Built with **TanStack Start** (S
 
 ```
 src/
+├── api/                    # Orval-generated (do not edit manually)
+│   ├── cervoAPI.schemas.ts # All TypeScript types
+│   └── */                  # Generated hooks per domain
+│
 ├── routes/
-│   ├── __root.tsx           # Root document shell (fonts, TanStack devtools)
-│   ├── _app.tsx             # Authenticated app layout (Header + Footer)
-│   ├── _app/
-│   │   ├── index.tsx        # Home page
-│   │   ├── links.tsx        # Links/bookmarks page
-│   │   └── components.tsx   # Component showcase
-│   ├── _auth.tsx            # Auth layout wrapper
+│   ├── __root.tsx           # Root document shell
+│   ├── _auth.tsx            # Unauthenticated layout
 │   ├── _auth/
-│   │   ├── sign-in.tsx      # OAuth sign-in (Google, GitHub)
+│   │   ├── sign-in.tsx      # OAuth sign-in
 │   │   └── workspace.tsx    # Workspace creation (post sign-in)
-│   └── api/auth/$.ts        # Better Auth catch-all API handler
+│   ├── _dashboard.tsx       # Authenticated layout (sidebar)
+│   ├── _dashboard/
+│   │   ├── links.tsx        # Bookmark search + save
+│   │   ├── settings.tsx     # Workspace settings, members, integrations
+│   │   ├── account.tsx      # Account settings
+│   │   └── help.tsx         # Help page
+│   └── discord/
+│       └── callback.tsx     # Discord OAuth callback
 │
 ├── components/
-│   ├── Header.tsx           # App header
-│   ├── Footer.tsx           # App footer
-│   ├── auth-layout.tsx      # Auth page layout
+│   ├── AppSidebar.tsx       # Navigation sidebar + workspace switcher
+│   ├── LinkDetailView.tsx   # Bookmark detail panel
+│   ├── LinkListItem.tsx     # Bookmark row
 │   └── ui/                  # Shadcn UI components
 │
 ├── lib/
+│   ├── abilities.ts         # CASL ability definitions (viewer/editor/owner)
+│   ├── ability-context.tsx  # AbilityContext + Can component
+│   ├── workspace-context.tsx# Active workspace state + ability provider
 │   ├── auth-client.ts       # Better Auth client instance
-│   └── utils.ts             # cn() and other utilities
-│
-├── hooks/
-│   └── use-mobile.ts        # Mobile breakpoint hook
-│
-├── integrations/
-│   ├── better-auth/         # Auth header component
-│   └── tanstack-query/      # TanStack Query provider & devtools
+│   ├── api-client.ts        # Fetch wrapper for Orval
+│   └── env.ts               # Client env vars (Zod-validated)
 │
 └── styles.css               # Global styles (Tailwind v4)
 ```
@@ -89,6 +92,50 @@ authClient.signIn.social({ provider: "google", callbackURL: "/workspace" })
 ```
 
 All `/api/auth/*` routes are handled by the Better Auth catch-all at `src/routes/api/auth/$.ts`.
+
+### Role-Based UI (CASL)
+
+Workspace members have one of three roles: `owner`, `editor`, `viewer`. Abilities are defined in `src/lib/abilities.ts` and injected by `WorkspaceProvider` via `AbilityContext`.
+
+Gate UI with the `Can` component:
+
+```tsx
+import { Can } from '#/lib/ability-context'
+
+<Can I="manage" a="Link">        {/* editors + owners */}
+  <button>Save URL</button>
+</Can>
+
+<Can I="manage" a="Workspace">   {/* owner only */}
+  <button>Connect Discord</button>
+</Can>
+```
+
+Use `useAbility` to disable inputs rather than hide them:
+
+```tsx
+const ability = useAbility(AbilityContext)
+<input disabled={!ability.can('update', 'Workspace')} />
+```
+
+**Ability matrix:**
+
+| Action | Owner | Editor | Viewer |
+|---|---|---|---|
+| `manage Workspace` | ✓ | — | — |
+| `update Workspace` | ✓ | — | — |
+| `delete Workspace` | ✓ | — | — |
+| `manage Member` | ✓ | — | — |
+| `manage Link` | ✓ | ✓ | — |
+| `read Workspace` / `read Link` | ✓ | ✓ | ✓ |
+
+### API Client (Orval)
+
+Types and hooks in `src/api/` are generated from `cervo-api`'s `spec.json`. Never edit them manually. After API changes:
+
+```bash
+bun run generate
+```
 
 ### Data fetching
 

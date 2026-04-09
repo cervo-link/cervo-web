@@ -1,317 +1,177 @@
-Welcome to your new TanStack Start app! 
+# cervo-web
 
-# Getting Started
+Frontend for the Cervo bookmark management app. Built with TanStack Start (SSR React) and file-based routing.
 
-To run this application:
+## Stack
+
+TanStack Start · TanStack Router · TanStack Query · React · Tailwind CSS v4 · Shadcn UI · Better Auth · CASL · Orval · Biome · Vitest
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Bun](https://bun.sh) >= 1.0
+- cervo-api running locally (default: `http://localhost:8090`)
+
+### Setup
 
 ```bash
 bun install
-bun --bun run dev
+cp .env.example .env.local
+bun --bun run dev        # http://localhost:3000
 ```
 
-# Building For Production
-
-To build this application for production:
+### Commands
 
 ```bash
-bun --bun run build
+# Development
+bun --bun run dev            # Dev server on port 3000
+bun --bun run build          # Production build
+bun --bun run preview        # Preview production build
+
+# Testing
+bun --bun run test           # Vitest
+
+# Code quality (run in this order)
+bun --bun run check          # Biome lint + format
+bun --bun run lint           # Biome lint only
+bun --bun run format         # Biome format only
+bun --bun run typecheck      # tsc --noEmit
+
+# API client
+bun run generate             # Regenerate Orval client from spec.json
 ```
 
-## Testing
+---
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+## Environment Variables
+
+Copy `.env.example` to `.env.local`:
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_API_URL` | Yes | cervo-api base URL (e.g. `http://localhost:8090`) |
+| `VITE_CLIENT_ID` | Yes | Discord OAuth app client ID (for workspace integrations) |
+
+---
+
+## Architecture
+
+```
+src/
+├── api/                    # Orval-generated API client (do not edit)
+│   ├── cervoAPI.schemas.ts # All request/response TypeScript types
+│   └── workspaces/         # Generated hooks per domain (useGetWorkspacesMe, etc.)
+│
+├── components/
+│   ├── AppSidebar.tsx      # Navigation sidebar + workspace switcher
+│   ├── LinkDetailView.tsx  # Bookmark detail panel
+│   ├── LinkListItem.tsx    # Bookmark row in list
+│   └── ui/                 # Shadcn UI components
+│
+├── lib/
+│   ├── abilities.ts        # CASL ability definitions (viewer/editor/owner)
+│   ├── ability-context.tsx # AbilityContext + Can component
+│   ├── workspace-context.tsx # Active workspace state + ability provider
+│   ├── auth-client.ts      # Better Auth client
+│   ├── api-client.ts       # Fetch wrapper used by Orval
+│   └── env.ts              # Client env vars (Zod-validated)
+│
+└── routes/
+    ├── __root.tsx           # Root document shell
+    ├── _auth.tsx            # Unauthenticated layout
+    ├── _auth/
+    │   ├── sign-in.tsx      # OAuth sign-in
+    │   └── workspace.tsx    # Workspace creation (post sign-in)
+    ├── _dashboard.tsx       # Authenticated layout (sidebar)
+    ├── _dashboard/
+    │   ├── links.tsx        # Bookmark search + save
+    │   ├── settings.tsx     # Workspace settings, members, integrations
+    │   ├── account.tsx      # Account settings
+    │   └── help.tsx         # Help page
+    └── discord/
+        └── callback.tsx     # Discord OAuth callback
+```
+
+---
+
+## Key Patterns
+
+### Role-based UI (CASL)
+
+Workspace members have one of three roles: `owner`, `editor`, `viewer`. Abilities are defined in `src/lib/abilities.ts` and provided via `WorkspaceProvider` → `AbilityContext`.
+
+Gate UI elements with the `Can` component:
+
+```tsx
+import { Can } from '#/lib/ability-context'
+
+<Can I="manage" a="Link">
+  <button>Save URL</button>
+</Can>
+
+<Can I="update" a="Workspace">
+  <button>Save Changes</button>
+</Can>
+```
+
+Use `useAbility` for imperative checks (e.g. disabling inputs):
+
+```tsx
+import { useAbility } from '@casl/react'
+import { AbilityContext } from '#/lib/ability-context'
+
+const ability = useAbility(AbilityContext)
+<input disabled={!ability.can('update', 'Workspace')} />
+```
+
+**Ability matrix:**
+
+| Action | Owner | Editor | Viewer |
+|---|---|---|---|
+| `manage Workspace` (connect/disconnect integrations) | ✓ | — | — |
+| `update Workspace` (rename, description, visibility) | ✓ | — | — |
+| `delete Workspace` | ✓ | — | — |
+| `manage Member` (invite, remove) | ✓ | — | — |
+| `manage Link` (save, delete) | ✓ | ✓ | — |
+| `read Workspace` / `read Link` | ✓ | ✓ | ✓ |
+
+### API Client (Orval)
+
+All API types and hooks are generated from `cervo-api/src/infra/http/swagger/spec.json` via Orval. Never edit files in `src/api/` manually.
+
+To regenerate after API changes:
+```bash
+bun run generate
+```
+
+### URL State
+
+Search/filter state is synced to the URL via `nuqs`. Use `useQueryState` — setting to `null` removes the param.
+
+### Workspace Context
+
+`useWorkspace()` returns the active workspace, full list, and setter. The active workspace is persisted in `localStorage`. Switching workspaces re-computes CASL abilities automatically.
+
+---
+
+## Design System
+
+- **Dark mode only** — `dark` class forced on `<html>` at load
+- **No border radius** — all `--radius-*` vars are `0px`
+- **Interactive element height** — `h-11` (44px) for all inputs, buttons, dropdowns
+- **Focus/hover** — `border-primary` (1px green), no ring; never `focus-visible:ring-2`
+- **Fonts** — `font-mono` for UI elements, `font-heading` for page titles
+- **Colours** — `bg-[#0A0A0A]` inputs, `bg-[#141414]` elevated, `text-[#8a8a8a]` secondary
+
+---
+
+## Testing
 
 ```bash
 bun --bun run test
 ```
 
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `bun install @tailwindcss/vite tailwindcss -D`
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-
-```bash
-bun --bun run lint
-bun --bun run format
-bun --bun run check
-```
-
-
-## Environment Variables
-
-Copy `.env.example` to `.env.local` and fill in the values:
-
-```bash
-cp .env.example .env.local
-```
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_URL` | No | Backend API URL (defaults to `http://localhost:8080`) |
-| `ANTHROPIC_API_KEY` | No | Anthropic API key for resume chat |
-| `OPENAI_API_KEY` | No | OpenAI API key for resume chat |
-| `GEMINI_API_KEY` | No | Gemini API key for resume chat |
-
-At least one AI provider key is needed for the resume chat feature. If none are set, it falls back to a local Ollama instance.
-
-Environment variables are validated at runtime via Zod schemas in `src/lib/env.ts` (client) and `src/lib/env.server.ts` (server). Always import from these modules instead of accessing `import.meta.env` or `process.env` directly.
-
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpm dlx shadcn@latest add button
-```
-
-
-# Resume Example
-
-A professional resume template built with TanStack Start and content-collections for Netlify deployment.
-
-## Features
-
-- **Content Collections**: Work experience and education managed as markdown files
-- **Skills Filter**: Interactive sidebar to filter jobs by skills/technologies
-- **Beautiful UI**: Modern design with shadcn/ui components
-- **SSR Ready**: Full server-side rendering with TanStack Start
-
-## Project Structure
-
-```
-├── content/
-│   ├── jobs/              # Work experience entries
-│   └── education/         # Education entries
-├── src/
-│   ├── components/
-│   │   └── ui/            # Shadcn UI components
-│   │       ├── badge.tsx
-│   │       ├── card.tsx
-│   │       ├── checkbox.tsx
-│   │       ├── hover-card.tsx
-│   │       └── separator.tsx
-│   ├── lib/
-│   │   └── utils.ts       # Utility functions
-│   └── routes/
-│       ├── __root.tsx     # Root layout
-│       └── index.tsx      # Resume page
-└── public/
-    └── headshot-on-white.jpg
-```
-
-## Adding Work Experience
-
-Create a new markdown file in `content/jobs/` with the following frontmatter:
-
-```markdown
----
-jobTitle: Your Job Title
-company: Company Name
-location: City, State
-startDate: 2024-01-01
-endDate: 2024-12-31  # Optional - omit for current position
-summary: Brief summary of your role
-tags:
-  - React
-  - TypeScript
-  - Web Development
----
-
-Detailed description of your responsibilities and achievements...
-```
-
-## Adding Education
-
-Create a new markdown file in `content/education/`:
-
-```markdown
----
-school: School Name
-summary: Degree or Program Name
-startDate: 2020-01-01
-endDate: 2024-01-01
-tags:
-  - Relevant
-  - Skills
----
-
-Details about your education...
-```
-
-## Development
-
-```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+Tests use Vitest + Testing Library against the real component tree.
