@@ -87,7 +87,7 @@ export const getPostBookmarksUrl = () => {
 
 
 
-  return `/bookmarks`
+  return `/api/v1/bookmarks`
 }
 
 export const postBookmarks = async (postBookmarksBody: PostBookmarksBody, options?: RequestInit): Promise<postBookmarksResponse> => {
@@ -185,7 +185,7 @@ export const getGetBookmarksUrl = (params: GetBookmarksParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/bookmarks?${stringifiedParams}` : `/bookmarks`
+  return stringifiedParams.length > 0 ? `/api/v1/bookmarks?${stringifiedParams}` : `/api/v1/bookmarks`
 }
 
 export const getBookmarks = async (params: GetBookmarksParams, options?: RequestInit): Promise<getBookmarksResponse> => {
@@ -205,7 +205,7 @@ export const getBookmarks = async (params: GetBookmarksParams, options?: Request
 
 export const getGetBookmarksQueryKey = (params?: GetBookmarksParams,) => {
     return [
-    `/bookmarks`, ...(params ? [params] : [])
+    `/api/v1/bookmarks`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -304,7 +304,7 @@ export const getPostBookmarksIdRetryUrl = (id: string,) => {
 
 
 
-  return `/bookmarks/${id}/retry`
+  return `/api/v1/bookmarks/${id}/retry`
 }
 
 export const postBookmarksIdRetry = async (id: string, options?: RequestInit): Promise<postBookmarksIdRetryResponse> => {
@@ -389,7 +389,7 @@ export const getDeleteBookmarksIdUrl = (id: string,) => {
 
 
 
-  return `/bookmarks/${id}`
+  return `/api/v1/bookmarks/${id}`
 }
 
 export const deleteBookmarksId = async (id: string, options?: RequestInit): Promise<deleteBookmarksIdResponse> => {
@@ -474,7 +474,7 @@ export const getGetBookmarksIdUrl = (id: string,) => {
 
 
 
-  return `/bookmarks/${id}`
+  return `/api/v1/bookmarks/${id}`
 }
 
 export const getBookmarksId = async (id: string, options?: RequestInit): Promise<getBookmarksIdResponse> => {
@@ -494,7 +494,7 @@ export const getBookmarksId = async (id: string, options?: RequestInit): Promise
 
 export const getGetBookmarksIdQueryKey = (id: string,) => {
     return [
-    `/bookmarks/${id}`
+    `/api/v1/bookmarks/${id}`
     ] as const;
     }
 

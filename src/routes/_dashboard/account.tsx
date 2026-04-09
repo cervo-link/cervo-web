@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { useGetMembersMe } from '#/api/members/members'
-import { apiClient } from '#/lib/api-client'
+import {
+	useGetMembersMe,
+	useGetMembersMeIdentities,
+} from '#/api/members/members'
 import { clientEnv } from '#/lib/env'
 
 const searchSchema = z.object({
@@ -22,14 +23,6 @@ export const Route = createFileRoute('/_dashboard/account')({
 	}),
 	component: AccountPage,
 })
-
-type Identity = {
-	id: string
-	memberId: string
-	provider: string
-	providerUserId: string
-	createdAt: string
-}
 
 const PROVIDER_LABELS: Record<string, string> = {
 	discord: 'Discord',
@@ -62,26 +55,25 @@ function AccountPage() {
 	const member =
 		membersMeRaw?.status === 200 ? (membersMeRaw.data.member ?? null) : null
 
-	const { data: identitiesData, refetch: refetchIdentities } = useQuery({
-		queryKey: ['/members/me/identities'],
-		queryFn: () =>
-			apiClient<{ data: { identities: Identity[] }; status: number }>(
-				'/members/me/identities'
-			),
-	})
+	const { data: identitiesData, refetch: refetchIdentities } =
+		useGetMembersMeIdentities()
 
 	const identities =
 		identitiesData?.status === 200 ? identitiesData.data.identities : []
 
 	const hasDiscord = identities.some(i => i.provider === 'discord')
+	const handledRef = useRef(false)
 
 	useEffect(() => {
+		if (handledRef.current) return
 		if (discord_success) {
+			handledRef.current = true
 			toast.success('Discord account connected.')
 			void refetchIdentities()
 			void navigate({ to: '/account', replace: true })
 		}
 		if (discord_error) {
+			handledRef.current = true
 			const messages: Record<string, string> = {
 				cancelled: 'Discord authorization was cancelled.',
 				exchange_failed: 'Failed to complete Discord authorization.',

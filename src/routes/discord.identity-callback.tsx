@@ -16,7 +16,7 @@ export const Route = createFileRoute('/discord/identity-callback')({
 				if (discordUserId) {
 					const apiUrl = process.env.API_URL ?? 'http://localhost:8080'
 					try {
-						const res = await fetch(`${apiUrl}/members/me/identities`, {
+						const res = await fetch(`${apiUrl}/api/v1/members/me/identities`, {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',

@@ -25,20 +25,11 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  DeleteWorkspacesByIntegration404,
-  DeleteWorkspacesByIntegrationParams,
   DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403,
   DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404,
-  GetWorkspacesByIntegration200,
-  GetWorkspacesByIntegration404,
-  GetWorkspacesByIntegrationParams,
   GetWorkspacesWorkspaceIdIntegrations200,
   GetWorkspacesWorkspaceIdIntegrations403,
   GetWorkspacesWorkspaceIdIntegrations404,
-  PatchWorkspacesByIntegration200,
-  PatchWorkspacesByIntegration404,
-  PatchWorkspacesByIntegrationBody,
-  PatchWorkspacesByIntegrationParams,
   PostWorkspacesWorkspaceIdIntegrations201,
   PostWorkspacesWorkspaceIdIntegrations403,
   PostWorkspacesWorkspaceIdIntegrations404,
@@ -54,103 +45,6 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * Add a platform integration to a workspace
- */
-export type postWorkspacesWorkspaceIdIntegrationsResponse201 = {
-  data: PostWorkspacesWorkspaceIdIntegrations201
-  status: 201
-}
-
-export type postWorkspacesWorkspaceIdIntegrationsResponse403 = {
-  data: PostWorkspacesWorkspaceIdIntegrations403
-  status: 403
-}
-
-export type postWorkspacesWorkspaceIdIntegrationsResponse404 = {
-  data: PostWorkspacesWorkspaceIdIntegrations404
-  status: 404
-}
-
-export type postWorkspacesWorkspaceIdIntegrationsResponse422 = {
-  data: PostWorkspacesWorkspaceIdIntegrations422
-  status: 422
-}
-
-export type postWorkspacesWorkspaceIdIntegrationsResponseSuccess = (postWorkspacesWorkspaceIdIntegrationsResponse201) & {
-  headers: Headers;
-};
-export type postWorkspacesWorkspaceIdIntegrationsResponseError = (postWorkspacesWorkspaceIdIntegrationsResponse403 | postWorkspacesWorkspaceIdIntegrationsResponse404 | postWorkspacesWorkspaceIdIntegrationsResponse422) & {
-  headers: Headers;
-};
-
-export type postWorkspacesWorkspaceIdIntegrationsResponse = (postWorkspacesWorkspaceIdIntegrationsResponseSuccess | postWorkspacesWorkspaceIdIntegrationsResponseError)
-
-export const getPostWorkspacesWorkspaceIdIntegrationsUrl = (workspaceId: string,) => {
-
-
-
-
-  return `/workspaces/${workspaceId}/integrations`
-}
-
-export const postWorkspacesWorkspaceIdIntegrations = async (workspaceId: string,
-    postWorkspacesWorkspaceIdIntegrationsBody: PostWorkspacesWorkspaceIdIntegrationsBody, options?: RequestInit): Promise<postWorkspacesWorkspaceIdIntegrationsResponse> => {
-
-  return apiClient<postWorkspacesWorkspaceIdIntegrationsResponse>(getPostWorkspacesWorkspaceIdIntegrationsUrl(workspaceId),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postWorkspacesWorkspaceIdIntegrationsBody,)
-  }
-);}
-
-
-
-
-export const getPostWorkspacesWorkspaceIdIntegrationsMutationOptions = <TError = PostWorkspacesWorkspaceIdIntegrations403 | PostWorkspacesWorkspaceIdIntegrations404 | PostWorkspacesWorkspaceIdIntegrations422,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}, TContext>, request?: SecondParameter<typeof apiClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}, TContext> => {
-
-const mutationKey = ['postWorkspacesWorkspaceIdIntegrations'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, {workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}> = (props) => {
-          const {workspaceId,data} = props ?? {};
-
-          return  postWorkspacesWorkspaceIdIntegrations(workspaceId,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostWorkspacesWorkspaceIdIntegrationsMutationResult = NonNullable<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>>
-    export type PostWorkspacesWorkspaceIdIntegrationsMutationBody = PostWorkspacesWorkspaceIdIntegrationsBody
-    export type PostWorkspacesWorkspaceIdIntegrationsMutationError = PostWorkspacesWorkspaceIdIntegrations403 | PostWorkspacesWorkspaceIdIntegrations404 | PostWorkspacesWorkspaceIdIntegrations422
-
-    export const usePostWorkspacesWorkspaceIdIntegrations = <TError = PostWorkspacesWorkspaceIdIntegrations403 | PostWorkspacesWorkspaceIdIntegrations404 | PostWorkspacesWorkspaceIdIntegrations422,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}, TContext>, request?: SecondParameter<typeof apiClient>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>,
-        TError,
-        {workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody},
-        TContext
-      > => {
-      return useMutation(getPostWorkspacesWorkspaceIdIntegrationsMutationOptions(options), queryClient);
-    }
-    /**
  * List integrations for a workspace
  */
 export type getWorkspacesWorkspaceIdIntegrationsResponse200 = {
@@ -182,7 +76,7 @@ export const getGetWorkspacesWorkspaceIdIntegrationsUrl = (workspaceId: string,)
 
 
 
-  return `/workspaces/${workspaceId}/integrations`
+  return `/api/v1/workspaces/${workspaceId}/integrations`
 }
 
 export const getWorkspacesWorkspaceIdIntegrations = async (workspaceId: string, options?: RequestInit): Promise<getWorkspacesWorkspaceIdIntegrationsResponse> => {
@@ -202,7 +96,7 @@ export const getWorkspacesWorkspaceIdIntegrations = async (workspaceId: string, 
 
 export const getGetWorkspacesWorkspaceIdIntegrationsQueryKey = (workspaceId: string,) => {
     return [
-    `/workspaces/${workspaceId}/integrations`
+    `/api/v1/workspaces/${workspaceId}/integrations`
     ] as const;
     }
 
@@ -270,6 +164,103 @@ export function useGetWorkspacesWorkspaceIdIntegrations<TData = Awaited<ReturnTy
 
 
 /**
+ * Add a platform integration to a workspace
+ */
+export type postWorkspacesWorkspaceIdIntegrationsResponse201 = {
+  data: PostWorkspacesWorkspaceIdIntegrations201
+  status: 201
+}
+
+export type postWorkspacesWorkspaceIdIntegrationsResponse403 = {
+  data: PostWorkspacesWorkspaceIdIntegrations403
+  status: 403
+}
+
+export type postWorkspacesWorkspaceIdIntegrationsResponse404 = {
+  data: PostWorkspacesWorkspaceIdIntegrations404
+  status: 404
+}
+
+export type postWorkspacesWorkspaceIdIntegrationsResponse422 = {
+  data: PostWorkspacesWorkspaceIdIntegrations422
+  status: 422
+}
+
+export type postWorkspacesWorkspaceIdIntegrationsResponseSuccess = (postWorkspacesWorkspaceIdIntegrationsResponse201) & {
+  headers: Headers;
+};
+export type postWorkspacesWorkspaceIdIntegrationsResponseError = (postWorkspacesWorkspaceIdIntegrationsResponse403 | postWorkspacesWorkspaceIdIntegrationsResponse404 | postWorkspacesWorkspaceIdIntegrationsResponse422) & {
+  headers: Headers;
+};
+
+export type postWorkspacesWorkspaceIdIntegrationsResponse = (postWorkspacesWorkspaceIdIntegrationsResponseSuccess | postWorkspacesWorkspaceIdIntegrationsResponseError)
+
+export const getPostWorkspacesWorkspaceIdIntegrationsUrl = (workspaceId: string,) => {
+
+
+
+
+  return `/api/v1/workspaces/${workspaceId}/integrations`
+}
+
+export const postWorkspacesWorkspaceIdIntegrations = async (workspaceId: string,
+    postWorkspacesWorkspaceIdIntegrationsBody: PostWorkspacesWorkspaceIdIntegrationsBody, options?: RequestInit): Promise<postWorkspacesWorkspaceIdIntegrationsResponse> => {
+
+  return apiClient<postWorkspacesWorkspaceIdIntegrationsResponse>(getPostWorkspacesWorkspaceIdIntegrationsUrl(workspaceId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postWorkspacesWorkspaceIdIntegrationsBody,)
+  }
+);}
+
+
+
+
+export const getPostWorkspacesWorkspaceIdIntegrationsMutationOptions = <TError = PostWorkspacesWorkspaceIdIntegrations403 | PostWorkspacesWorkspaceIdIntegrations404 | PostWorkspacesWorkspaceIdIntegrations422,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}, TContext> => {
+
+const mutationKey = ['postWorkspacesWorkspaceIdIntegrations'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, {workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}> = (props) => {
+          const {workspaceId,data} = props ?? {};
+
+          return  postWorkspacesWorkspaceIdIntegrations(workspaceId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostWorkspacesWorkspaceIdIntegrationsMutationResult = NonNullable<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>>
+    export type PostWorkspacesWorkspaceIdIntegrationsMutationBody = PostWorkspacesWorkspaceIdIntegrationsBody
+    export type PostWorkspacesWorkspaceIdIntegrationsMutationError = PostWorkspacesWorkspaceIdIntegrations403 | PostWorkspacesWorkspaceIdIntegrations404 | PostWorkspacesWorkspaceIdIntegrations422
+
+    export const usePostWorkspacesWorkspaceIdIntegrations = <TError = PostWorkspacesWorkspaceIdIntegrations403 | PostWorkspacesWorkspaceIdIntegrations404 | PostWorkspacesWorkspaceIdIntegrations422,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>, TError,{workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postWorkspacesWorkspaceIdIntegrations>>,
+        TError,
+        {workspaceId: string;data: PostWorkspacesWorkspaceIdIntegrationsBody},
+        TContext
+      > => {
+      return useMutation(getPostWorkspacesWorkspaceIdIntegrationsMutationOptions(options), queryClient);
+    }
+    /**
  * Remove a platform integration from a workspace
  */
 export type deleteWorkspacesWorkspaceIdIntegrationsIntegrationIdResponse204 = {
@@ -302,7 +293,7 @@ export const getDeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdUrl = (works
 
 
 
-  return `/workspaces/${workspaceId}/integrations/${integrationId}`
+  return `/api/v1/workspaces/${workspaceId}/integrations/${integrationId}`
 }
 
 export const deleteWorkspacesWorkspaceIdIntegrationsIntegrationId = async (workspaceId: string,
@@ -360,311 +351,4 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getDeleteWorkspacesWorkspaceIdIntegrationsIntegrationIdMutationOptions(options), queryClient);
-    }
-    /**
- * Find a workspace by its platform integration (bot-facing)
- */
-export type getWorkspacesByIntegrationResponse200 = {
-  data: GetWorkspacesByIntegration200
-  status: 200
-}
-
-export type getWorkspacesByIntegrationResponse404 = {
-  data: GetWorkspacesByIntegration404
-  status: 404
-}
-
-export type getWorkspacesByIntegrationResponseSuccess = (getWorkspacesByIntegrationResponse200) & {
-  headers: Headers;
-};
-export type getWorkspacesByIntegrationResponseError = (getWorkspacesByIntegrationResponse404) & {
-  headers: Headers;
-};
-
-export type getWorkspacesByIntegrationResponse = (getWorkspacesByIntegrationResponseSuccess | getWorkspacesByIntegrationResponseError)
-
-export const getGetWorkspacesByIntegrationUrl = (params: GetWorkspacesByIntegrationParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/workspaces/by-integration?${stringifiedParams}` : `/workspaces/by-integration`
-}
-
-export const getWorkspacesByIntegration = async (params: GetWorkspacesByIntegrationParams, options?: RequestInit): Promise<getWorkspacesByIntegrationResponse> => {
-
-  return apiClient<getWorkspacesByIntegrationResponse>(getGetWorkspacesByIntegrationUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getGetWorkspacesByIntegrationQueryKey = (params?: GetWorkspacesByIntegrationParams,) => {
-    return [
-    `/workspaces/by-integration`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getGetWorkspacesByIntegrationQueryOptions = <TData = Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError = GetWorkspacesByIntegration404>(params: GetWorkspacesByIntegrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetWorkspacesByIntegrationQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWorkspacesByIntegration>>> = ({ signal }) => getWorkspacesByIntegration(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetWorkspacesByIntegrationQueryResult = NonNullable<Awaited<ReturnType<typeof getWorkspacesByIntegration>>>
-export type GetWorkspacesByIntegrationQueryError = GetWorkspacesByIntegration404
-
-
-export function useGetWorkspacesByIntegration<TData = Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError = GetWorkspacesByIntegration404>(
- params: GetWorkspacesByIntegrationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getWorkspacesByIntegration>>,
-          TError,
-          Awaited<ReturnType<typeof getWorkspacesByIntegration>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiClient>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetWorkspacesByIntegration<TData = Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError = GetWorkspacesByIntegration404>(
- params: GetWorkspacesByIntegrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getWorkspacesByIntegration>>,
-          TError,
-          Awaited<ReturnType<typeof getWorkspacesByIntegration>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiClient>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetWorkspacesByIntegration<TData = Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError = GetWorkspacesByIntegration404>(
- params: GetWorkspacesByIntegrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function useGetWorkspacesByIntegration<TData = Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError = GetWorkspacesByIntegration404>(
- params: GetWorkspacesByIntegrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesByIntegration>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetWorkspacesByIntegrationQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-
-
-
-/**
- * Update integration metadata by provider ID (bot-facing)
- */
-export type patchWorkspacesByIntegrationResponse200 = {
-  data: PatchWorkspacesByIntegration200
-  status: 200
-}
-
-export type patchWorkspacesByIntegrationResponse404 = {
-  data: PatchWorkspacesByIntegration404
-  status: 404
-}
-
-export type patchWorkspacesByIntegrationResponseSuccess = (patchWorkspacesByIntegrationResponse200) & {
-  headers: Headers;
-};
-export type patchWorkspacesByIntegrationResponseError = (patchWorkspacesByIntegrationResponse404) & {
-  headers: Headers;
-};
-
-export type patchWorkspacesByIntegrationResponse = (patchWorkspacesByIntegrationResponseSuccess | patchWorkspacesByIntegrationResponseError)
-
-export const getPatchWorkspacesByIntegrationUrl = (params: PatchWorkspacesByIntegrationParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/workspaces/by-integration?${stringifiedParams}` : `/workspaces/by-integration`
-}
-
-export const patchWorkspacesByIntegration = async (patchWorkspacesByIntegrationBody: PatchWorkspacesByIntegrationBody,
-    params: PatchWorkspacesByIntegrationParams, options?: RequestInit): Promise<patchWorkspacesByIntegrationResponse> => {
-
-  return apiClient<patchWorkspacesByIntegrationResponse>(getPatchWorkspacesByIntegrationUrl(params),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      patchWorkspacesByIntegrationBody,)
-  }
-);}
-
-
-
-
-export const getPatchWorkspacesByIntegrationMutationOptions = <TError = PatchWorkspacesByIntegration404,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, TError,{data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, TError,{data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}, TContext> => {
-
-const mutationKey = ['patchWorkspacesByIntegration'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, {data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}> = (props) => {
-          const {data,params} = props ?? {};
-
-          return  patchWorkspacesByIntegration(data,params,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PatchWorkspacesByIntegrationMutationResult = NonNullable<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>>
-    export type PatchWorkspacesByIntegrationMutationBody = PatchWorkspacesByIntegrationBody
-    export type PatchWorkspacesByIntegrationMutationError = PatchWorkspacesByIntegration404
-
-    export const usePatchWorkspacesByIntegration = <TError = PatchWorkspacesByIntegration404,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesByIntegration>>, TError,{data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof patchWorkspacesByIntegration>>,
-        TError,
-        {data: PatchWorkspacesByIntegrationBody;params: PatchWorkspacesByIntegrationParams},
-        TContext
-      > => {
-      return useMutation(getPatchWorkspacesByIntegrationMutationOptions(options), queryClient);
-    }
-    /**
- * Remove an integration by provider ID (bot-facing)
- */
-export type deleteWorkspacesByIntegrationResponse204 = {
-  data: void
-  status: 204
-}
-
-export type deleteWorkspacesByIntegrationResponse404 = {
-  data: DeleteWorkspacesByIntegration404
-  status: 404
-}
-
-export type deleteWorkspacesByIntegrationResponseSuccess = (deleteWorkspacesByIntegrationResponse204) & {
-  headers: Headers;
-};
-export type deleteWorkspacesByIntegrationResponseError = (deleteWorkspacesByIntegrationResponse404) & {
-  headers: Headers;
-};
-
-export type deleteWorkspacesByIntegrationResponse = (deleteWorkspacesByIntegrationResponseSuccess | deleteWorkspacesByIntegrationResponseError)
-
-export const getDeleteWorkspacesByIntegrationUrl = (params: DeleteWorkspacesByIntegrationParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/workspaces/by-integration?${stringifiedParams}` : `/workspaces/by-integration`
-}
-
-export const deleteWorkspacesByIntegration = async (params: DeleteWorkspacesByIntegrationParams, options?: RequestInit): Promise<deleteWorkspacesByIntegrationResponse> => {
-
-  return apiClient<deleteWorkspacesByIntegrationResponse>(getDeleteWorkspacesByIntegrationUrl(params),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
-
-
-export const getDeleteWorkspacesByIntegrationMutationOptions = <TError = DeleteWorkspacesByIntegration404,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, TError,{params: DeleteWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, TError,{params: DeleteWorkspacesByIntegrationParams}, TContext> => {
-
-const mutationKey = ['deleteWorkspacesByIntegration'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, {params: DeleteWorkspacesByIntegrationParams}> = (props) => {
-          const {params} = props ?? {};
-
-          return  deleteWorkspacesByIntegration(params,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteWorkspacesByIntegrationMutationResult = NonNullable<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>>
-
-    export type DeleteWorkspacesByIntegrationMutationError = DeleteWorkspacesByIntegration404
-
-    export const useDeleteWorkspacesByIntegration = <TError = DeleteWorkspacesByIntegration404,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>, TError,{params: DeleteWorkspacesByIntegrationParams}, TContext>, request?: SecondParameter<typeof apiClient>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteWorkspacesByIntegration>>,
-        TError,
-        {params: DeleteWorkspacesByIntegrationParams},
-        TContext
-      > => {
-      return useMutation(getDeleteWorkspacesByIntegrationMutationOptions(options), queryClient);
     }

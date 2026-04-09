@@ -5,15 +5,15 @@
  * API for managing bookmarks, workspaces, and members with API key authentication
  * OpenAPI spec version: 1.0.0
  */
-export type Healthcheck200Message = typeof Healthcheck200Message[keyof typeof Healthcheck200Message];
+export type GetHealth200Message = typeof GetHealth200Message[keyof typeof GetHealth200Message];
 
 
-export const Healthcheck200Message = {
+export const GetHealth200Message = {
   ok: 'ok',
 } as const;
 
-export type Healthcheck200 = {
-  message: Healthcheck200Message;
+export type GetHealth200 = {
+  message: GetHealth200Message;
 };
 
 export type PostBookmarksBodySource = typeof PostBookmarksBodySource[keyof typeof PostBookmarksBodySource];
@@ -242,6 +242,84 @@ export type PostWorkspacesCreate500 = {
   message: string;
 };
 
+export type GetWorkspacesParams = {
+/**
+ * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+ */
+id: string;
+};
+
+export type GetWorkspaces200Workspace = {
+  id: string;
+  ownerId: string;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+};
+
+/**
+ * Workspace found.
+ */
+export type GetWorkspaces200 = {
+  workspace: GetWorkspaces200Workspace;
+};
+
+/**
+ * Workspace not found
+ */
+export type GetWorkspaces404 = {
+  message: string;
+};
+
+/**
+ * Failed to get workspace
+ */
+export type GetWorkspaces500 = {
+  message: string;
+};
+
+export type GetWorkspacesMe200WorkspacesItemRole = typeof GetWorkspacesMe200WorkspacesItemRole[keyof typeof GetWorkspacesMe200WorkspacesItemRole];
+
+
+export const GetWorkspacesMe200WorkspacesItemRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+  owner: 'owner',
+} as const;
+
+export type GetWorkspacesMe200WorkspacesItem = {
+  id: string;
+  /** @nullable */
+  ownerId: string | null;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isPublic: boolean;
+  isPersonal: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+  role: GetWorkspacesMe200WorkspacesItemRole;
+};
+
+/**
+ * List of workspaces the member belongs to
+ */
+export type GetWorkspacesMe200 = {
+  workspaces: GetWorkspacesMe200WorkspacesItem[];
+};
+
+/**
+ * Failed to get workspaces
+ */
+export type GetWorkspacesMe500 = {
+  message: string;
+};
+
 export type PatchWorkspacesWorkspaceIdBody = {
   /** @minLength 1 */
   name?: string;
@@ -320,6 +398,48 @@ export type DeleteWorkspacesWorkspaceId500 = {
   message: string;
 };
 
+export type GetWorkspacesWorkspaceIdMembers200MembersItemRole = typeof GetWorkspacesWorkspaceIdMembers200MembersItemRole[keyof typeof GetWorkspacesWorkspaceIdMembers200MembersItemRole];
+
+
+export const GetWorkspacesWorkspaceIdMembers200MembersItemRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+  owner: 'owner',
+} as const;
+
+export type GetWorkspacesWorkspaceIdMembers200MembersItem = {
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  role: GetWorkspacesWorkspaceIdMembers200MembersItemRole;
+  joinedAt: string;
+};
+
+/**
+ * List of workspace members
+ */
+export type GetWorkspacesWorkspaceIdMembers200 = {
+  members: GetWorkspacesWorkspaceIdMembers200MembersItem[];
+};
+
+/**
+ * Forbidden
+ */
+export type GetWorkspacesWorkspaceIdMembers403 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type GetWorkspacesWorkspaceIdMembers500 = {
+  message: string;
+};
+
 export type PostWorkspacesWorkspaceIdMembersBodyRole = typeof PostWorkspacesWorkspaceIdMembersBodyRole[keyof typeof PostWorkspacesWorkspaceIdMembersBodyRole];
 
 
@@ -366,48 +486,6 @@ export type PostWorkspacesWorkspaceIdMembers422 = {
  * Internal error
  */
 export type PostWorkspacesWorkspaceIdMembers500 = {
-  message: string;
-};
-
-export type GetWorkspacesWorkspaceIdMembers200MembersItemRole = typeof GetWorkspacesWorkspaceIdMembers200MembersItemRole[keyof typeof GetWorkspacesWorkspaceIdMembers200MembersItemRole];
-
-
-export const GetWorkspacesWorkspaceIdMembers200MembersItemRole = {
-  viewer: 'viewer',
-  editor: 'editor',
-  owner: 'owner',
-} as const;
-
-export type GetWorkspacesWorkspaceIdMembers200MembersItem = {
-  id: string;
-  /** @nullable */
-  name: string | null;
-  /** @nullable */
-  username: string | null;
-  /** @nullable */
-  email: string | null;
-  role: GetWorkspacesWorkspaceIdMembers200MembersItemRole;
-  joinedAt: string;
-};
-
-/**
- * List of workspace members
- */
-export type GetWorkspacesWorkspaceIdMembers200 = {
-  members: GetWorkspacesWorkspaceIdMembers200MembersItem[];
-};
-
-/**
- * Forbidden
- */
-export type GetWorkspacesWorkspaceIdMembers403 = {
-  message: string;
-};
-
-/**
- * Internal error
- */
-export type GetWorkspacesWorkspaceIdMembers500 = {
   message: string;
 };
 
@@ -480,126 +558,36 @@ export type PatchWorkspacesWorkspaceIdMembersMemberId500 = {
   message: string;
 };
 
-export type GetWorkspacesMe200WorkspacesItemRole = typeof GetWorkspacesMe200WorkspacesItemRole[keyof typeof GetWorkspacesMe200WorkspacesItemRole];
-
-
-export const GetWorkspacesMe200WorkspacesItemRole = {
-  viewer: 'viewer',
-  editor: 'editor',
-  owner: 'owner',
-} as const;
-
-export type GetWorkspacesMe200WorkspacesItem = {
+export type GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem = {
   id: string;
+  workspaceId: string;
+  provider: string;
+  providerId: string;
   /** @nullable */
-  ownerId: string | null;
-  name: string;
-  /** @nullable */
-  description: string | null;
-  isPublic: boolean;
-  isPersonal: boolean;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-  role: GetWorkspacesMe200WorkspacesItemRole;
-};
-
-/**
- * List of workspaces the member belongs to
- */
-export type GetWorkspacesMe200 = {
-  workspaces: GetWorkspacesMe200WorkspacesItem[];
-};
-
-/**
- * Failed to get workspaces
- */
-export type GetWorkspacesMe500 = {
-  message: string;
-};
-
-export type GetWorkspacesByMemberMemberId200WorkspacesItemRole = typeof GetWorkspacesByMemberMemberId200WorkspacesItemRole[keyof typeof GetWorkspacesByMemberMemberId200WorkspacesItemRole];
-
-
-export const GetWorkspacesByMemberMemberId200WorkspacesItemRole = {
-  viewer: 'viewer',
-  editor: 'editor',
-  owner: 'owner',
-} as const;
-
-export type GetWorkspacesByMemberMemberId200WorkspacesItem = {
-  id: string;
-  /** @nullable */
-  ownerId: string | null;
-  name: string;
-  /** @nullable */
-  description: string | null;
-  isPublic: boolean;
-  isPersonal: boolean;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-  role: GetWorkspacesByMemberMemberId200WorkspacesItemRole;
-};
-
-/**
- * List of workspaces
- */
-export type GetWorkspacesByMemberMemberId200 = {
-  workspaces: GetWorkspacesByMemberMemberId200WorkspacesItem[];
-};
-
-/**
- * Member not found
- */
-export type GetWorkspacesByMemberMemberId404 = {
-  message: string;
-};
-
-/**
- * Failed to get workspaces
- */
-export type GetWorkspacesByMemberMemberId500 = {
-  message: string;
-};
-
-export type GetWorkspacesParams = {
-/**
- * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
- */
-id: string;
-};
-
-export type GetWorkspaces200Workspace = {
-  id: string;
-  ownerId: string;
-  name: string;
-  /** @nullable */
-  description: string | null;
-  isPublic: boolean;
+  providerName: string | null;
   createdAt: string;
   updatedAt: string;
   active: boolean;
 };
 
 /**
- * Workspace found.
+ * Integrations found
  */
-export type GetWorkspaces200 = {
-  workspace: GetWorkspaces200Workspace;
+export type GetWorkspacesWorkspaceIdIntegrations200 = {
+  integrations: GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem[];
+};
+
+/**
+ * Forbidden
+ */
+export type GetWorkspacesWorkspaceIdIntegrations403 = {
+  message: string;
 };
 
 /**
  * Workspace not found
  */
-export type GetWorkspaces404 = {
-  message: string;
-};
-
-/**
- * Failed to get workspace
- */
-export type GetWorkspaces500 = {
+export type GetWorkspacesWorkspaceIdIntegrations404 = {
   message: string;
 };
 
@@ -651,39 +639,6 @@ export type PostWorkspacesWorkspaceIdIntegrations422 = {
   message: string;
 };
 
-export type GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem = {
-  id: string;
-  workspaceId: string;
-  provider: string;
-  providerId: string;
-  /** @nullable */
-  providerName: string | null;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-};
-
-/**
- * Integrations found
- */
-export type GetWorkspacesWorkspaceIdIntegrations200 = {
-  integrations: GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem[];
-};
-
-/**
- * Forbidden
- */
-export type GetWorkspacesWorkspaceIdIntegrations403 = {
-  message: string;
-};
-
-/**
- * Workspace not found
- */
-export type GetWorkspacesWorkspaceIdIntegrations404 = {
-  message: string;
-};
-
 /**
  * Forbidden
  */
@@ -695,103 +650,6 @@ export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId403 = {
  * Integration not found
  */
 export type DeleteWorkspacesWorkspaceIdIntegrationsIntegrationId404 = {
-  message: string;
-};
-
-export type GetWorkspacesByIntegrationParams = {
-/**
- * @minLength 1
- */
-provider: string;
-/**
- * @minLength 1
- */
-providerId: string;
-};
-
-export type GetWorkspacesByIntegration200Workspace = {
-  id: string;
-  ownerId: string;
-  name: string;
-  /** @nullable */
-  description: string | null;
-  isPublic: boolean;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-};
-
-/**
- * Workspace found
- */
-export type GetWorkspacesByIntegration200 = {
-  workspace: GetWorkspacesByIntegration200Workspace;
-};
-
-/**
- * Workspace not found
- */
-export type GetWorkspacesByIntegration404 = {
-  message: string;
-};
-
-export type PatchWorkspacesByIntegrationParams = {
-/**
- * @minLength 1
- */
-provider: string;
-/**
- * @minLength 1
- */
-providerId: string;
-};
-
-export type PatchWorkspacesByIntegrationBody = {
-  /** @minLength 1 */
-  providerName: string;
-};
-
-export type PatchWorkspacesByIntegration200Integration = {
-  id: string;
-  workspaceId: string;
-  provider: string;
-  providerId: string;
-  /** @nullable */
-  providerName: string | null;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-};
-
-/**
- * Integration updated
- */
-export type PatchWorkspacesByIntegration200 = {
-  integration: PatchWorkspacesByIntegration200Integration;
-};
-
-/**
- * Integration not found
- */
-export type PatchWorkspacesByIntegration404 = {
-  message: string;
-};
-
-export type DeleteWorkspacesByIntegrationParams = {
-/**
- * @minLength 1
- */
-provider: string;
-/**
- * @minLength 1
- */
-providerId: string;
-};
-
-/**
- * Integration not found
- */
-export type DeleteWorkspacesByIntegration404 = {
   message: string;
 };
 
@@ -899,141 +757,6 @@ export type PostMembersSync500 = {
   message: string;
 };
 
-export type PostMembersResolveBody = {
-  /** @minLength 1 */
-  provider: string;
-  /** @minLength 1 */
-  providerUserId: string;
-  /** @minLength 1 */
-  displayName: string;
-};
-
-export type PostMembersResolve201Member = {
-  id: string;
-  /** @nullable */
-  name: string | null;
-  /** @nullable */
-  username: string | null;
-  /** @nullable */
-  email: string | null;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-};
-
-/**
- * Member resolved
- */
-export type PostMembersResolve201 = {
-  member: PostMembersResolve201Member;
-};
-
-/**
- * Invalid request
- */
-export type PostMembersResolve400 = {
-  message: string;
-};
-
-/**
- * Failed to resolve member
- */
-export type PostMembersResolve500 = {
-  message: string;
-};
-
-export type PostMembersCreateBody = {
-  /** @minLength 1 */
-  name: string;
-  /** @minLength 1 */
-  username: string;
-  /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
-  email: string;
-};
-
-export type PostMembersCreate201Member = {
-  id: string;
-  /** @nullable */
-  name: string | null;
-  /** @nullable */
-  username: string | null;
-  /** @nullable */
-  email: string | null;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-};
-
-/**
- * Member created.
- */
-export type PostMembersCreate201 = {
-  member: PostMembersCreate201Member;
-};
-
-/**
- * Failed to create member
- */
-export type PostMembersCreate400 = {
-  message: string;
-};
-
-/**
- * Member already exists
- */
-export type PostMembersCreate422 = {
-  message: string;
-};
-
-/**
- * Failed to create member
- */
-export type PostMembersCreate500 = {
-  message: string;
-};
-
-export type PutMembersAddBody = {
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  workspaceId: string;
-  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  memberId: string;
-};
-
-/**
- * Member invited to workspace.
- */
-export type PutMembersAdd201 = {
-  message: string;
-};
-
-/**
- * Failed to add member to workspace
- */
-export type PutMembersAdd400 = {
-  message: string;
-};
-
-/**
- * Workspace or member not found
- */
-export type PutMembersAdd404 = {
-  message: string;
-};
-
-/**
- * Membership already exists
- */
-export type PutMembersAdd422 = {
-  message: string;
-};
-
-/**
- * Failed to add member to workspace
- */
-export type PutMembersAdd500 = {
-  message: string;
-};
-
 export type PostMembersMeIdentitiesBody = {
   /** @minLength 1 */
   provider: string;
@@ -1090,79 +813,5 @@ export type GetMembersMeIdentities200IdentitiesItem = {
  */
 export type GetMembersMeIdentities200 = {
   identities: GetMembersMeIdentities200IdentitiesItem[];
-};
-
-export type PostMembersMemberIdIdentitiesBody = {
-  /** @minLength 1 */
-  provider: string;
-  /** @minLength 1 */
-  providerUserId: string;
-};
-
-export type PostMembersMemberIdIdentities201Identity = {
-  id: string;
-  memberId: string;
-  provider: string;
-  providerUserId: string;
-  createdAt: string;
-};
-
-/**
- * Identity linked
- */
-export type PostMembersMemberIdIdentities201 = {
-  identity: PostMembersMemberIdIdentities201Identity;
-};
-
-/**
- * Member not found
- */
-export type PostMembersMemberIdIdentities404 = {
-  message: string;
-};
-
-/**
- * Identity already exists
- */
-export type PostMembersMemberIdIdentities422 = {
-  message: string;
-};
-
-export type GetMembersByIdentityParams = {
-/**
- * @minLength 1
- */
-provider: string;
-/**
- * @minLength 1
- */
-providerUserId: string;
-};
-
-export type GetMembersByIdentity200Member = {
-  id: string;
-  /** @nullable */
-  name: string | null;
-  /** @nullable */
-  username: string | null;
-  /** @nullable */
-  email: string | null;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-};
-
-/**
- * Member found
- */
-export type GetMembersByIdentity200 = {
-  member: GetMembersByIdentity200Member;
-};
-
-/**
- * Member not found
- */
-export type GetMembersByIdentity404 = {
-  message: string;
 };
 

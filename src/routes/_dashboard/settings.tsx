@@ -1,5 +1,5 @@
 import { useAbility } from '@casl/react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Globe, Lock, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -10,6 +10,11 @@ import type {
 	PatchWorkspacesWorkspaceIdBody,
 } from '#/api/cervoAPI.schemas'
 import {
+	getGetWorkspacesWorkspaceIdIntegrationsQueryKey,
+	useDeleteWorkspacesWorkspaceIdIntegrationsIntegrationId,
+	useGetWorkspacesWorkspaceIdIntegrations,
+} from '#/api/workspace-integrations/workspace-integrations'
+import {
 	deleteWorkspacesWorkspaceId,
 	getGetWorkspacesMeQueryKey,
 	patchWorkspacesWorkspaceId,
@@ -18,19 +23,8 @@ import {
 	usePostWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
 import { AbilityContext, Can } from '#/lib/ability-context'
-import { apiClient } from '#/lib/api-client'
 import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
-
-type WorkspaceIntegration = {
-	id: string
-	workspaceId: string
-	provider: string
-	providerId: string
-	providerName: string | null
-	createdAt: string
-	active: boolean
-}
 
 function buildDiscordAuthUrl(workspaceId: string): string {
 	const params = new URLSearchParams({
@@ -207,7 +201,10 @@ function WorkspaceDetails() {
 		if (!workspace || !inviteEmail.trim()) return
 		const submittedEmail = inviteEmail.trim()
 		inviteMember(
-			{ workspaceId: workspace.id, data: { email: submittedEmail, role: inviteRole } },
+			{
+				workspaceId: workspace.id,
+				data: { email: submittedEmail, role: inviteRole },
+			},
 			{
 				onSuccess: () => {
 					toast.success(`Invitation sent to ${submittedEmail}.`)
@@ -218,39 +215,30 @@ function WorkspaceDetails() {
 		)
 	}
 
-	const { data: integrationsData } = useQuery({
-		queryKey: ['/workspaces/integrations', workspace?.id],
-		queryFn: () =>
-			apiClient<{
-				data: { integrations: WorkspaceIntegration[] }
-				status: number
-			}>(`/workspaces/${workspace?.id}/integrations`),
-		enabled: !!workspace?.id,
-	})
+	const { data: integrationsData } = useGetWorkspacesWorkspaceIdIntegrations(
+		workspace?.id ?? '',
+		{ query: { enabled: !!workspace?.id } }
+	)
 
 	const integrations =
 		integrationsData?.status === 200 ? integrationsData.data.integrations : []
 	const discordIntegration = integrations.find(i => i.provider === 'discord')
 	const hasDiscord = !!discordIntegration
 
-	const { mutate: disconnectDiscord, isPending: isDisconnecting } = useMutation(
-		{
-			mutationFn: (integrationId: string) =>
-				apiClient(
-					`/workspaces/${workspace?.id}/integrations/${integrationId}`,
-					{
-						method: 'DELETE',
-					}
-				),
-			onSuccess: () => {
-				toast.success('Discord server disconnected.')
-				void queryClient.invalidateQueries({
-					queryKey: ['/workspaces/integrations', workspace?.id],
-				})
+	const { mutate: disconnectDiscord, isPending: isDisconnecting } =
+		useDeleteWorkspacesWorkspaceIdIntegrationsIntegrationId({
+			mutation: {
+				onSuccess: () => {
+					toast.success('Discord server disconnected.')
+					void queryClient.invalidateQueries({
+						queryKey: getGetWorkspacesWorkspaceIdIntegrationsQueryKey(
+							workspace?.id ?? ''
+						),
+					})
+				},
+				onError: () => toast.error('Failed to disconnect Discord server.'),
 			},
-			onError: () => toast.error('Failed to disconnect Discord server.'),
-		}
-	)
+		})
 
 	const { mutate: updateWorkspace, isPending: isSaving } = useMutation({
 		mutationFn: (data: PatchWorkspacesWorkspaceIdBody) =>
@@ -488,7 +476,10 @@ function WorkspaceDetails() {
 										type="button"
 										onClick={() =>
 											discordIntegration &&
-											disconnectDiscord(discordIntegration.id)
+											disconnectDiscord({
+												workspaceId: workspace?.id ?? '',
+												integrationId: discordIntegration.id,
+											})
 										}
 										disabled={isDisconnecting}
 										className="flex h-11 items-center border border-[#3a1a1a] bg-[#0A0A0A] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-[#FF4444] transition-colors hover:border-[#FF4444] disabled:cursor-not-allowed disabled:opacity-40"
