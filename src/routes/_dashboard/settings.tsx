@@ -193,11 +193,6 @@ function WorkspaceDetails() {
 	const { mutate: inviteMember, isPending: isInviting } =
 		usePostWorkspacesWorkspaceIdMembers({
 			mutation: {
-				onSuccess: () => {
-					toast.success(`Invitation sent to ${inviteEmail}.`)
-					setInviteEmail('')
-					void refetchMembers()
-				},
 				onError: () => toast.error('Failed to send invitation.'),
 			},
 		})
@@ -210,10 +205,17 @@ function WorkspaceDetails() {
 
 	function handleInviteMember() {
 		if (!workspace || !inviteEmail.trim()) return
-		inviteMember({
-			workspaceId: workspace.id,
-			data: { email: inviteEmail.trim(), role: inviteRole },
-		})
+		const submittedEmail = inviteEmail.trim()
+		inviteMember(
+			{ workspaceId: workspace.id, data: { email: submittedEmail, role: inviteRole } },
+			{
+				onSuccess: () => {
+					toast.success(`Invitation sent to ${submittedEmail}.`)
+					setInviteEmail('')
+					void refetchMembers()
+				},
+			}
+		)
 	}
 
 	const { data: integrationsData } = useQuery({
