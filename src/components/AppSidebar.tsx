@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
 	ChevronDown,
 	ChevronUp,
@@ -164,6 +164,7 @@ function WorkspaceDropdown() {
 
 export function AppSidebar() {
 	const { data: session } = authClient.useSession()
+	const navigate = useNavigate()
 	const userName = session?.user?.name ?? 'User'
 	const initials = getInitials(userName)
 	const firstFocusRef = useRef<HTMLDivElement>(null)
@@ -241,7 +242,13 @@ export function AppSidebar() {
 				</button>
 				<button
 					type="button"
-					onClick={() => void authClient.signOut()}
+					onClick={() =>
+						void authClient.signOut({
+							fetchOptions: {
+								onSuccess: () => void navigate({ to: '/sign-in' }),
+							},
+						})
+					}
 					className="flex h-11 w-full items-center gap-2.5 border border-transparent px-2 font-mono text-xs tracking-wide text-muted-foreground outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 				>
 					<LogOut className="size-4" />

@@ -1,6 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { GetWorkspacesMe200WorkspacesItem } from '#/api/cervoAPI.schemas'
 import { useGetWorkspacesMe } from '#/api/workspaces/workspaces'
+import type { MembershipRole } from './abilities'
+import { defineAbilitiesFor } from './abilities'
+import { AbilityContext } from './ability-context'
 
 const STORAGE_KEY = 'cervo:workspace_id'
 
@@ -56,6 +59,14 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 		setPendingSelectId(id)
 	}
 
+	const ability = useMemo(
+		() =>
+			defineAbilitiesFor(
+				(workspaceState?.role ?? null) as MembershipRole | null
+			),
+		[workspaceState?.role]
+	)
+
 	return (
 		<WorkspaceContext.Provider
 			value={{
@@ -66,7 +77,9 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
 				isLoading,
 			}}
 		>
-			{children}
+			<AbilityContext.Provider value={ability}>
+				{children}
+			</AbilityContext.Provider>
 		</WorkspaceContext.Provider>
 	)
 }

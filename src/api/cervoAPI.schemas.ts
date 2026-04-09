@@ -320,9 +320,18 @@ export type DeleteWorkspacesWorkspaceId500 = {
   message: string;
 };
 
+export type PostWorkspacesWorkspaceIdMembersBodyRole = typeof PostWorkspacesWorkspaceIdMembersBodyRole[keyof typeof PostWorkspacesWorkspaceIdMembersBodyRole];
+
+
+export const PostWorkspacesWorkspaceIdMembersBodyRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+} as const;
+
 export type PostWorkspacesWorkspaceIdMembersBody = {
   /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
   email: string;
+  role?: PostWorkspacesWorkspaceIdMembersBodyRole;
 };
 
 /**
@@ -360,6 +369,126 @@ export type PostWorkspacesWorkspaceIdMembers500 = {
   message: string;
 };
 
+export type GetWorkspacesWorkspaceIdMembers200MembersItemRole = typeof GetWorkspacesWorkspaceIdMembers200MembersItemRole[keyof typeof GetWorkspacesWorkspaceIdMembers200MembersItemRole];
+
+
+export const GetWorkspacesWorkspaceIdMembers200MembersItemRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+  owner: 'owner',
+} as const;
+
+export type GetWorkspacesWorkspaceIdMembers200MembersItem = {
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+  /** @nullable */
+  email: string | null;
+  role: GetWorkspacesWorkspaceIdMembers200MembersItemRole;
+  joinedAt: string;
+};
+
+/**
+ * List of workspace members
+ */
+export type GetWorkspacesWorkspaceIdMembers200 = {
+  members: GetWorkspacesWorkspaceIdMembers200MembersItem[];
+};
+
+/**
+ * Forbidden
+ */
+export type GetWorkspacesWorkspaceIdMembers403 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type GetWorkspacesWorkspaceIdMembers500 = {
+  message: string;
+};
+
+/**
+ * Member removed
+ */
+export type DeleteWorkspacesWorkspaceIdMembersMemberId200 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type DeleteWorkspacesWorkspaceIdMembersMemberId403 = {
+  message: string;
+};
+
+/**
+ * Membership not found
+ */
+export type DeleteWorkspacesWorkspaceIdMembersMemberId404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type DeleteWorkspacesWorkspaceIdMembersMemberId500 = {
+  message: string;
+};
+
+export type PatchWorkspacesWorkspaceIdMembersMemberIdBodyRole = typeof PatchWorkspacesWorkspaceIdMembersMemberIdBodyRole[keyof typeof PatchWorkspacesWorkspaceIdMembersMemberIdBodyRole];
+
+
+export const PatchWorkspacesWorkspaceIdMembersMemberIdBodyRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+  owner: 'owner',
+} as const;
+
+export type PatchWorkspacesWorkspaceIdMembersMemberIdBody = {
+  role: PatchWorkspacesWorkspaceIdMembersMemberIdBodyRole;
+};
+
+/**
+ * Role updated
+ */
+export type PatchWorkspacesWorkspaceIdMembersMemberId200 = {
+  message: string;
+};
+
+/**
+ * Forbidden
+ */
+export type PatchWorkspacesWorkspaceIdMembersMemberId403 = {
+  message: string;
+};
+
+/**
+ * Membership not found
+ */
+export type PatchWorkspacesWorkspaceIdMembersMemberId404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type PatchWorkspacesWorkspaceIdMembersMemberId500 = {
+  message: string;
+};
+
+export type GetWorkspacesMe200WorkspacesItemRole = typeof GetWorkspacesMe200WorkspacesItemRole[keyof typeof GetWorkspacesMe200WorkspacesItemRole];
+
+
+export const GetWorkspacesMe200WorkspacesItemRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+  owner: 'owner',
+} as const;
+
 export type GetWorkspacesMe200WorkspacesItem = {
   id: string;
   /** @nullable */
@@ -372,6 +501,7 @@ export type GetWorkspacesMe200WorkspacesItem = {
   createdAt: string;
   updatedAt: string;
   active: boolean;
+  role: GetWorkspacesMe200WorkspacesItemRole;
 };
 
 /**
@@ -388,6 +518,15 @@ export type GetWorkspacesMe500 = {
   message: string;
 };
 
+export type GetWorkspacesByMemberMemberId200WorkspacesItemRole = typeof GetWorkspacesByMemberMemberId200WorkspacesItemRole[keyof typeof GetWorkspacesByMemberMemberId200WorkspacesItemRole];
+
+
+export const GetWorkspacesByMemberMemberId200WorkspacesItemRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+  owner: 'owner',
+} as const;
+
 export type GetWorkspacesByMemberMemberId200WorkspacesItem = {
   id: string;
   /** @nullable */
@@ -400,6 +539,7 @@ export type GetWorkspacesByMemberMemberId200WorkspacesItem = {
   createdAt: string;
   updatedAt: string;
   active: boolean;
+  role: GetWorkspacesByMemberMemberId200WorkspacesItemRole;
 };
 
 /**

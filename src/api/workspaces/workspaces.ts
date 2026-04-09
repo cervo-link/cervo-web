@@ -28,6 +28,10 @@ import type {
   DeleteWorkspacesWorkspaceId403,
   DeleteWorkspacesWorkspaceId404,
   DeleteWorkspacesWorkspaceId500,
+  DeleteWorkspacesWorkspaceIdMembersMemberId200,
+  DeleteWorkspacesWorkspaceIdMembersMemberId403,
+  DeleteWorkspacesWorkspaceIdMembersMemberId404,
+  DeleteWorkspacesWorkspaceIdMembersMemberId500,
   GetWorkspaces200,
   GetWorkspaces404,
   GetWorkspaces500,
@@ -37,12 +41,20 @@ import type {
   GetWorkspacesMe200,
   GetWorkspacesMe500,
   GetWorkspacesParams,
+  GetWorkspacesWorkspaceIdMembers200,
+  GetWorkspacesWorkspaceIdMembers403,
+  GetWorkspacesWorkspaceIdMembers500,
   PatchWorkspacesWorkspaceId200,
   PatchWorkspacesWorkspaceId400,
   PatchWorkspacesWorkspaceId403,
   PatchWorkspacesWorkspaceId404,
   PatchWorkspacesWorkspaceId500,
   PatchWorkspacesWorkspaceIdBody,
+  PatchWorkspacesWorkspaceIdMembersMemberId200,
+  PatchWorkspacesWorkspaceIdMembersMemberId403,
+  PatchWorkspacesWorkspaceIdMembersMemberId404,
+  PatchWorkspacesWorkspaceIdMembersMemberId500,
+  PatchWorkspacesWorkspaceIdMembersMemberIdBody,
   PostWorkspacesCreate201,
   PostWorkspacesCreate400,
   PostWorkspacesCreate422,
@@ -457,6 +469,321 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getPostWorkspacesWorkspaceIdMembersMutationOptions(options), queryClient);
+    }
+    /**
+ * List all members of a workspace
+ */
+export type getWorkspacesWorkspaceIdMembersResponse200 = {
+  data: GetWorkspacesWorkspaceIdMembers200
+  status: 200
+}
+
+export type getWorkspacesWorkspaceIdMembersResponse403 = {
+  data: GetWorkspacesWorkspaceIdMembers403
+  status: 403
+}
+
+export type getWorkspacesWorkspaceIdMembersResponse500 = {
+  data: GetWorkspacesWorkspaceIdMembers500
+  status: 500
+}
+
+export type getWorkspacesWorkspaceIdMembersResponseSuccess = (getWorkspacesWorkspaceIdMembersResponse200) & {
+  headers: Headers;
+};
+export type getWorkspacesWorkspaceIdMembersResponseError = (getWorkspacesWorkspaceIdMembersResponse403 | getWorkspacesWorkspaceIdMembersResponse500) & {
+  headers: Headers;
+};
+
+export type getWorkspacesWorkspaceIdMembersResponse = (getWorkspacesWorkspaceIdMembersResponseSuccess | getWorkspacesWorkspaceIdMembersResponseError)
+
+export const getGetWorkspacesWorkspaceIdMembersUrl = (workspaceId: string,) => {
+
+
+
+
+  return `/workspaces/${workspaceId}/members`
+}
+
+export const getWorkspacesWorkspaceIdMembers = async (workspaceId: string, options?: RequestInit): Promise<getWorkspacesWorkspaceIdMembersResponse> => {
+
+  return apiClient<getWorkspacesWorkspaceIdMembersResponse>(getGetWorkspacesWorkspaceIdMembersUrl(workspaceId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetWorkspacesWorkspaceIdMembersQueryKey = (workspaceId: string,) => {
+    return [
+    `/workspaces/${workspaceId}/members`
+    ] as const;
+    }
+
+
+export const getGetWorkspacesWorkspaceIdMembersQueryOptions = <TData = Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError = GetWorkspacesWorkspaceIdMembers403 | GetWorkspacesWorkspaceIdMembers500>(workspaceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetWorkspacesWorkspaceIdMembersQueryKey(workspaceId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>> = ({ signal }) => getWorkspacesWorkspaceIdMembers(workspaceId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(workspaceId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetWorkspacesWorkspaceIdMembersQueryResult = NonNullable<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>>
+export type GetWorkspacesWorkspaceIdMembersQueryError = GetWorkspacesWorkspaceIdMembers403 | GetWorkspacesWorkspaceIdMembers500
+
+
+export function useGetWorkspacesWorkspaceIdMembers<TData = Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError = GetWorkspacesWorkspaceIdMembers403 | GetWorkspacesWorkspaceIdMembers500>(
+ workspaceId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>,
+          TError,
+          Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWorkspacesWorkspaceIdMembers<TData = Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError = GetWorkspacesWorkspaceIdMembers403 | GetWorkspacesWorkspaceIdMembers500>(
+ workspaceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>,
+          TError,
+          Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWorkspacesWorkspaceIdMembers<TData = Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError = GetWorkspacesWorkspaceIdMembers403 | GetWorkspacesWorkspaceIdMembers500>(
+ workspaceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetWorkspacesWorkspaceIdMembers<TData = Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError = GetWorkspacesWorkspaceIdMembers403 | GetWorkspacesWorkspaceIdMembers500>(
+ workspaceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWorkspacesWorkspaceIdMembers>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetWorkspacesWorkspaceIdMembersQueryOptions(workspaceId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * Remove a member from a workspace
+ */
+export type deleteWorkspacesWorkspaceIdMembersMemberIdResponse200 = {
+  data: DeleteWorkspacesWorkspaceIdMembersMemberId200
+  status: 200
+}
+
+export type deleteWorkspacesWorkspaceIdMembersMemberIdResponse403 = {
+  data: DeleteWorkspacesWorkspaceIdMembersMemberId403
+  status: 403
+}
+
+export type deleteWorkspacesWorkspaceIdMembersMemberIdResponse404 = {
+  data: DeleteWorkspacesWorkspaceIdMembersMemberId404
+  status: 404
+}
+
+export type deleteWorkspacesWorkspaceIdMembersMemberIdResponse500 = {
+  data: DeleteWorkspacesWorkspaceIdMembersMemberId500
+  status: 500
+}
+
+export type deleteWorkspacesWorkspaceIdMembersMemberIdResponseSuccess = (deleteWorkspacesWorkspaceIdMembersMemberIdResponse200) & {
+  headers: Headers;
+};
+export type deleteWorkspacesWorkspaceIdMembersMemberIdResponseError = (deleteWorkspacesWorkspaceIdMembersMemberIdResponse403 | deleteWorkspacesWorkspaceIdMembersMemberIdResponse404 | deleteWorkspacesWorkspaceIdMembersMemberIdResponse500) & {
+  headers: Headers;
+};
+
+export type deleteWorkspacesWorkspaceIdMembersMemberIdResponse = (deleteWorkspacesWorkspaceIdMembersMemberIdResponseSuccess | deleteWorkspacesWorkspaceIdMembersMemberIdResponseError)
+
+export const getDeleteWorkspacesWorkspaceIdMembersMemberIdUrl = (workspaceId: string,
+    memberId: string,) => {
+
+
+
+
+  return `/workspaces/${workspaceId}/members/${memberId}`
+}
+
+export const deleteWorkspacesWorkspaceIdMembersMemberId = async (workspaceId: string,
+    memberId: string, options?: RequestInit): Promise<deleteWorkspacesWorkspaceIdMembersMemberIdResponse> => {
+
+  return apiClient<deleteWorkspacesWorkspaceIdMembersMemberIdResponse>(getDeleteWorkspacesWorkspaceIdMembersMemberIdUrl(workspaceId,memberId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteWorkspacesWorkspaceIdMembersMemberIdMutationOptions = <TError = DeleteWorkspacesWorkspaceIdMembersMemberId403 | DeleteWorkspacesWorkspaceIdMembersMemberId404 | DeleteWorkspacesWorkspaceIdMembersMemberId500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdMembersMemberId>>, TError,{workspaceId: string;memberId: string}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdMembersMemberId>>, TError,{workspaceId: string;memberId: string}, TContext> => {
+
+const mutationKey = ['deleteWorkspacesWorkspaceIdMembersMemberId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdMembersMemberId>>, {workspaceId: string;memberId: string}> = (props) => {
+          const {workspaceId,memberId} = props ?? {};
+
+          return  deleteWorkspacesWorkspaceIdMembersMemberId(workspaceId,memberId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteWorkspacesWorkspaceIdMembersMemberIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdMembersMemberId>>>
+
+    export type DeleteWorkspacesWorkspaceIdMembersMemberIdMutationError = DeleteWorkspacesWorkspaceIdMembersMemberId403 | DeleteWorkspacesWorkspaceIdMembersMemberId404 | DeleteWorkspacesWorkspaceIdMembersMemberId500
+
+    export const useDeleteWorkspacesWorkspaceIdMembersMemberId = <TError = DeleteWorkspacesWorkspaceIdMembersMemberId403 | DeleteWorkspacesWorkspaceIdMembersMemberId404 | DeleteWorkspacesWorkspaceIdMembersMemberId500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdMembersMemberId>>, TError,{workspaceId: string;memberId: string}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteWorkspacesWorkspaceIdMembersMemberId>>,
+        TError,
+        {workspaceId: string;memberId: string},
+        TContext
+      > => {
+      return useMutation(getDeleteWorkspacesWorkspaceIdMembersMemberIdMutationOptions(options), queryClient);
+    }
+    /**
+ * Change a workspace member's role
+ */
+export type patchWorkspacesWorkspaceIdMembersMemberIdResponse200 = {
+  data: PatchWorkspacesWorkspaceIdMembersMemberId200
+  status: 200
+}
+
+export type patchWorkspacesWorkspaceIdMembersMemberIdResponse403 = {
+  data: PatchWorkspacesWorkspaceIdMembersMemberId403
+  status: 403
+}
+
+export type patchWorkspacesWorkspaceIdMembersMemberIdResponse404 = {
+  data: PatchWorkspacesWorkspaceIdMembersMemberId404
+  status: 404
+}
+
+export type patchWorkspacesWorkspaceIdMembersMemberIdResponse500 = {
+  data: PatchWorkspacesWorkspaceIdMembersMemberId500
+  status: 500
+}
+
+export type patchWorkspacesWorkspaceIdMembersMemberIdResponseSuccess = (patchWorkspacesWorkspaceIdMembersMemberIdResponse200) & {
+  headers: Headers;
+};
+export type patchWorkspacesWorkspaceIdMembersMemberIdResponseError = (patchWorkspacesWorkspaceIdMembersMemberIdResponse403 | patchWorkspacesWorkspaceIdMembersMemberIdResponse404 | patchWorkspacesWorkspaceIdMembersMemberIdResponse500) & {
+  headers: Headers;
+};
+
+export type patchWorkspacesWorkspaceIdMembersMemberIdResponse = (patchWorkspacesWorkspaceIdMembersMemberIdResponseSuccess | patchWorkspacesWorkspaceIdMembersMemberIdResponseError)
+
+export const getPatchWorkspacesWorkspaceIdMembersMemberIdUrl = (workspaceId: string,
+    memberId: string,) => {
+
+
+
+
+  return `/workspaces/${workspaceId}/members/${memberId}`
+}
+
+export const patchWorkspacesWorkspaceIdMembersMemberId = async (workspaceId: string,
+    memberId: string,
+    patchWorkspacesWorkspaceIdMembersMemberIdBody: PatchWorkspacesWorkspaceIdMembersMemberIdBody, options?: RequestInit): Promise<patchWorkspacesWorkspaceIdMembersMemberIdResponse> => {
+
+  return apiClient<patchWorkspacesWorkspaceIdMembersMemberIdResponse>(getPatchWorkspacesWorkspaceIdMembersMemberIdUrl(workspaceId,memberId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchWorkspacesWorkspaceIdMembersMemberIdBody,)
+  }
+);}
+
+
+
+
+export const getPatchWorkspacesWorkspaceIdMembersMemberIdMutationOptions = <TError = PatchWorkspacesWorkspaceIdMembersMemberId403 | PatchWorkspacesWorkspaceIdMembersMemberId404 | PatchWorkspacesWorkspaceIdMembersMemberId500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesWorkspaceIdMembersMemberId>>, TError,{workspaceId: string;memberId: string;data: PatchWorkspacesWorkspaceIdMembersMemberIdBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesWorkspaceIdMembersMemberId>>, TError,{workspaceId: string;memberId: string;data: PatchWorkspacesWorkspaceIdMembersMemberIdBody}, TContext> => {
+
+const mutationKey = ['patchWorkspacesWorkspaceIdMembersMemberId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchWorkspacesWorkspaceIdMembersMemberId>>, {workspaceId: string;memberId: string;data: PatchWorkspacesWorkspaceIdMembersMemberIdBody}> = (props) => {
+          const {workspaceId,memberId,data} = props ?? {};
+
+          return  patchWorkspacesWorkspaceIdMembersMemberId(workspaceId,memberId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchWorkspacesWorkspaceIdMembersMemberIdMutationResult = NonNullable<Awaited<ReturnType<typeof patchWorkspacesWorkspaceIdMembersMemberId>>>
+    export type PatchWorkspacesWorkspaceIdMembersMemberIdMutationBody = PatchWorkspacesWorkspaceIdMembersMemberIdBody
+    export type PatchWorkspacesWorkspaceIdMembersMemberIdMutationError = PatchWorkspacesWorkspaceIdMembersMemberId403 | PatchWorkspacesWorkspaceIdMembersMemberId404 | PatchWorkspacesWorkspaceIdMembersMemberId500
+
+    export const usePatchWorkspacesWorkspaceIdMembersMemberId = <TError = PatchWorkspacesWorkspaceIdMembersMemberId403 | PatchWorkspacesWorkspaceIdMembersMemberId404 | PatchWorkspacesWorkspaceIdMembersMemberId500,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchWorkspacesWorkspaceIdMembersMemberId>>, TError,{workspaceId: string;memberId: string;data: PatchWorkspacesWorkspaceIdMembersMemberIdBody}, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchWorkspacesWorkspaceIdMembersMemberId>>,
+        TError,
+        {workspaceId: string;memberId: string;data: PatchWorkspacesWorkspaceIdMembersMemberIdBody},
+        TContext
+      > => {
+      return useMutation(getPatchWorkspacesWorkspaceIdMembersMemberIdMutationOptions(options), queryClient);
     }
     /**
  * List all workspaces the authenticated member belongs to
