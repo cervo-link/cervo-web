@@ -24,7 +24,7 @@ function DiscordCallbackPage() {
 
 			try {
 				const res = await fetch(
-					`${clientEnv.VITE_API_URL}/workspaces/${workspaceId}/integrations`,
+					`${clientEnv.VITE_API_URL}/api/v1/workspaces/${workspaceId}/integrations`,
 					{
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
