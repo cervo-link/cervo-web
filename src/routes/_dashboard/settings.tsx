@@ -26,16 +26,6 @@ import { AbilityContext, Can } from '#/lib/ability-context'
 import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
 
-type WorkspaceIntegration = {
-	id: string
-	workspaceId: string
-	provider: string
-	providerId: string
-	providerName: string | null
-	createdAt: string
-	active: boolean
-}
-
 function buildDiscordAuthUrl(workspaceId: string): string {
 	const params = new URLSearchParams({
 		client_id: clientEnv.VITE_CLIENT_ID,
