@@ -29,25 +29,29 @@ export const Route = createFileRoute('/discord/identity-callback')({
 						})
 
 						if (res.status === 409) {
+							console.error('[discord/identity-callback] identity already linked', { discordUserId, status: res.status })
 							return Response.redirect(
 								`${accountUrl}?discord_error=already_linked`,
 								302
 							)
 						}
 						if (res.status === 422) {
+							console.error('[discord/identity-callback] identity linked to different account', { discordUserId, status: res.status })
 							return Response.redirect(
 								`${accountUrl}?discord_error=different_account`,
 								302
 							)
 						}
 						if (!res.ok) {
+							console.error('[discord/identity-callback] link identity failed', { discordUserId, status: res.status })
 							return Response.redirect(
 								`${accountUrl}?discord_error=link_failed`,
 								302
 							)
 						}
 						return Response.redirect(`${accountUrl}?discord_success=true`, 302)
-					} catch {
+					} catch (err) {
+						console.error('[discord/identity-callback] unexpected error linking identity', err)
 						return Response.redirect(
 							`${accountUrl}?discord_error=link_failed`,
 							302
@@ -57,11 +61,13 @@ export const Route = createFileRoute('/discord/identity-callback')({
 
 				// Phase 1: exchange the authorization code for a Discord user ID
 				if (error || !code) {
+					console.error('[discord/identity-callback] oauth cancelled or missing code', { error, hasCode: !!code })
 					return Response.redirect(`${accountUrl}?discord_error=cancelled`, 302)
 				}
 
 				const clientSecret = process.env.CLIENT_SECRET
 				if (!clientSecret) {
+					console.error('[discord/identity-callback] CLIENT_SECRET is not configured')
 					return Response.redirect(
 						`${accountUrl}?discord_error=exchange_failed`,
 						302
@@ -85,6 +91,7 @@ export const Route = createFileRoute('/discord/identity-callback')({
 					})
 
 					if (!tokenRes.ok) {
+						console.error('[discord/identity-callback] token exchange failed', { status: tokenRes.status })
 						return Response.redirect(
 							`${accountUrl}?discord_error=exchange_failed`,
 							302
@@ -100,6 +107,7 @@ export const Route = createFileRoute('/discord/identity-callback')({
 					})
 
 					if (!userRes.ok) {
+						console.error('[discord/identity-callback] discord user fetch failed', { status: userRes.status })
 						return Response.redirect(
 							`${accountUrl}?discord_error=user_failed`,
 							302
@@ -111,7 +119,8 @@ export const Route = createFileRoute('/discord/identity-callback')({
 					const callbackUrl = new URL('/discord/identity-callback', request.url)
 					callbackUrl.searchParams.set('discord_user_id', id)
 					return Response.redirect(callbackUrl.href, 302)
-				} catch {
+				} catch (err) {
+					console.error('[discord/identity-callback] unexpected error during token exchange', err)
 					return Response.redirect(
 						`${accountUrl}?discord_error=exchange_failed`,
 						302

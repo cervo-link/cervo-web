@@ -2,7 +2,7 @@ import { useAbility } from '@casl/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Globe, Lock, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import type {
@@ -561,13 +561,17 @@ function SettingsPage() {
 	const { workspace } = useWorkspace()
 	const { discord_connected, discord_error } = Route.useSearch()
 	const navigate = useNavigate()
+	const handledRef = useRef(false)
 
 	useEffect(() => {
+		if (handledRef.current) return
 		if (discord_connected) {
+			handledRef.current = true
 			toast.success('Discord server connected.')
 			void navigate({ to: '/settings', replace: true })
 		}
 		if (discord_error) {
+			handledRef.current = true
 			const messages: Record<string, string> = {
 				cancelled: 'Discord authorization was cancelled.',
 				missing_data: 'Missing Discord authorization data.',
