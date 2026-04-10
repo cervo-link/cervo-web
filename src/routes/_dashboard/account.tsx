@@ -11,6 +11,7 @@ import { clientEnv } from '#/lib/env'
 const searchSchema = z.object({
 	discord_success: z.coerce.boolean().optional(),
 	discord_error: z.string().optional(),
+	discord_user_id: z.string().optional(),
 })
 
 export const Route = createFileRoute('/_dashboard/account')({
@@ -49,7 +50,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 function AccountPage() {
-	const { discord_success, discord_error } = Route.useSearch()
+	const { discord_success, discord_error, discord_user_id } = Route.useSearch()
 	const navigate = useNavigate()
 	const { data: membersMeRaw } = useGetMembersMe()
 	const member =
@@ -66,6 +67,43 @@ function AccountPage() {
 
 	useEffect(() => {
 		if (handledRef.current) return
+
+		if (discord_user_id) {
+			handledRef.current = true
+			fetch(`${clientEnv.VITE_API_URL}/api/v1/members/me/identities`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+				body: JSON.stringify({
+					provider: 'discord',
+					providerUserId: discord_user_id,
+				}),
+			})
+				.then(res => {
+					if (res.status === 201) {
+						toast.success('Discord account connected.')
+						void refetchIdentities()
+					} else if (res.status === 409) {
+						toast.error(
+							'This Discord account is already linked to your profile.'
+						)
+					} else if (res.status === 422) {
+						toast.error(
+							'This Discord account is linked to a different Cervo account.'
+						)
+					} else {
+						toast.error('Failed to connect Discord account.')
+					}
+				})
+				.catch(() => {
+					toast.error('Failed to connect Discord account.')
+				})
+				.finally(() => {
+					void navigate({ to: '/account', replace: true })
+				})
+			return
+		}
+
 		if (discord_success) {
 			handledRef.current = true
 			toast.success('Discord account connected.')
@@ -87,7 +125,13 @@ function AccountPage() {
 			toast.error(messages[discord_error] ?? 'Something went wrong.')
 			void navigate({ to: '/account', replace: true })
 		}
-	}, [discord_success, discord_error, refetchIdentities, navigate])
+	}, [
+		discord_success,
+		discord_error,
+		discord_user_id,
+		refetchIdentities,
+		navigate,
+	])
 
 	return (
 		<div className="flex h-full flex-col gap-10 p-8 md:px-10">
