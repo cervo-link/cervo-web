@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { clientEnv } from '#/lib/env'
 
 export const Route = createFileRoute('/discord/identity-callback')({
@@ -10,72 +11,17 @@ export const Route = createFileRoute('/discord/identity-callback')({
 
 				const code = url.searchParams.get('code')
 				const error = url.searchParams.get('error')
-				const discordUserId = url.searchParams.get('discord_user_id')
 
-				// Phase 2: link the discord identity server-side using the session cookie
-				if (discordUserId) {
-					const apiUrl = process.env.API_URL ?? 'http://localhost:8080'
-					try {
-						const res = await fetch(`${apiUrl}/api/v1/members/me/identities`, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								Cookie: request.headers.get('cookie') ?? '',
-							},
-							body: JSON.stringify({
-								provider: 'discord',
-								providerUserId: discordUserId,
-							}),
-						})
-
-						if (res.status === 409) {
-							console.error('[discord/identity-callback] identity already linked', { discordUserId, status: res.status })
-							return Response.redirect(
-								`${accountUrl}?discord_error=already_linked`,
-								302
-							)
-						}
-						if (res.status === 422) {
-							console.error('[discord/identity-callback] identity linked to different account', { discordUserId, status: res.status })
-							return Response.redirect(
-								`${accountUrl}?discord_error=different_account`,
-								302
-							)
-						}
-						if (!res.ok) {
-							console.error('[discord/identity-callback] link identity failed', { discordUserId, status: res.status })
-							return Response.redirect(
-								`${accountUrl}?discord_error=link_failed`,
-								302
-							)
-						}
-						return Response.redirect(`${accountUrl}?discord_success=true`, 302)
-					} catch (err) {
-						console.error('[discord/identity-callback] unexpected error linking identity', err)
-						return Response.redirect(
-							`${accountUrl}?discord_error=link_failed`,
-							302
-						)
-					}
-				}
-
-				// Phase 1: exchange the authorization code for a Discord user ID
 				if (error || !code) {
-					console.error('[discord/identity-callback] oauth cancelled or missing code', { error, hasCode: !!code })
 					return Response.redirect(`${accountUrl}?discord_error=cancelled`, 302)
 				}
 
 				const clientSecret = process.env.CLIENT_SECRET
 				if (!clientSecret) {
-					console.error('[discord/identity-callback] CLIENT_SECRET is not configured')
-					return Response.redirect(
-						`${accountUrl}?discord_error=exchange_failed`,
-						302
-					)
+					return Response.redirect(`${accountUrl}?discord_error=exchange_failed`, 302)
 				}
 
-				const redirectUri = new URL('/discord/identity-callback', request.url)
-					.href
+				const redirectUri = new URL('/discord/identity-callback', request.url).href
 
 				try {
 					const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
@@ -91,27 +37,17 @@ export const Route = createFileRoute('/discord/identity-callback')({
 					})
 
 					if (!tokenRes.ok) {
-						console.error('[discord/identity-callback] token exchange failed', { status: tokenRes.status })
-						return Response.redirect(
-							`${accountUrl}?discord_error=exchange_failed`,
-							302
-						)
+						return Response.redirect(`${accountUrl}?discord_error=exchange_failed`, 302)
 					}
 
-					const { access_token } = (await tokenRes.json()) as {
-						access_token: string
-					}
+					const { access_token } = (await tokenRes.json()) as { access_token: string }
 
 					const userRes = await fetch('https://discord.com/api/users/@me', {
 						headers: { Authorization: `Bearer ${access_token}` },
 					})
 
 					if (!userRes.ok) {
-						console.error('[discord/identity-callback] discord user fetch failed', { status: userRes.status })
-						return Response.redirect(
-							`${accountUrl}?discord_error=user_failed`,
-							302
-						)
+						return Response.redirect(`${accountUrl}?discord_error=user_failed`, 302)
 					}
 
 					const { id } = (await userRes.json()) as { id: string }
@@ -119,12 +55,8 @@ export const Route = createFileRoute('/discord/identity-callback')({
 					const callbackUrl = new URL('/discord/identity-callback', request.url)
 					callbackUrl.searchParams.set('discord_user_id', id)
 					return Response.redirect(callbackUrl.href, 302)
-				} catch (err) {
-					console.error('[discord/identity-callback] unexpected error during token exchange', err)
-					return Response.redirect(
-						`${accountUrl}?discord_error=exchange_failed`,
-						302
-					)
+				} catch {
+					return Response.redirect(`${accountUrl}?discord_error=exchange_failed`, 302)
 				}
 			},
 		},
@@ -133,6 +65,51 @@ export const Route = createFileRoute('/discord/identity-callback')({
 })
 
 function DiscordIdentityCallbackPage() {
+	useEffect(() => {
+		const controller = new AbortController()
+
+		async function linkIdentity() {
+			const params = new URLSearchParams(window.location.search)
+			const discordUserId = params.get('discord_user_id')
+			const accountUrl = `${window.location.origin}/account`
+
+			if (!discordUserId) return
+
+			try {
+				const res = await fetch(
+					`${clientEnv.VITE_API_URL}/api/v1/members/me/identities`,
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						credentials: 'include',
+						body: JSON.stringify({ provider: 'discord', providerUserId: discordUserId }),
+						signal: controller.signal,
+					}
+				)
+
+				if (res.status === 201) {
+					window.location.replace(`${accountUrl}?discord_success=true`)
+					return
+				}
+				if (res.status === 409) {
+					window.location.replace(`${accountUrl}?discord_error=already_linked`)
+					return
+				}
+				if (res.status === 422) {
+					window.location.replace(`${accountUrl}?discord_error=different_account`)
+					return
+				}
+				window.location.replace(`${accountUrl}?discord_error=link_failed`)
+			} catch (err) {
+				if (err instanceof DOMException && err.name === 'AbortError') return
+				window.location.replace(`${window.location.origin}/account?discord_error=link_failed`)
+			}
+		}
+
+		linkIdentity()
+		return () => controller.abort()
+	}, [])
+
 	return (
 		<div className="flex h-screen items-center justify-center bg-background">
 			<span className="font-mono text-[13px] text-[#6a6a6a]">
