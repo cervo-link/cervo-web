@@ -1,7 +1,7 @@
 import { useAbility } from '@casl/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Globe, Lock, Trash2 } from 'lucide-react'
+import { Copy, Globe, Link, Lock, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -9,6 +9,7 @@ import type {
 	GetWorkspacesWorkspaceIdMembers200MembersItem,
 	PatchWorkspacesWorkspaceIdBody,
 } from '#/api/cervoAPI.schemas'
+import { usePostWorkspacesWorkspaceIdInvites } from '#/api/invites/invites'
 import {
 	getGetWorkspacesWorkspaceIdIntegrationsQueryKey,
 	useDeleteWorkspacesWorkspaceIdIntegrationsIntegrationId,
@@ -22,6 +23,12 @@ import {
 	useGetWorkspacesWorkspaceIdMembers,
 	usePostWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from '#/components/ui/dialog'
 import { AbilityContext, Can } from '#/lib/ability-context'
 import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
@@ -191,6 +198,11 @@ function WorkspaceDetails() {
 			},
 		})
 
+	const { mutateAsync: createInviteLink, isPending: isCreatingLink } =
+		usePostWorkspacesWorkspaceIdInvites()
+	const [inviteLinkUrl, setInviteLinkUrl] = useState<string | null>(null)
+	const [showInviteLinkDialog, setShowInviteLinkDialog] = useState(false)
+
 	function handleRemoveMember(memberId: string) {
 		if (!workspace) return
 		if (!confirm('Remove this member from the workspace?')) return
@@ -213,6 +225,31 @@ function WorkspaceDetails() {
 				},
 			}
 		)
+	}
+
+	async function handleCreateInviteLink() {
+		if (!workspace || !inviteEmail.trim()) return
+		try {
+			const result = await createInviteLink({
+				workspaceId: workspace.id,
+				data: { email: inviteEmail.trim(), role: inviteRole },
+			})
+			if (result.status === 201) {
+				setInviteLinkUrl(result.data.inviteUrl)
+				setShowInviteLinkDialog(true)
+				setInviteEmail('')
+			} else {
+				toast.error(result.data.message)
+			}
+		} catch {
+			toast.error('Failed to create invite link.')
+		}
+	}
+
+	function handleCopyLink() {
+		if (!inviteLinkUrl) return
+		void navigator.clipboard.writeText(inviteLinkUrl)
+		toast.success('Invite link copied!')
 	}
 
 	const { data: integrationsData } = useGetWorkspacesWorkspaceIdIntegrations(
@@ -434,8 +471,50 @@ function WorkspaceDetails() {
 							>
 								{isInviting ? 'INVITING...' : 'INVITE'}
 							</button>
+							<button
+								type="button"
+								onClick={() => void handleCreateInviteLink()}
+								disabled={!inviteEmail.trim() || isCreatingLink}
+								title="Generate a shareable invite link"
+								className="flex h-11 items-center gap-1.5 border border-primary bg-primary/[0.06] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-primary transition-colors hover:bg-primary/[0.12] disabled:cursor-not-allowed disabled:opacity-40"
+							>
+								<Link className="size-3.5" />
+								{isCreatingLink ? 'CREATING...' : 'COPY LINK'}
+							</button>
 						</div>
 					</Can>
+
+					<Dialog
+						open={showInviteLinkDialog}
+						onOpenChange={setShowInviteLinkDialog}
+					>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Invite Link Created</DialogTitle>
+							</DialogHeader>
+							<div className="flex flex-col gap-4">
+								<p className="font-mono text-[12px] text-[#8a8a8a]">
+									Share this link with the invited person. It expires in 7 days
+									and can only be used by the email you specified.
+								</p>
+								<div className="flex gap-2">
+									<input
+										readOnly
+										value={inviteLinkUrl ?? ''}
+										className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[12px] text-foreground outline-none"
+									/>
+									<button
+										type="button"
+										onClick={handleCopyLink}
+										className="flex h-11 items-center gap-1.5 border border-[#00FF88] bg-[#00FF88] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors hover:bg-[#00E07A]"
+									>
+										<Copy className="size-3.5" />
+										COPY
+									</button>
+								</div>
+							</div>
+						</DialogContent>
+					</Dialog>
 				</div>
 			)}
 
@@ -578,6 +657,7 @@ function SettingsPage() {
 				already_connected: 'This Discord server is already connected.',
 				failed: 'Failed to connect Discord server.',
 			}
+			console.error('[settings] discord integration error', { discord_error })
 			toast.error(messages[discord_error] ?? 'Something went wrong.')
 			void navigate({ to: '/settings', replace: true })
 		}

@@ -13,6 +13,7 @@ import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as DiscordIdentityCallbackRouteImport } from './routes/discord.identity-callback'
 import { Route as DiscordCallbackRouteImport } from './routes/discord.callback'
 import { Route as ApiOgRouteImport } from './routes/api.og'
@@ -47,6 +48,11 @@ const LandingIndexRoute = LandingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LandingRoute,
+} as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DiscordIdentityCallbackRoute = DiscordIdentityCallbackRouteImport.update({
   id: '/discord/identity-callback',
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/api/og': typeof ApiOgRoute
   '/discord/callback': typeof DiscordCallbackRoute
   '/discord/identity-callback': typeof DiscordIdentityCallbackRoute
+  '/invite/$token': typeof InviteTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof LandingIndexRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/api/og': typeof ApiOgRoute
   '/discord/callback': typeof DiscordCallbackRoute
   '/discord/identity-callback': typeof DiscordIdentityCallbackRoute
+  '/invite/$token': typeof InviteTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/api/og': typeof ApiOgRoute
   '/discord/callback': typeof DiscordCallbackRoute
   '/discord/identity-callback': typeof DiscordIdentityCallbackRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/_landing/': typeof LandingIndexRoute
 }
 export interface FileRouteTypes {
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/api/og'
     | '/discord/callback'
     | '/discord/identity-callback'
+    | '/invite/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/api/og'
     | '/discord/callback'
     | '/discord/identity-callback'
+    | '/invite/$token'
   id:
     | '__root__'
     | '/_auth'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/api/og'
     | '/discord/callback'
     | '/discord/identity-callback'
+    | '/invite/$token'
     | '/_landing/'
   fileRoutesById: FileRoutesById
 }
@@ -271,6 +283,7 @@ export interface RootRouteChildren {
   ApiOgRoute: typeof ApiOgRoute
   DiscordCallbackRoute: typeof DiscordCallbackRoute
   DiscordIdentityCallbackRoute: typeof DiscordIdentityCallbackRoute
+  InviteTokenRoute: typeof InviteTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -302,6 +315,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof LandingIndexRouteImport
       parentRoute: typeof LandingRoute
+    }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/discord/identity-callback': {
       id: '/discord/identity-callback'
@@ -489,16 +509,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOgRoute: ApiOgRoute,
   DiscordCallbackRoute: DiscordCallbackRoute,
   DiscordIdentityCallbackRoute: DiscordIdentityCallbackRoute,
+  InviteTokenRoute: InviteTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
