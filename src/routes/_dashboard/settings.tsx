@@ -1,7 +1,7 @@
 import { useAbility } from '@casl/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Copy, Globe, Link, Lock, Trash2 } from 'lucide-react'
+import { Check, ChevronDown, Copy, Globe, Link, Lock, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -23,12 +23,7 @@ import {
 	useGetWorkspacesWorkspaceIdMembers,
 	usePostWorkspacesWorkspaceIdMembers,
 } from '#/api/workspaces/workspaces'
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from '#/components/ui/dialog'
+import { Dialog, DialogContent } from '#/components/ui/dialog'
 import { AbilityContext, Can } from '#/lib/ability-context'
 import { clientEnv } from '#/lib/env'
 import { useWorkspace } from '#/lib/workspace-context'
@@ -158,6 +153,76 @@ function MemberRow({
 					</Can>
 				)}
 			</div>
+		</div>
+	)
+}
+
+function RoleDropdown({
+	value,
+	onChange,
+}: {
+	value: 'viewer' | 'editor'
+	onChange: (role: 'viewer' | 'editor') => void
+}) {
+	const [open, setOpen] = useState(false)
+	const ref = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		const handler = (e: MouseEvent) => {
+			if (ref.current && !ref.current.contains(e.target as Node))
+				setOpen(false)
+		}
+		document.addEventListener('mousedown', handler)
+		return () => document.removeEventListener('mousedown', handler)
+	}, [])
+
+	const style = ROLE_STYLE[value]
+
+	return (
+		<div className="relative" ref={ref}>
+			<button
+				type="button"
+				onClick={() => setOpen(o => !o)}
+				className="flex h-11 items-center justify-between gap-3 border border-[#2f2f2f] bg-[#141414] px-3 outline-none transition-colors hover:border-primary"
+			>
+				<span
+					className={`font-mono text-[11px] font-bold tracking-[0.5px] ${style.text}`}
+				>
+					{value.toUpperCase()}
+				</span>
+				<ChevronDown className="size-3 text-[#6a6a6a]" />
+			</button>
+
+			{open && (
+				<div className="absolute right-0 top-full z-50 mt-px w-36 border border-[#2f2f2f] bg-[#141414]">
+					{(['viewer', 'editor'] as const).map(role => {
+						const isActive = role === value
+						const rs = ROLE_STYLE[role]
+						return (
+							<button
+								key={role}
+								type="button"
+								onClick={() => {
+									onChange(role)
+									setOpen(false)
+								}}
+								className={`flex h-10 w-full items-center justify-between px-3 transition-colors ${
+									isActive ? 'bg-[#00FF8810]' : 'hover:bg-[#1A1A1A]'
+								}`}
+							>
+								<span
+									className={`font-mono text-[11px] font-bold tracking-[0.5px] ${rs.text}`}
+								>
+									{role.toUpperCase()}
+								</span>
+								{isActive && (
+									<Check className="size-3 text-primary" />
+								)}
+							</button>
+						)
+					})}
+				</div>
+			)}
 		</div>
 	)
 }
@@ -453,16 +518,7 @@ function WorkspaceDetails() {
 								placeholder="Invite by email..."
 								className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[13px] font-medium text-foreground outline-none transition-colors placeholder:text-[#6a6a6a] hover:border-primary focus:border-primary"
 							/>
-							<select
-								value={inviteRole}
-								onChange={e =>
-									setInviteRole(e.target.value as 'viewer' | 'editor')
-								}
-								className="h-11 border border-[#2f2f2f] bg-[#141414] px-3 font-mono text-[11px] font-bold tracking-[0.5px] text-[#8a8a8a] outline-none transition-colors hover:border-primary focus:border-primary"
-							>
-								<option value="viewer">VIEWER</option>
-								<option value="editor">EDITOR</option>
-							</select>
+							<RoleDropdown value={inviteRole} onChange={setInviteRole} />
 							<button
 								type="button"
 								onClick={handleInviteMember}
@@ -488,28 +544,57 @@ function WorkspaceDetails() {
 						open={showInviteLinkDialog}
 						onOpenChange={setShowInviteLinkDialog}
 					>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Invite Link Created</DialogTitle>
-							</DialogHeader>
-							<div className="flex flex-col gap-4">
-								<p className="font-mono text-[12px] text-[#8a8a8a]">
-									Share this link with the invited person. It expires in 7 days
-									and can only be used by the email you specified.
-								</p>
-								<div className="flex gap-2">
-									<input
-										readOnly
-										value={inviteLinkUrl ?? ''}
-										className="h-11 flex-1 border border-[#2f2f2f] bg-[#141414] px-3.5 font-mono text-[12px] text-foreground outline-none"
-									/>
+						<DialogContent
+							showCloseButton={false}
+							className="border-[#2f2f2f] bg-[#0A0A0A] p-0"
+						>
+							<div className="flex flex-col">
+								{/* Header */}
+								<div className="flex items-center gap-3 border-b border-[#2f2f2f] px-6 py-5">
+									<div className="flex size-9 items-center justify-center bg-primary/[0.08]">
+										<Link className="size-4 text-primary" />
+									</div>
+									<div className="flex flex-col gap-0.5">
+										<span className="font-mono text-[13px] font-semibold tracking-[0.5px] text-foreground">
+											Invite Link Ready
+										</span>
+										<span className="font-mono text-[11px] text-[#6a6a6a]">
+											Expires in 7 days · email-bound
+										</span>
+									</div>
+								</div>
+
+								{/* Link */}
+								<div className="flex flex-col gap-3 px-6 py-5">
+									<div className="flex gap-2">
+										<div className="flex h-11 flex-1 items-center overflow-hidden border border-[#2f2f2f] bg-[#141414] px-3.5">
+											<span className="truncate font-mono text-[12px] text-[#8a8a8a] select-all">
+												{inviteLinkUrl ?? ''}
+											</span>
+										</div>
+										<button
+											type="button"
+											onClick={handleCopyLink}
+											className="flex h-11 shrink-0 items-center gap-1.5 border border-[#00FF88] bg-[#00FF88] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors hover:bg-[#00E07A]"
+										>
+											<Copy className="size-3.5" />
+											COPY
+										</button>
+									</div>
+									<p className="font-mono text-[11px] leading-relaxed text-[#6a6a6a]">
+										Only the person with the matching email can use this link.
+										Share it directly — it won't work for anyone else.
+									</p>
+								</div>
+
+								{/* Footer */}
+								<div className="flex justify-end border-t border-[#2f2f2f] px-6 py-4">
 									<button
 										type="button"
-										onClick={handleCopyLink}
-										className="flex h-11 items-center gap-1.5 border border-[#00FF88] bg-[#00FF88] px-4 font-mono text-[11px] font-bold tracking-[0.5px] text-[#0C0C0C] transition-colors hover:bg-[#00E07A]"
+										onClick={() => setShowInviteLinkDialog(false)}
+										className="flex h-10 items-center border border-[#2f2f2f] bg-[#141414] px-5 font-mono text-[11px] font-bold tracking-[0.5px] text-[#8a8a8a] transition-colors hover:border-primary hover:text-foreground"
 									>
-										<Copy className="size-3.5" />
-										COPY
+										DONE
 									</button>
 								</div>
 							</div>
