@@ -5,7 +5,7 @@ export default defineConfig({
 		input: {
 			target: '../cervo-api/src/infra/http/swagger/spec.json',
 			filters: {
-				tags: ['service', 'bookmarks', 'members', 'workspaces', 'workspace-integrations'],
+				tags: ['service', 'bookmarks', 'members', 'workspaces', 'workspace-integrations', 'invites'],
 			},
 		},
 		output: {

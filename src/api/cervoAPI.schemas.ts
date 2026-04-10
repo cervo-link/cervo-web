@@ -558,6 +558,55 @@ export type PatchWorkspacesWorkspaceIdMembersMemberId500 = {
   message: string;
 };
 
+export type PostWorkspacesWorkspaceIdInvitesBodyRole = typeof PostWorkspacesWorkspaceIdInvitesBodyRole[keyof typeof PostWorkspacesWorkspaceIdInvitesBodyRole];
+
+
+export const PostWorkspacesWorkspaceIdInvitesBodyRole = {
+  viewer: 'viewer',
+  editor: 'editor',
+} as const;
+
+export type PostWorkspacesWorkspaceIdInvitesBody = {
+  /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
+  email: string;
+  role?: PostWorkspacesWorkspaceIdInvitesBodyRole;
+  /**
+     * @minimum 1
+     * @maximum 30
+     */
+  expiresInDays?: number;
+};
+
+/**
+ * Invite created
+ */
+export type PostWorkspacesWorkspaceIdInvites201 = {
+  token: string;
+  inviteUrl: string;
+  expiresAt: string;
+};
+
+/**
+ * Forbidden
+ */
+export type PostWorkspacesWorkspaceIdInvites403 = {
+  message: string;
+};
+
+/**
+ * Workspace not found
+ */
+export type PostWorkspacesWorkspaceIdInvites404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type PostWorkspacesWorkspaceIdInvites500 = {
+  message: string;
+};
+
 export type GetWorkspacesWorkspaceIdIntegrations200IntegrationsItem = {
   id: string;
   workspaceId: string;
@@ -813,5 +862,74 @@ export type GetMembersMeIdentities200IdentitiesItem = {
  */
 export type GetMembersMeIdentities200 = {
   identities: GetMembersMeIdentities200IdentitiesItem[];
+};
+
+/**
+ * Invite info
+ */
+export type GetInvitesToken200 = {
+  workspaceName: string;
+  /** @nullable */
+  inviterName: string | null;
+  role: string;
+  expiresAt: string;
+  expired: boolean;
+};
+
+/**
+ * Invite not found
+ */
+export type GetInvitesToken404 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type GetInvitesToken500 = {
+  message: string;
+};
+
+/**
+ * Invite accepted
+ */
+export type PostInvitesTokenAccept200 = {
+  workspaceId: string;
+  role: string;
+};
+
+/**
+ * Invite expired or already used
+ */
+export type PostInvitesTokenAccept400 = {
+  message: string;
+};
+
+/**
+ * Email mismatch or forbidden
+ */
+export type PostInvitesTokenAccept403 = {
+  message: string;
+};
+
+/**
+ * Invite not found
+ */
+export type PostInvitesTokenAccept404 = {
+  message: string;
+};
+
+/**
+ * Already a member of this workspace
+ */
+export type PostInvitesTokenAccept422 = {
+  message: string;
+};
+
+/**
+ * Internal error
+ */
+export type PostInvitesTokenAccept500 = {
+  message: string;
 };
 
