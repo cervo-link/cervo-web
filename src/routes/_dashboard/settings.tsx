@@ -1,7 +1,15 @@
 import { useAbility } from '@casl/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Check, ChevronDown, Copy, Globe, Link, Lock, Trash2 } from 'lucide-react'
+import {
+	Check,
+	ChevronDown,
+	Copy,
+	Globe,
+	Link,
+	Lock,
+	Trash2,
+} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -169,8 +177,7 @@ function RoleDropdown({
 
 	useEffect(() => {
 		const handler = (e: MouseEvent) => {
-			if (ref.current && !ref.current.contains(e.target as Node))
-				setOpen(false)
+			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
 		}
 		document.addEventListener('mousedown', handler)
 		return () => document.removeEventListener('mousedown', handler)
@@ -215,9 +222,7 @@ function RoleDropdown({
 								>
 									{role.toUpperCase()}
 								</span>
-								{isActive && (
-									<Check className="size-3 text-primary" />
-								)}
+								{isActive && <Check className="size-3 text-primary" />}
 							</button>
 						)
 					})}

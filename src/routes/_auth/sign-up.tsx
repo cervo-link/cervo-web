@@ -13,43 +13,49 @@ const searchSchema = z.object({
 	redirect: z.string().optional(),
 })
 
-export const Route = createFileRoute('/_auth/sign-in')({
+export const Route = createFileRoute('/_auth/sign-up')({
 	validateSearch: searchSchema,
 	head: () => ({
 		meta: [
-			{ title: 'Sign In — Cervo' },
+			{ title: 'Sign Up — Cervo' },
 			{
 				name: 'description',
-				content: 'Sign in to your Cervo account',
+				content: 'Create your Cervo account',
 			},
-			{ property: 'og:title', content: 'Sign In — Cervo' },
+			{ property: 'og:title', content: 'Sign Up — Cervo' },
 			{
 				property: 'og:description',
-				content: 'Sign in to your Cervo account',
+				content: 'Create your Cervo account',
 			},
 			{
 				property: 'og:image',
-				content: ogImageUrl('Sign In', 'Access your bookmarks'),
+				content: ogImageUrl('Sign Up', 'Start saving bookmarks'),
 			},
-			{ name: 'twitter:title', content: 'Sign In — Cervo' },
+			{ name: 'twitter:title', content: 'Sign Up — Cervo' },
 			{
 				name: 'twitter:description',
-				content: 'Sign in to your Cervo account',
+				content: 'Create your Cervo account',
 			},
 			{
 				name: 'twitter:image',
-				content: ogImageUrl('Sign In', 'Access your bookmarks'),
+				content: ogImageUrl('Sign Up', 'Start saving bookmarks'),
 			},
 		],
 	}),
-	component: SignInPage,
+	component: SignUpPage,
 })
 
-function SignInPage() {
+const ERROR_MESSAGES: Record<string, string> = {
+	'User already exists': 'An account with this email already exists.',
+	USER_ALREADY_EXISTS: 'An account with this email already exists.',
+}
+
+function SignUpPage() {
 	const { redirect } = Route.useSearch()
 	const { data: session } = authClient.useSession()
 	const navigate = useNavigate()
 
+	const [name, setName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [error, setError] = useState<string | null>(null)
@@ -67,18 +73,17 @@ function SignInPage() {
 		setLoading(true)
 
 		try {
-			const result = await authClient.signIn.email({
+			const result = await authClient.signUp.email({
+				name,
 				email,
 				password,
 				callbackURL: `${window.location.origin}/callback`,
 			})
 
 			if (result.error) {
-				const code = result.error.code
+				const message = result.error.message ?? ''
 				setError(
-					code === 'INVALID_EMAIL_OR_PASSWORD'
-						? 'Invalid email or password. If you signed up with Google or GitHub, use those buttons below.'
-						: 'Something went wrong. Please try again.'
+					ERROR_MESSAGES[message] ?? 'Something went wrong. Please try again.'
 				)
 				return
 			}
@@ -93,14 +98,14 @@ function SignInPage() {
 	function handleGoogle() {
 		void authClient.signIn.social({
 			provider: 'google',
-			callbackURL: `${window.location.origin}${redirect ?? '/callback'}`,
+			callbackURL: `${window.location.origin}${redirect?.startsWith('/') ? redirect : '/callback'}`,
 		})
 	}
 
 	function handleGithub() {
 		void authClient.signIn.social({
 			provider: 'github',
-			callbackURL: `${window.location.origin}${redirect ?? '/callback'}`,
+			callbackURL: `${window.location.origin}${redirect?.startsWith('/') ? redirect : '/callback'}`,
 		})
 	}
 
@@ -108,15 +113,34 @@ function SignInPage() {
 		<div className="space-y-8">
 			<div className="space-y-2">
 				<h2 className="font-heading text-5xl font-bold tracking-tight text-foreground">
-					WELCOME
+					CREATE ACCOUNT
 				</h2>
 				<p className="text-base font-medium tracking-wide text-muted-foreground">
-					Sign in to your account
+					Start saving and searching your bookmarks
 				</p>
 			</div>
 
-			{/* email + password form */}
+			{/* registration form */}
 			<form onSubmit={handleSubmit} className="space-y-4">
+				<div className="space-y-1.5">
+					<Label
+						htmlFor="name"
+						className="font-mono text-[11px] font-semibold tracking-[0.5px] text-[#6a6a6a]"
+					>
+						NAME
+					</Label>
+					<Input
+						id="name"
+						type="text"
+						autoComplete="name"
+						required
+						value={name}
+						onChange={e => setName(e.target.value)}
+						placeholder="Your name"
+						className="h-11 border-sidebar-border bg-[#0A0A0A] font-mono text-[13px] placeholder:text-[#6a6a6a] focus-visible:border-primary focus-visible:ring-0"
+					/>
+				</div>
+
 				<div className="space-y-1.5">
 					<Label
 						htmlFor="email"
@@ -146,8 +170,9 @@ function SignInPage() {
 					<Input
 						id="password"
 						type="password"
-						autoComplete="current-password"
+						autoComplete="new-password"
 						required
+						minLength={8}
 						value={password}
 						onChange={e => setPassword(e.target.value)}
 						placeholder="••••••••"
@@ -164,14 +189,14 @@ function SignInPage() {
 					disabled={loading}
 					className="h-11 w-full font-mono text-[11px] font-bold tracking-[0.5px]"
 				>
-					{loading ? 'SIGNING IN...' : 'SIGN IN'}
+					{loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
 				</Button>
 			</form>
 
 			<p className="text-center font-mono text-[11px] text-[#6a6a6a]">
-				Don&apos;t have an account?{' '}
-				<Link to="/sign-up" className="text-primary hover:underline">
-					Sign up
+				Already have an account?{' '}
+				<Link to="/sign-in" className="text-primary hover:underline">
+					Sign in
 				</Link>
 			</p>
 

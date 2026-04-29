@@ -29,6 +29,7 @@ import { Route as DashboardLinksRouteImport } from './routes/_dashboard/links'
 import { Route as DashboardHelpRouteImport } from './routes/_dashboard/help'
 import { Route as DashboardAccountRouteImport } from './routes/_dashboard/account'
 import { Route as AuthWorkspaceRouteImport } from './routes/_auth/workspace'
+import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthCallbackRouteImport } from './routes/_auth/callback'
 
@@ -129,6 +130,11 @@ const AuthWorkspaceRoute = AuthWorkspaceRouteImport.update({
   path: '/workspace',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/': typeof LandingIndexRoute
   '/callback': typeof AuthCallbackRoute
   '/sign-in': typeof AuthSignInRoute
+  '/sign-up': typeof AuthSignUpRoute
   '/workspace': typeof AuthWorkspaceRoute
   '/account': typeof DashboardAccountRoute
   '/help': typeof DashboardHelpRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/': typeof LandingIndexRoute
   '/callback': typeof AuthCallbackRoute
   '/sign-in': typeof AuthSignInRoute
+  '/sign-up': typeof AuthSignUpRoute
   '/workspace': typeof AuthWorkspaceRoute
   '/account': typeof DashboardAccountRoute
   '/help': typeof DashboardHelpRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/_landing': typeof LandingRouteWithChildren
   '/_auth/callback': typeof AuthCallbackRoute
   '/_auth/sign-in': typeof AuthSignInRoute
+  '/_auth/sign-up': typeof AuthSignUpRoute
   '/_auth/workspace': typeof AuthWorkspaceRoute
   '/_dashboard/account': typeof DashboardAccountRoute
   '/_dashboard/help': typeof DashboardHelpRoute
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/'
     | '/callback'
     | '/sign-in'
+    | '/sign-up'
     | '/workspace'
     | '/account'
     | '/help'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/'
     | '/callback'
     | '/sign-in'
+    | '/sign-up'
     | '/workspace'
     | '/account'
     | '/help'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/_landing'
     | '/_auth/callback'
     | '/_auth/sign-in'
+    | '/_auth/sign-up'
     | '/_auth/workspace'
     | '/_dashboard/account'
     | '/_dashboard/help'
@@ -428,6 +440,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthWorkspaceRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/sign-up': {
+      id: '/_auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/sign-in': {
       id: '/_auth/sign-in'
       path: '/sign-in'
@@ -448,12 +467,14 @@ declare module '@tanstack/react-router' {
 interface AuthRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthSignInRoute: typeof AuthSignInRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
   AuthWorkspaceRoute: typeof AuthWorkspaceRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   AuthSignInRoute: AuthSignInRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
   AuthWorkspaceRoute: AuthWorkspaceRoute,
 }
 

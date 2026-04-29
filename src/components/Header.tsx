@@ -6,14 +6,12 @@ export default function Header() {
 	const { data: session } = authClient.useSession()
 	const navigate = useNavigate()
 
-	function handleSignOut() {
-		void authClient.signOut({
-			fetchOptions: {
-				onSuccess: () => {
-					void navigate({ to: '/sign-in' })
-				},
-			},
-		})
+	async function handleSignOut() {
+		try {
+			await authClient.signOut()
+		} finally {
+			void navigate({ to: '/sign-in' })
+		}
 	}
 
 	return (

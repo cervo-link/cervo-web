@@ -18,7 +18,11 @@ function DiscordCallbackPage() {
 			const settingsUrl = `${window.location.origin}/settings`
 
 			if (error || !guildId || !workspaceId) {
-				console.error('[discord/callback] missing params', { error, guildId, workspaceId })
+				console.error('[discord/callback] missing params', {
+					error,
+					guildId,
+					workspaceId,
+				})
 				window.location.replace(
 					`${settingsUrl}?discord_error=${error === 'access_denied' ? 'cancelled' : 'missing_data'}`
 				)
@@ -40,12 +44,20 @@ function DiscordCallbackPage() {
 				if (res.status === 201) {
 					window.location.replace(`${settingsUrl}?discord_connected=true`)
 				} else if (res.status === 422) {
-					console.error('[discord/callback] integration already exists', { workspaceId, guildId, status: res.status })
+					console.error('[discord/callback] integration already exists', {
+						workspaceId,
+						guildId,
+						status: res.status,
+					})
 					window.location.replace(
 						`${settingsUrl}?discord_error=already_connected`
 					)
 				} else {
-					console.error('[discord/callback] unexpected response', { workspaceId, guildId, status: res.status })
+					console.error('[discord/callback] unexpected response', {
+						workspaceId,
+						guildId,
+						status: res.status,
+					})
 					window.location.replace(`${settingsUrl}?discord_error=failed`)
 				}
 			} catch (err) {
