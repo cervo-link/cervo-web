@@ -5,6 +5,8 @@ import {
 	useGetInvitesToken,
 	usePostInvitesTokenAccept,
 } from '#/api/invites/invites'
+import { GithubIcon } from '#/components/icons/github'
+import { GoogleIcon } from '#/components/icons/google'
 import { Button } from '#/components/ui/button'
 import { authClient } from '#/lib/auth-client'
 
@@ -41,14 +43,14 @@ function InvitePage() {
 		}
 	}, [acceptInvite, token, navigate])
 
-	function handleSignIn() {
+	function handleGoogleSignIn() {
 		void authClient.signIn.social({
 			provider: 'google',
 			callbackURL: `${window.location.origin}/invite/${token}`,
 		})
 	}
 
-	function handleSignInGithub() {
+	function handleGithubSignIn() {
 		void authClient.signIn.social({
 			provider: 'github',
 			callbackURL: `${window.location.origin}/invite/${token}`,
@@ -185,9 +187,10 @@ function InvitePage() {
 							<Button
 								variant="outline"
 								size="lg"
-								onClick={handleSignIn}
+								onClick={handleGoogleSignIn}
 								className="h-11 w-full border-sidebar-border text-foreground hover:border-primary hover:bg-transparent hover:text-foreground"
 							>
+								<GoogleIcon className="size-4" />
 								<span className="font-mono text-[11px] font-bold tracking-[0.5px]">
 									GOOGLE
 								</span>
@@ -195,9 +198,10 @@ function InvitePage() {
 							<Button
 								variant="outline"
 								size="lg"
-								onClick={handleSignInGithub}
+								onClick={handleGithubSignIn}
 								className="h-11 w-full border-sidebar-border text-foreground hover:border-primary hover:bg-transparent hover:text-foreground"
 							>
+								<GithubIcon className="size-4" />
 								<span className="font-mono text-[11px] font-bold tracking-[0.5px]">
 									GITHUB
 								</span>

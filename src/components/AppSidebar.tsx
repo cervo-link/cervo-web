@@ -243,8 +243,11 @@ export function AppSidebar() {
 				<button
 					type="button"
 					onClick={async () => {
-						await authClient.signOut()
-						void navigate({ to: '/sign-in' })
+						try {
+							await authClient.signOut()
+						} finally {
+							void navigate({ to: '/sign-in' })
+						}
 					}}
 					className="flex h-11 w-full items-center gap-2.5 border border-transparent px-2 font-mono text-xs tracking-wide text-muted-foreground outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:border-primary"
 				>

@@ -7,8 +7,11 @@ export default function Header() {
 	const navigate = useNavigate()
 
 	async function handleSignOut() {
-		await authClient.signOut()
-		void navigate({ to: '/sign-in' })
+		try {
+			await authClient.signOut()
+		} finally {
+			void navigate({ to: '/sign-in' })
+		}
 	}
 
 	return (
